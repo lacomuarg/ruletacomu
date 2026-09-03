@@ -81,7 +81,7 @@ header {
 }
 
 .container {
-  max-width: 1450px;
+  max-width: 1550px;
   margin: auto;
   padding: 8px 12px;
 }
@@ -121,17 +121,14 @@ header {
   display: block;
 }
 
-.layout {
+/* Layout de 3 columnas */
+.layout-3col {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 12px;
 }
 
-.layout.hide-participants {
-  display: block;
-}
-
-.layout.hide-participants .card-participants {
+.layout-3col.hide-participants .card-participants {
   display: none;
 }
 
@@ -154,10 +151,6 @@ header {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-}
-
-.full-width {
-  grid-column: 1 / -1;
 }
 
 label {
@@ -231,11 +224,13 @@ input, select {
   margin-top: 8px;
   display: flex;
   gap: 6px;
+  width: 100%;
 }
 
 .reset-controls .btn {
   font-size: 11px;
   padding: 6px;
+  flex: 1;
 }
 
 .participants-header {
@@ -258,7 +253,7 @@ input, select {
 }
 
 .people {
-  max-height: 180px;
+  max-height: 250px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -267,8 +262,30 @@ input, select {
 
 .person {
   display: grid;
-  grid-template-columns: 35px 1fr;
+  grid-template-columns: 35px 1fr auto;
   gap: 6px;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.person.eliminated {
+  opacity: 0.55;
+  background-color: #fff0f2;
+  border-radius: 6px;
+  padding-right: 6px;
+}
+
+.person.eliminated input {
+  text-decoration: line-through;
+  color: #bd3047;
+  background: #fdf0f2;
+}
+
+.person .cross-mark {
+  color: var(--rojo);
+  font-weight: bold;
+  font-size: 12px;
+  padding-right: 4px;
 }
 
 .number {
@@ -364,26 +381,31 @@ input, select {
   font-size: 11px;
 }
 
+.right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .history {
   position: relative;
   width: 100%;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid #b9e9f1;
-  border-radius: 10px;
-  padding: 6px;
-  box-shadow: none;
-  z-index: 1;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(7, 82, 127, 0.08);
 }
 
 .history h2 {
-  font-size: 11px !important;
-  margin-bottom: 4px;
+  font-size: 15px;
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--azul-oscuro);
 }
 
 .history-list {
-  max-height: 90px;
+  max-height: 260px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -391,14 +413,14 @@ input, select {
 }
 
 .history-item {
-  padding: 4px 6px;
+  padding: 6px 8px;
   border-left: 3px solid var(--rojo);
   background: #fff0f2;
   border-radius: 4px;
   display: flex;
   justify-content: space-between;
   gap: 4px;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .overlay {
@@ -481,6 +503,55 @@ input, select {
   color: #bd3047;
 }
 
+.keyboard-shortcuts-card {
+  background: #ffffff;
+  border: 1px solid #bce9f1;
+  border-left: 4px solid var(--celeste);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(7, 82, 127, 0.08);
+}
+
+.shortcuts-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--azul-oscuro);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shortcuts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--azul);
+  font-weight: 600;
+}
+
+.shortcut-item kbd {
+  background: #f0fbfe;
+  border: 1px solid #bce9f1;
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  color: var(--azul-oscuro);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 3px 7px;
+  min-width: 26px;
+  text-align: center;
+}
+
 .credit {
   position: static;
   text-align: center;
@@ -496,62 +567,27 @@ input, select {
   cursor: pointer;
 }
 
-@media (orientation: landscape) and (max-height: 600px) {
-  .layout:not(.hide-participants) {
+/* Pantallas grandes: 3 columnas (Izquierda: Config, Centro: Ruleta, Derecha: Eliminados / Atajos) */
+@media (min-width: 950px) {
+  .layout-3col {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: 320px 1fr 300px;
+    gap: 16px;
     align-items: start;
   }
 
-  .layout:not(.hide-participants) > .card:nth-child(2) {
-    order: -1;
+  .layout-3col.hide-participants {
+    grid-template-columns: 1fr 320px;
   }
 
   .people {
-    max-height: 140px;
-  }
-
-  .victory-gif-container {
-    height: 120px;
-  }
-}
-
-@media (min-width: 850px) {
-  .layout:not(.hide-participants) {
-    display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 20px;
-  }
-  
-  .container {
-    padding: 16px;
-  }
-  
-  .logo-title img {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .people {
-    max-height: 380px;
-  }
-
-  .history {
-    position: relative;
-    width: 100%;
-    margin-top: 10px;
-    margin-bottom: 0;
-  }
-
-  .history h2 {
-    font-size: 15px !important;
+    max-height: 420px;
   }
 
   .history-list {
-    max-height: 120px;
+    max-height: 280px;
   }
-  
+
   .pointer {
     border-left-width: 18px;
     border-right-width: 18px;
@@ -598,8 +634,10 @@ input, select {
         <button class="tab" data-mode="last">🏆 Último número en pie</button>
     </div>
 
+    <!-- MODO 1: PRIMER NÚMERO -->
     <section id="first" class="mode active">
-        <div class="layout" id="layoutFirst">
+        <div class="layout-3col" id="layoutFirst">
+            <!-- IZQUIERDA: Configuración y Participantes -->
             <div class="card card-participants">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
@@ -639,6 +677,7 @@ input, select {
                 <div id="firstPeople" class="people"></div>
             </div>
 
+            <!-- CENTRO: Ruleta -->
             <div class="card">
                 <div class="wheel-area">
                     <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
@@ -670,11 +709,34 @@ input, select {
                     </div>
                 </div>
             </div>
+
+            <!-- DERECHA: Atajos / Comandos -->
+            <div class="right-sidebar">
+                <div class="keyboard-shortcuts-card">
+                    <div class="shortcuts-title">⌨️ Atajos de teclado</div>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item">
+                            <kbd>Espacio</kbd>
+                            <span>Girar / Cerrar cartel</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>R</kbd>
+                            <span>Reiniciar ruleta</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>O</kbd>
+                            <span>Ocultar / Mostrar lista</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- MODO 2: ÚLTIMO NÚMERO EN PIE -->
     <section id="last" class="mode">
-        <div class="layout" id="layoutLast">
+        <div class="layout-3col" id="layoutLast">
+            <!-- IZQUIERDA: Configuración y Participantes -->
             <div class="card card-participants">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
@@ -714,6 +776,7 @@ input, select {
                 <div id="lastPeople" class="people"></div>
             </div>
 
+            <!-- CENTRO: Ruleta -->
             <div class="card">
                 <div class="wheel-area">
                     <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
@@ -731,14 +794,6 @@ input, select {
                         🎯 GIRAR Y ELIMINAR
                     </button>
 
-                    <div class="history">
-                        <h2>📋 Eliminados</h2>
-                        <div id="lastHistory" class="history-list"></div>
-                        <div class="actions" style="margin-top:4px;">
-                            <button class="btn soft" style="font-size:10px; padding:3px;" onclick="undoLast()">↩️ Deshacer</button>
-                        </div>
-                    </div>
-
                     <div class="reset-controls">
                         <button class="btn danger" onclick="resetWheelOnly('last')">
                             🔄 Reiniciar ruleta
@@ -750,6 +805,39 @@ input, select {
 
                     <div id="lastStatus" class="status">
                         Cada giro elimina un participante. <strong>El último gana.</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DERECHA: Lista de Eliminados + Atajos -->
+            <div class="right-sidebar">
+                <div class="history">
+                    <h2>📋 Eliminados</h2>
+                    <div id="lastHistory" class="history-list"></div>
+                    <div class="actions" style="margin-top:8px;">
+                        <button class="btn soft" style="font-size:11px; padding:6px; width:100%;" onclick="undoLast()">↩️ Deshacer último eliminado</button>
+                    </div>
+                </div>
+
+                <div class="keyboard-shortcuts-card">
+                    <div class="shortcuts-title">⌨️ Atajos de teclado</div>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item">
+                            <kbd>Espacio</kbd>
+                            <span>Girar / Cerrar cartel</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>R</kbd>
+                            <span>Reiniciar ruleta</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>V</kbd>
+                            <span>Deshacer eliminado</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>O</kbd>
+                            <span>Ocultar / Mostrar lista</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -796,6 +884,10 @@ const state = {
         winnerShown: false
     }
 };
+
+function getActiveMode() {
+    return document.querySelector(".tab.active").dataset.mode;
+}
 
 function randomNumber(max){
     if(max <= 0) return 0;
@@ -937,11 +1029,13 @@ function renderParticipants(mode){
     container.innerHTML = "";
 
     state.participants.forEach(p => {
+        const isEliminated = mode === "last" && state.last.eliminated.includes(p.id);
         const row = document.createElement("div");
-        row.className = "person";
+        row.className = `person ${isEliminated ? 'eliminated' : ''}`;
         row.innerHTML = `
             <div class="number">${p.id}</div>
-            <input maxlength="80" value="${escapeHTML(p.text)}" placeholder="Nombre o texto">
+            <input maxlength="80" value="${escapeHTML(p.text)}" placeholder="Nombre o texto" ${isEliminated ? 'disabled' : ''}>
+            ${isEliminated ? '<span class="cross-mark">❌</span>' : ''}
         `;
 
         const input = row.querySelector("input");
@@ -1079,7 +1173,6 @@ function spinRoulette(mode){
     const id = modeState.active[index];
     const participant = state.participants.find(p => p.id === id);
     
-    // Cálculo preciso del ángulo considerando la rotación previa acumulada
     const numSlices = modeState.active.length;
     const sliceAngle = 360 / numSlices;
     const centerOfSliceDegree = index * sliceAngle + (sliceAngle / 2);
@@ -1225,7 +1318,6 @@ function closeVictory(){
     overlay.classList.remove("show");
     modalGif.src = "";
 
-    // Muestra la animación del ganador solo una vez al eliminar al penúltimo
     if(state.last.active.length === 1 && state.last.eliminated.length > 0 && !state.last.winnerShown){
         state.last.winnerShown = true;
         const winner = state.participants.find(p => p.id === state.last.active[0]);
@@ -1267,6 +1359,42 @@ document.querySelectorAll(".tab").forEach(button => {
         
         drawWheel(targetMode);
     });
+});
+
+document.addEventListener("keydown", (event) => {
+    if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+        return;
+    }
+
+    const activeMode = getActiveMode();
+    const overlay = document.getElementById("victoryOverlay");
+    const isModalOpen = overlay.classList.contains("show");
+
+    if (event.code === "Space") {
+        event.preventDefault();
+        if (isModalOpen) {
+            closeVictory();
+        } else {
+            spinRoulette(activeMode);
+        }
+    }
+
+    if (event.code === "KeyR") {
+        event.preventDefault();
+        resetWheelOnly(activeMode);
+    }
+
+    if (event.code === "KeyV") {
+        event.preventDefault();
+        if (activeMode === "last") {
+            undoLast();
+        }
+    }
+
+    if (event.code === "KeyO") {
+        event.preventDefault();
+        toggleParticipants(activeMode);
+    }
 });
 
 autoGenerate("first");
