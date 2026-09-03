@@ -125,8 +125,8 @@ header {
 
 /* GRID PRINCIPAL */
 .layout {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column-reverse; /* La ruleta queda arriba en móviles si se desea, o abajo según preferencia */
   gap: 12px;
 }
 
@@ -202,9 +202,8 @@ input {
 
 .spin-button {
   width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  margin-top: 6px;
+  padding: 12px;
+  font-size: 15px;
 }
 
 .primary {
@@ -229,7 +228,6 @@ input {
   margin-top: 8px;
   display: flex;
   gap: 6px;
-  width: 100%;
 }
 
 .reset-controls .btn {
@@ -258,7 +256,7 @@ input {
 }
 
 .people {
-  max-height: 200px;
+  max-height: 180px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -282,22 +280,20 @@ input {
   color: var(--azul);
 }
 
-/* RULETA ADAPTABLE */
+/* RULETA ADAPTABLE Y MÁS GRANDE EN MÓVILES */
 .wheel-area {
   text-align: center;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
 }
 
 .wheel-box {
   position: relative;
-  width: min(70vw, 280px);
-  height: min(70vw, 280px);
-  aspect-ratio: 1 / 1;
-  margin: 5px auto 10px;
+  width: min(88vw, 380px); /* Ruleta más grande en celulares */
+  aspect-ratio: 1;
+  margin: 10px auto 15px;
   flex-shrink: 0;
 }
 
@@ -319,9 +315,9 @@ input {
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 22px solid var(--azul-oscuro);
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 24px solid var(--azul-oscuro);
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
 }
 
@@ -331,8 +327,8 @@ input {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: white;
   border: 4px solid var(--azul);
@@ -347,7 +343,7 @@ input {
   background: linear-gradient(135deg, var(--celeste), white);
 }
 
-/* RESULTADOS E HISTORIAL DE ELIMINADOS CORREGIDOS */
+/* RESULTADOS E HISTORIAL DE ELIMINADOS */
 .status {
   width: 100%;
   margin: 8px auto;
@@ -362,7 +358,7 @@ input {
 .history {
   position: relative;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 8px;
   margin-bottom: 8px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid #b9e9f1;
@@ -378,7 +374,7 @@ input {
 }
 
 .history-list {
-  max-height: 120px;
+  max-height: 90px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -396,7 +392,7 @@ input {
   font-size: 10px;
 }
 
-/* MODAL DE VICTORIA Y ELIMINACIÓN CORREGIDO EN LANDSCAPE */
+/* MODAL DE VICTORIA Y ELIMINACIÓN */
 .overlay {
   display: none;
   position: fixed;
@@ -415,7 +411,7 @@ input {
 
 .victory {
   width: min(92vw, 440px);
-  max-height: 85vh;
+  max-height: 90vh;
   overflow-y: auto;
   background: white;
   border: 3px solid #5bd5e3;
@@ -432,8 +428,8 @@ input {
 
 .victory-gif-container {
   width: 100%;
-  max-width: 280px;
-  height: 140px;
+  max-width: 320px;
+  height: 180px;
   margin: 0 auto 10px;
   border-radius: 12px;
   overflow: hidden;
@@ -453,7 +449,7 @@ input {
 .victory h2 {
   margin: 0;
   color: var(--azul);
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .victory.eliminated-modal h2 {
@@ -461,11 +457,11 @@ input {
 }
 
 .winner-name {
-  font-size: 15px;
-  font-weight: 900;
+  font-size: 16px;
+  font-weight: 1000;
   color: var(--azul-oscuro);
-  margin: 6px 0 10px 0;
-  padding: 6px;
+  margin: 8px 0 12px 0;
+  padding: 8px;
   background: #e8fbff;
   border-radius: 10px;
   border: 2px dashed #65d9e7;
@@ -493,51 +489,40 @@ input {
   cursor: pointer;
 }
 
-/* MEDIA QUERIES PARA ADAPTACIÓN HORIZONTAL (LANDSCAPE) */
-@media (orientation: landscape) and (max-height: 500px) {
+/* MEDIA QUERIES PARA ADAPTACIÓN HORIZONTAL (LANDSCAPE CELULAR / TABLET) */
+@media (orientation: landscape) and (max-height: 600px) {
   .layout {
+    display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    align-items: start;
+  }
+
+  /* Ruleta grande y en primera fila/columna izquierda en Landscape */
+  .layout > .card:nth-child(2) {
+    order: -1;
   }
 
   .wheel-box {
-    width: min(40vh, 200px);
-    height: min(40vh, 200px);
-    margin: 2px auto 6px;
+    width: min(45vw, 300px);
+    max-height: none;
+    aspect-ratio: 1;
+    margin: 5px auto;
   }
 
   .people {
-    max-height: 110px;
-  }
-
-  .history-list {
-    max-height: 70px;
-  }
-
-  .victory {
-    padding: 10px;
+    max-height: 140px;
   }
 
   .victory-gif-container {
-    height: 80px;
-    max-width: 180px;
-    margin-bottom: 6px;
-  }
-
-  .victory h2 {
-    font-size: 15px;
-  }
-
-  .winner-name {
-    margin: 4px 0 8px 0;
-    padding: 4px;
-    font-size: 13px;
+    height: 120px;
   }
 }
 
-/* DISPOSITIVOS DE PANTALLA ANCHA (DESKTOP) */
-@media (min-width: 900px) {
+/* DISPOSITIVOS DE PANTALLA ANCHA (DESKTOP Y TABLET VERTICAL GRANDE) */
+@media (min-width: 850px) {
   .layout {
+    display: grid;
     grid-template-columns: 360px 1fr;
     gap: 20px;
   }
@@ -557,7 +542,7 @@ input {
   
   .wheel-box {
     width: min(50vw, 440px);
-    height: min(50vw, 440px);
+    max-height: none;
   }
 
   .history {
@@ -778,15 +763,15 @@ input {
 </div>
 
 <script>
-const data = {
+// Estado de la aplicación
+const state = {
+    participants: [], // Mantenemos una única fuente de participantes compartida
     first: {
-        participants: [],
         active: [],
         rotation: 0,
         spinning: false
     },
     last: {
-        participants: [],
         active: [],
         eliminated: [],
         rotation: 0,
@@ -829,51 +814,71 @@ function generateRangeParticipants(minVal, maxVal){
 
     const list = [];
     for (let i = min; i <= max; i++) {
-        list.push({ id: i, text: "" });
+        // Preservar textos previos si ya existían para el mismo ID
+        const existing = state.participants.find(p => p.id === i);
+        list.push({ id: i, text: existing ? existing.text : "" });
     }
 
     return list;
 }
 
+function syncInputsUI(mode) {
+    const minVal = document.getElementById(mode + "Min").value;
+    const maxVal = document.getElementById(mode + "Max").value;
+    const otherMode = mode === "first" ? "last" : "first";
+    
+    document.getElementById(otherMode + "Min").value = minVal;
+    document.getElementById(otherMode + "Max").value = maxVal;
+}
+
 function autoGenerate(mode){
-    if(data[mode].spinning) return;
+    if(state.first.spinning || state.last.spinning) return;
+
+    syncInputsUI(mode);
 
     const minInput = document.getElementById(mode + "Min").value;
     const maxInput = document.getElementById(mode + "Max").value;
 
-    data[mode].participants = generateRangeParticipants(minInput, maxInput);
-    data[mode].active = data[mode].participants.map(p => p.id);
-    data[mode].rotation = 0;
-    data[mode].spinning = false;
+    state.participants = generateRangeParticipants(minInput, maxInput);
+    
+    // Sincronizar listas activas
+    state.first.active = state.participants.map(p => p.id);
+    state.last.active = state.participants.map(p => p.id);
+    state.last.eliminated = [];
 
-    if(mode === "last"){
-        data.last.eliminated = [];
-        renderHistory();
+    resetCanvasTransform("first");
+    resetCanvasTransform("last");
+
+    renderParticipants("first");
+    renderParticipants("last");
+    drawWheel("first");
+    drawWheel("last");
+    updateRouletteUI("first");
+    updateRouletteUI("last");
+    renderHistory();
+}
+
+function resetCanvasTransform(m) {
+    state[m].rotation = 0;
+    state[m].spinning = false;
+    const canvas = document.getElementById(m === "first" ? "wheelFirst" : "wheelLast");
+    if(canvas) {
+        canvas.style.transition = "none";
+        canvas.style.transform = "rotate(0deg)";
     }
-
-    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
-    canvas.style.transition = "none";
-    canvas.style.transform = "rotate(0deg)";
-
-    renderParticipants(mode);
-    drawWheel(mode);
-    updateRouletteUI(mode);
 }
 
 function resetWheelOnly(mode) {
-    data[mode].spinning = false;
-    data[mode].rotation = 0;
-    data[mode].active = data[mode].participants.map(p => p.id);
+    state[mode].spinning = false;
+    state[mode].rotation = 0;
+    state[mode].active = state.participants.map(p => p.id);
 
     if (mode === "last") {
-        data.last.eliminated = [];
+        state.last.eliminated = [];
         renderHistory();
     }
 
-    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
-    canvas.style.transition = "none";
-    canvas.style.transform = "rotate(0deg)";
-
+    resetCanvasTransform(mode);
     renderParticipants(mode);
     drawWheel(mode);
     updateRouletteUI(mode);
@@ -882,17 +887,20 @@ function resetWheelOnly(mode) {
 }
 
 function resetWheelFromZero(mode) {
-    document.getElementById(mode + "Min").value = 1;
-    document.getElementById(mode + "Max").value = 20;
+    document.getElementById("firstMin").value = 1;
+    document.getElementById("firstMax").value = 20;
+    document.getElementById("lastMin").value = 1;
+    document.getElementById("lastMax").value = 20;
     autoGenerate(mode);
     document.getElementById(mode + "Status").innerHTML = "⚠️ Ruleta reiniciada desde 0.";
 }
 
 function renderParticipants(mode){
     const container = document.getElementById(mode + "People");
+    if(!container) return;
     container.innerHTML = "";
 
-    data[mode].participants.forEach(p => {
+    state.participants.forEach(p => {
         const row = document.createElement("div");
         row.className = "person";
         row.innerHTML = `
@@ -903,20 +911,41 @@ function renderParticipants(mode){
         const input = row.querySelector("input");
         input.addEventListener("input", function(){
             p.text = this.value;
-            drawWheel(mode);
+            // Sincronizar inputs del otro modo si está visible
+            syncParticipantTexts(p.id, this.value);
+            drawWheel("first");
+            drawWheel("last");
         });
 
         container.appendChild(row);
     });
 }
 
+function syncParticipantTexts(id, text) {
+    ["firstPeople", "lastPeople"].forEach(containerId => {
+        const container = document.getElementById(containerId);
+        if(!container) return;
+        const rows = container.querySelectorAll(".person");
+        rows.forEach(row => {
+            const num = row.querySelector(".number").textContent;
+            if(parseInt(num) === id) {
+                const input = row.querySelector("input");
+                if(input && input.value !== text) {
+                    input.value = text;
+                }
+            }
+        });
+    });
+}
+
 function drawWheel(mode){
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
+    if(!canvas) return;
     const ctx = canvas.getContext("2d");
     const size = 900;
     const center = 450;
     const radius = 410;
-    const active = data[mode].active;
+    const active = state[mode].active;
 
     ctx.clearRect(0, 0, size, size);
 
@@ -950,7 +979,7 @@ function drawWheel(mode){
         ctx.stroke();
 
         if(active.length <= 60){
-            const participant = data[mode].participants.find(p => p.id === id);
+            const participant = state.participants.find(p => p.id === id);
             let text = participant?.text || String(id);
 
             if(text.length > 17){
@@ -978,11 +1007,14 @@ function drawWheel(mode){
 }
 
 function updateRouletteUI(mode){
-    const active = data[mode].active.length;
-    document.getElementById(mode + "Badge").textContent = active + " activos";
+    const active = state[mode].active.length;
+    const badge = document.getElementById(mode + "Badge");
+    if(badge) badge.textContent = active + " activos";
 
     const button = document.getElementById(mode + "Spin");
-    button.disabled = data[mode].spinning || active === 0;
+    if(!button) return;
+
+    button.disabled = state[mode].spinning || active === 0;
 
     if(mode === "first"){
         button.textContent = "🎯 GIRAR PARA ELEGIR GANADOR";
@@ -992,46 +1024,47 @@ function updateRouletteUI(mode){
 }
 
 function spinRoulette(mode){
-    const state = data[mode];
+    const modeState = state[mode];
 
-    if(state.spinning || state.active.length === 0) return;
+    if(modeState.spinning || modeState.active.length === 0) return;
 
-    if(mode === "last" && state.active.length === 1){
-        const winner = state.participants.find(p => p.id === state.active[0]);
+    if(mode === "last" && modeState.active.length === 1){
+        const winner = state.participants.find(p => p.id === modeState.active[0]);
         showWinner(winner);
         return;
     }
 
-    state.spinning = true;
+    modeState.spinning = true;
     updateRouletteUI(mode);
 
-    const index = randomNumber(state.active.length);
-    const id = state.active[index];
+    const index = randomNumber(modeState.active.length);
+    const id = modeState.active[index];
     const participant = state.participants.find(p => p.id === id);
-    const slice = 360 / state.active.length;
+    const slice = 360 / modeState.active.length;
 
     const centerAngle = index * slice + slice / 2;
     const rotation = 360 * 7 + (360 - centerAngle);
 
-    state.rotation += rotation;
+    modeState.rotation += rotation;
 
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     canvas.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
-    canvas.style.transform = `rotate(${state.rotation}deg)`;
+    canvas.style.transform = `rotate(${modeState.rotation}deg)`;
 
     document.getElementById(mode + "Status").innerHTML = "🎡 Girando…";
 
     setTimeout(() => {
-        state.spinning = false;
+        modeState.spinning = false;
 
         if(mode === "first"){
             document.getElementById("firstStatus").innerHTML = `Ganador: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
             showWinner(participant);
+            updateRouletteUI(mode);
             return;
         }
 
-        state.active = state.active.filter(value => value !== id);
-        state.eliminated.push(id);
+        modeState.active = modeState.active.filter(value => value !== id);
+        modeState.eliminated.push(id);
 
         document.getElementById("lastStatus").innerHTML = `❌ Eliminado: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
 
@@ -1042,9 +1075,9 @@ function spinRoulette(mode){
 
         showEliminated(participant);
 
-        if(state.active.length === 1){
+        if(modeState.active.length === 1){
             setTimeout(() => {
-                const winner = state.participants.find(p => p.id === state.active[0]);
+                const winner = state.participants.find(p => p.id === modeState.active[0]);
                 showWinner(winner);
             }, 1200);
         }
@@ -1053,7 +1086,8 @@ function spinRoulette(mode){
 
 function renderHistory(){
     const container = document.getElementById("lastHistory");
-    const eliminated = data.last.eliminated;
+    if(!container) return;
+    const eliminated = state.last.eliminated;
 
     if(eliminated.length === 0){
         container.innerHTML = `<div style="padding:4px; color:#678b99; font-size:10px;">Sin eliminados.</div>`;
@@ -1063,7 +1097,7 @@ function renderHistory(){
     container.innerHTML = "";
 
     [...eliminated].reverse().forEach(id => {
-        const participant = data.last.participants.find(p => p.id === id);
+        const participant = state.participants.find(p => p.id === id);
         const row = document.createElement("div");
         row.className = "history-item";
         row.innerHTML = `
@@ -1077,12 +1111,12 @@ function renderHistory(){
 }
 
 function undoLast(){
-    const state = data.last;
-    if(state.spinning || state.eliminated.length === 0) return;
+    const modeState = state.last;
+    if(modeState.spinning || modeState.eliminated.length === 0) return;
 
-    const id = state.eliminated.pop();
-    state.active.push(id);
-    state.active.sort((a, b) => a - b);
+    const id = modeState.eliminated.pop();
+    modeState.active.push(id);
+    modeState.active.sort((a, b) => a - b);
 
     renderParticipants("last");
     drawWheel("last");
@@ -1093,15 +1127,19 @@ function undoLast(){
 }
 
 function clearNames(mode){
-    data[mode].participants.forEach(p => p.text = "");
-    renderParticipants(mode);
-    drawWheel(mode);
+    state.participants.forEach(p => p.text = "");
+    renderParticipants("first");
+    renderParticipants("last");
+    drawWheel("first");
+    drawWheel("last");
 }
 
 function restoreNumbers(mode){
-    data[mode].participants.forEach(p => p.text = String(p.id));
-    renderParticipants(mode);
-    drawWheel(mode);
+    state.participants.forEach(p => p.text = String(p.id));
+    renderParticipants("first");
+    renderParticipants("last");
+    drawWheel("first");
+    drawWheel("last");
 }
 
 function showWinner(participant){
@@ -1149,6 +1187,7 @@ function closeVictory(){
 
 function createConfetti(){
     const container = document.getElementById("confetti");
+    if(!container) return;
     container.innerHTML = "";
     const colors = ["#20c4df", "#ffffff", "#07527f", "#ffd54d"];
 
@@ -1165,17 +1204,23 @@ function createConfetti(){
     setTimeout(() => { container.innerHTML = ""; }, 3500);
 }
 
+// Cambio de pestañas sin borrar datos
 document.querySelectorAll(".tab").forEach(button => {
     button.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
         document.querySelectorAll(".mode").forEach(m => m.classList.remove("active"));
         button.classList.add("active");
-        document.getElementById(button.dataset.mode).classList.add("active");
+        
+        const targetMode = button.dataset.mode;
+        document.getElementById(targetMode).classList.add("active");
+        
+        // Re-renderizar ruleta para asegurar ajuste al layout
+        drawWheel(targetMode);
     });
 });
 
+// Inicialización
 autoGenerate("first");
-autoGenerate("last");
 </script>
 
 </body>
