@@ -36,7 +36,7 @@ body {
 header {
   background: rgba(255, 255, 255, 0.95);
   border-bottom: 4px solid var(--celeste);
-  padding: 10px 16px;
+  padding: 8px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -53,13 +53,13 @@ header {
 }
 
 .logo-title img {
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
 }
 
 .title {
-  font-size: clamp(16px, 4vw, 28px);
+  font-size: clamp(14px, 3vw, 24px);
   font-weight: 900;
   color: var(--azul-oscuro);
   line-height: 1.2;
@@ -69,13 +69,13 @@ header {
   margin-top: 2px;
   color: #43839b;
   font-weight: bold;
-  font-size: clamp(11px, 2.8vw, 14px);
+  font-size: clamp(10px, 2vw, 13px);
 }
 
 .flag {
-  font-size: 22px;
+  font-size: 18px;
   background: var(--celeste-claro);
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 50px;
   flex-shrink: 0;
 }
@@ -84,14 +84,14 @@ header {
 .container {
   max-width: 1450px;
   margin: auto;
-  padding: 12px;
+  padding: 8px 12px;
 }
 
 /* PESTAÑAS Y MODOS */
 .tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .tab {
@@ -100,10 +100,10 @@ header {
   border: 2px solid #bce9f0;
   background: white;
   color: var(--azul);
-  padding: 10px 8px;
+  padding: 8px 6px;
   border-radius: 20px;
   font-weight: 900;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: 0.2s;
 }
@@ -127,20 +127,21 @@ header {
 .layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 
 .card {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid #b9e9f1;
-  border-radius: 20px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 12px;
   box-shadow: 0 10px 30px rgba(7, 82, 127, 0.08);
 }
 
 .card h2 {
   margin-top: 0;
-  font-size: 18px;
+  margin-bottom: 8px;
+  font-size: 16px;
   color: var(--azul-oscuro);
 }
 
@@ -148,7 +149,7 @@ header {
 .controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
 }
 
 .full-width {
@@ -157,41 +158,41 @@ header {
 
 label {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 900;
   color: #47788c;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 input {
   width: 100%;
-  padding: 10px;
+  padding: 6px;
   border: 2px solid #d7eef3;
-  border-radius: 10px;
+  border-radius: 8px;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
   background: white;
 }
 
 /* BOTONES ADAPTABLES */
 .actions {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 6px;
+  margin-top: 8px;
   flex-wrap: wrap;
 }
 
 .actions .btn {
   flex: 1;
-  min-width: 120px;
+  min-width: 100px;
 }
 
 .btn {
   border: 0;
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 8px;
+  padding: 8px 10px;
   font-weight: 900;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: 0.18s;
   text-align: center;
@@ -201,14 +202,14 @@ input {
 
 .spin-button {
   width: 100%;
-  padding: 14px;
-  font-size: 15px;
+  padding: 10px;
+  font-size: 14px;
 }
 
 .primary {
   background: linear-gradient(135deg, #18c1de, #08719d);
   color: white;
-  box-shadow: 0 6px 14px rgba(8, 113, 157, 0.25);
+  box-shadow: 0 4px 10px rgba(8, 113, 157, 0.25);
 }
 
 .soft {
@@ -224,9 +225,14 @@ input {
 }
 
 .reset-controls {
-  margin-top: 12px;
+  margin-top: 8px;
   display: flex;
-  gap: 8px;
+  gap: 6px;
+}
+
+.reset-controls .btn {
+  font-size: 11px;
+  padding: 6px;
 }
 
 /* PARTICIPANTES Y LISTAS */
@@ -234,32 +240,32 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
-  margin-bottom: 8px;
+  margin-top: 10px;
+  margin-bottom: 6px;
 }
 
 .badge {
   background: #e3faff;
   border: 1px solid #b9e9f1;
   border-radius: 50px;
-  padding: 4px 10px;
-  font-size: 11px;
+  padding: 2px 8px;
+  font-size: 10px;
   font-weight: 900;
   color: #12617e;
   display: inline-block;
 }
 
 .people {
-  max-height: 250px;
+  max-height: 200px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .person {
   display: grid;
-  grid-template-columns: 40px 1fr;
+  grid-template-columns: 35px 1fr;
   gap: 6px;
 }
 
@@ -268,22 +274,24 @@ input {
   place-items: center;
   background: linear-gradient(135deg, #d9f8fd, white);
   border: 1px solid #b9e9f1;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 900;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--azul);
 }
 
 /* RULETA ADAPTABLE */
 .wheel-area {
   text-align: center;
+  position: relative;
 }
 
 .wheel-box {
   position: relative;
-  width: min(82vw, 420px);
+  width: min(65vw, 280px);
+  max-height: 52vh;
   aspect-ratio: 1;
-  margin: 10px auto 15px;
+  margin: 5px auto 10px;
 }
 
 #wheelFirst,
@@ -293,7 +301,7 @@ input {
   display: block;
   border-radius: 50%;
   transition: transform 5.5s cubic-bezier(0.08, 0.82, 0.13, 1);
-  filter: drop-shadow(0 10px 18px rgba(7, 82, 127, 0.2));
+  filter: drop-shadow(0 6px 12px rgba(7, 82, 127, 0.2));
 }
 
 .pointer {
@@ -304,10 +312,10 @@ input {
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  border-top: 30px solid var(--azul-oscuro);
-  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.25));
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 22px solid var(--azul-oscuro);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
 }
 
 .wheel-center {
@@ -316,59 +324,77 @@ input {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 52px;
-  height: 52px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: white;
-  border: 5px solid var(--azul);
+  border: 4px solid var(--azul);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .wheel-center::after {
   content: "";
   position: absolute;
-  inset: 8px;
+  inset: 6px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--celeste), white);
 }
 
-/* RESULTADOS e HISTORIAL */
+/* RESULTADOS E HISTORIAL DE ELIMINADOS EN ESQUINA */
 .status {
-  margin: 10px auto;
-  padding: 10px;
-  border-radius: 10px;
+  margin: 8px auto;
+  padding: 6px 10px;
+  border-radius: 8px;
   background: var(--celeste-claro);
   border: 1px solid #b9e9f1;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 11px;
+}
+
+.history {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 160px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #b9e9f1;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.history h2 {
+  font-size: 11px !important;
+  margin-bottom: 4px;
 }
 
 .history-list {
-  max-height: 150px;
+  max-height: 80px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .history-item {
-  padding: 8px 10px;
-  border-left: 4px solid var(--celeste);
-  background: #f4fcfe;
-  border-radius: 8px;
+  padding: 4px 6px;
+  border-left: 3px solid var(--rojo);
+  background: #fff0f2;
+  border-radius: 4px;
   display: flex;
   justify-content: space-between;
-  gap: 8px;
-  font-size: 12px;
+  gap: 4px;
+  font-size: 10px;
 }
 
-/* MODAL DE VICTORIA Y ELIMINACIÓN */
+/* MODAL DE VICTORIA Y ELIMINACIÓN - MODIFICADO */
 .overlay {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(6, 54, 83, 0.68);
+  background: rgba(6, 54, 83, 0.75);
   backdrop-filter: blur(8px);
   place-items: center;
   padding: 16px;
@@ -379,13 +405,13 @@ input {
 }
 
 .victory {
-  width: min(90vw, 420px);
+  width: min(92vw, 480px); /* Aumentado de 360px a 480px */
   background: white;
   border: 3px solid #5bd5e3;
   border-radius: 20px;
   padding: 20px 16px;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 
 .victory.eliminated-modal {
@@ -394,11 +420,13 @@ input {
 
 .victory-gif-container {
   width: 100%;
-  max-width: 280px;
-  height: 220px;
+  max-width: 380px; /* Aumentado el ancho máximo */
+  height: 240px;    /* Aumentada la altura del contenedor del GIF */
   margin: 0 auto 12px;
   border-radius: 12px;
   overflow: hidden;
+  background: #000;
+  position: relative;
 }
 
 .victory-gif-container iframe {
@@ -406,6 +434,8 @@ input {
   height: 100%;
   border: 0;
   pointer-events: none;
+  object-fit: cover;
+  transform: scale(1.15); /* Elimina bordes o márgenes negros del GIF */
 }
 
 .victory h2 {
@@ -419,13 +449,13 @@ input {
 }
 
 .winner-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 1000;
   color: var(--azul-oscuro);
-  margin: 12px 0 18px 0;
+  margin: 10px 0 14px 0;
   padding: 10px;
   background: #e8fbff;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 2px dashed #65d9e7;
 }
 
@@ -439,8 +469,8 @@ input {
 .credit {
   position: static;
   text-align: center;
-  margin: 20px 0 10px;
-  font-size: 11px;
+  margin: 10px 0 5px;
+  font-size: 10px;
   font-weight: 900;
   color: #54798b;
 }
@@ -451,43 +481,80 @@ input {
   cursor: pointer;
 }
 
-.credit a:hover {
-  color: var(--celeste);
+/* MEDIA QUERIES PARA ADAPTACIÓN HORIZONTAL (LANDSCAPE) */
+@media (orientation: landscape) {
+  .layout {
+    grid-template-columns: 280px 1fr;
+    gap: 12px;
+  }
+
+  .wheel-box {
+    width: min(40vw, 300px);
+    max-height: 55vh;
+  }
+
+  .people {
+    max-height: 22vh;
+  }
+
+  .history {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 140px;
+  }
 }
 
+/* DISPOSITIVOS DE PANTALLA ANCHA (DESKTOP) */
 @media (min-width: 900px) {
   .layout {
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 360px 1fr;
     gap: 20px;
   }
   
   .container {
-    padding: 25px;
+    padding: 16px;
   }
   
   .logo-title img {
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
   }
   
   .people {
-    max-height: 480px;
+    max-height: 380px;
   }
   
   .wheel-box {
-    width: min(68vw, 620px);
+    width: min(50vw, 480px);
+    max-height: none;
+  }
+
+  .history {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: none;
+  }
+
+  .history h2 {
+    font-size: 15px !important;
+  }
+
+  .history-list {
+    max-height: 120px;
   }
   
   .pointer {
-    border-left-width: 24px;
-    border-right-width: 24px;
-    border-top-width: 45px;
+    border-left-width: 18px;
+    border-right-width: 18px;
+    border-top-width: 32px;
   }
   
   .wheel-center {
-    width: 78px;
-    height: 78px;
-    border-width: 8px;
+    width: 60px;
+    height: 60px;
+    border-width: 6px;
   }
   
   .credit {
@@ -498,7 +565,7 @@ input {
     background: white;
     border: 1px solid #b9e9f1;
     border-radius: 50px;
-    padding: 7px 12px;
+    padding: 6px 12px;
   }
 }
 </style>
@@ -549,7 +616,7 @@ input {
                 </div>
 
                 <div class="participants-header">
-                    <h2 style="font-size:17px">👥 Participantes</h2>
+                    <h2 style="font-size:15px">👥 Participantes</h2>
                 </div>
 
                 <div id="firstPeople" class="people"></div>
@@ -571,10 +638,10 @@ input {
 
                     <div class="reset-controls">
                         <button class="btn danger" onclick="resetWheelOnly('first')">
-                            🔄 Reiniciar ruleta con participantes
+                            🔄 Reiniciar ruleta
                         </button>
                         <button class="btn danger" onclick="resetWheelFromZero('first')">
-                            ⚠️ Reiniciar ruleta de 0
+                            ⚠️ Reiniciar de 0
                         </button>
                     </div>
 
@@ -611,18 +678,10 @@ input {
                 </div>
 
                 <div class="participants-header">
-                    <h2 style="font-size:17px">👥 Participantes</h2>
+                    <h2 style="font-size:15px">👥 Participantes</h2>
                 </div>
 
                 <div id="lastPeople" class="people"></div>
-
-                <div class="history" style="margin-top: 15px;">
-                    <h2 style="font-size:17px">📋 Eliminados</h2>
-                    <div id="lastHistory" class="history-list"></div>
-                    <div class="actions">
-                        <button class="btn soft" onclick="undoLast()">↩️ Deshacer</button>
-                    </div>
-                </div>
             </div>
 
             <div class="card">
@@ -635,21 +694,29 @@ input {
                         <div class="wheel-center"></div>
                     </div>
 
+                    <div class="history">
+                        <h2>📋 Eliminados</h2>
+                        <div id="lastHistory" class="history-list"></div>
+                        <div class="actions" style="margin-top:4px;">
+                            <button class="btn soft" style="font-size:10px; padding:3px;" onclick="undoLast()">↩️ Deshacer</button>
+                        </div>
+                    </div>
+
                     <button id="lastSpin" class="btn primary spin-button" onclick="spinRoulette('last')">
                         🎯 GIRAR Y ELIMINAR
                     </button>
 
                     <div class="reset-controls">
                         <button class="btn danger" onclick="resetWheelOnly('last')">
-                            🔄 Reiniciar ruleta con participantes
+                            🔄 Reiniciar ruleta
                         </button>
                         <button class="btn danger" onclick="resetWheelFromZero('last')">
-                            ⚠️ Reiniciar ruleta de 0
+                            ⚠️ Reiniciar de 0
                         </button>
                     </div>
 
                     <div id="lastStatus" class="status">
-                        Cada giro elimina un participante. <strong>El último que quede gana.</strong>
+                        Cada giro elimina un participante. <strong>El último gana.</strong>
                     </div>
                 </div>
             </div>
@@ -943,7 +1010,6 @@ function spinRoulette(mode){
         updateRouletteUI(mode);
         renderHistory();
 
-        // Mostrar cartel de eliminado
         showEliminated(participant);
 
         if(state.active.length === 1){
@@ -960,7 +1026,7 @@ function renderHistory(){
     const eliminated = data.last.eliminated;
 
     if(eliminated.length === 0){
-        container.innerHTML = `<div style="padding:8px; color:#678b99">Todavía no hay eliminados.</div>`;
+        container.innerHTML = `<div style="padding:4px; color:#678b99; font-size:10px;">Sin eliminados.</div>`;
         return;
     }
 
@@ -974,7 +1040,7 @@ function renderHistory(){
             <span>
                 <strong>Nº ${id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}
             </span>
-            <b>ELIMINADO</b>
+            <b>❌</b>
         `;
         container.appendChild(row);
     });
@@ -1022,7 +1088,7 @@ function showWinner(participant){
     winnerName.classList.remove("eliminated-box");
 
     modalTitle.innerHTML = "¡TENEMOS GANADOR!";
-    winnerName.innerHTML = `Nº ${participant.id}<br><small style="font-size:18px; font-weight:normal; color:#47788c;">${escapeHTML(participant.text || "Sin texto")}</small>`;
+    winnerName.innerHTML = `Nº ${participant.id}<br><small style="font-size:14px; font-weight:normal; color:#47788c;">${escapeHTML(participant.text || "Sin texto")}</small>`;
     
     document.getElementById("victoryOverlay").classList.add("show");
     createConfetti();
@@ -1042,7 +1108,7 @@ function showEliminated(participant){
     winnerName.classList.add("eliminated-box");
 
     modalTitle.innerHTML = "❌ ELIMINADO";
-    winnerName.innerHTML = `Nº ${participant.id}<br><small style="font-size:18px; font-weight:normal;">${escapeHTML(participant.text || "Sin texto")}</small>`;
+    winnerName.innerHTML = `Nº ${participant.id}<br><small style="font-size:14px; font-weight:normal;">${escapeHTML(participant.text || "Sin texto")}</small>`;
     
     document.getElementById("victoryOverlay").classList.add("show");
 }
