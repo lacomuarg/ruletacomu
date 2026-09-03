@@ -17,6 +17,7 @@
   --gris: #587786;
   --rojo: #d94157;
   --amarillo: #ffd54d;
+  --wheel-max-width: 440px;
 }
 
 * {
@@ -32,7 +33,6 @@ body {
   min-height: 100vh;
 }
 
-/* HEADER RESPONSIVO */
 header {
   background: rgba(255, 255, 255, 0.95);
   border-bottom: 4px solid var(--celeste);
@@ -80,14 +80,12 @@ header {
   flex-shrink: 0;
 }
 
-/* CONTENEDOR PRINCIPAL */
 .container {
   max-width: 1450px;
   margin: auto;
   padding: 8px 12px;
 }
 
-/* PESTAÑAS Y MODOS */
 .tabs {
   display: flex;
   gap: 8px;
@@ -123,11 +121,18 @@ header {
   display: block;
 }
 
-/* GRID PRINCIPAL */
 .layout {
   display: flex;
-  flex-direction: column-reverse; /* La ruleta queda arriba en móviles si se desea, o abajo según preferencia */
+  flex-direction: column-reverse;
   gap: 12px;
+}
+
+.layout.hide-participants {
+  display: block;
+}
+
+.layout.hide-participants .card-participants {
+  display: none;
 }
 
 .card {
@@ -145,7 +150,6 @@ header {
   color: var(--azul-oscuro);
 }
 
-/* FORMULARIOS Y CONTROLES */
 .controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -164,7 +168,7 @@ label {
   margin-bottom: 2px;
 }
 
-input {
+input, select {
   width: 100%;
   padding: 6px;
   border: 2px solid #d7eef3;
@@ -174,7 +178,6 @@ input {
   background: white;
 }
 
-/* BOTONES ADAPTABLES */
 .actions {
   display: flex;
   gap: 6px;
@@ -235,7 +238,6 @@ input {
   padding: 6px;
 }
 
-/* PARTICIPANTES Y LISTAS */
 .participants-header {
   display: flex;
   justify-content: space-between;
@@ -280,7 +282,6 @@ input {
   color: var(--azul);
 }
 
-/* RULETA ADAPTABLE Y MÁS GRANDE EN MÓVILES */
 .wheel-area {
   text-align: center;
   position: relative;
@@ -291,10 +292,11 @@ input {
 
 .wheel-box {
   position: relative;
-  width: min(88vw, 380px); /* Ruleta más grande en celulares */
+  width: min(88vw, var(--wheel-max-width));
   aspect-ratio: 1;
   margin: 10px auto 15px;
   flex-shrink: 0;
+  transition: width 0.3s ease;
 }
 
 #wheelFirst,
@@ -305,6 +307,7 @@ input {
   border-radius: 50%;
   transition: transform 5.5s cubic-bezier(0.08, 0.82, 0.13, 1);
   filter: drop-shadow(0 6px 12px rgba(7, 82, 127, 0.2));
+  cursor: pointer;
 }
 
 .pointer {
@@ -319,11 +322,12 @@ input {
   border-right: 14px solid transparent;
   border-top: 24px solid var(--azul-oscuro);
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+  pointer-events: none;
 }
 
 .wheel-center {
   position: absolute;
-  z-index: 4;
+  z-index: 6;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -333,6 +337,12 @@ input {
   background: white;
   border: 4px solid var(--azul);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.wheel-center:hover {
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
 .wheel-center::after {
@@ -343,7 +353,6 @@ input {
   background: linear-gradient(135deg, var(--celeste), white);
 }
 
-/* RESULTADOS E HISTORIAL DE ELIMINADOS */
 .status {
   width: 100%;
   margin: 8px auto;
@@ -392,7 +401,6 @@ input {
   font-size: 10px;
 }
 
-/* MODAL DE VICTORIA Y ELIMINACIÓN */
 .overlay {
   display: none;
   position: fixed;
@@ -473,7 +481,6 @@ input {
   color: #bd3047;
 }
 
-/* CREDITOS */
 .credit {
   position: static;
   text-align: center;
@@ -489,25 +496,16 @@ input {
   cursor: pointer;
 }
 
-/* MEDIA QUERIES PARA ADAPTACIÓN HORIZONTAL (LANDSCAPE CELULAR / TABLET) */
 @media (orientation: landscape) and (max-height: 600px) {
-  .layout {
+  .layout:not(.hide-participants) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     align-items: start;
   }
 
-  /* Ruleta grande y en primera fila/columna izquierda en Landscape */
-  .layout > .card:nth-child(2) {
+  .layout:not(.hide-participants) > .card:nth-child(2) {
     order: -1;
-  }
-
-  .wheel-box {
-    width: min(45vw, 300px);
-    max-height: none;
-    aspect-ratio: 1;
-    margin: 5px auto;
   }
 
   .people {
@@ -519,9 +517,8 @@ input {
   }
 }
 
-/* DISPOSITIVOS DE PANTALLA ANCHA (DESKTOP Y TABLET VERTICAL GRANDE) */
 @media (min-width: 850px) {
-  .layout {
+  .layout:not(.hide-participants) {
     display: grid;
     grid-template-columns: 360px 1fr;
     gap: 20px;
@@ -538,11 +535,6 @@ input {
   
   .people {
     max-height: 380px;
-  }
-  
-  .wheel-box {
-    width: min(50vw, 440px);
-    max-height: none;
   }
 
   .history {
@@ -607,8 +599,8 @@ input {
     </div>
 
     <section id="first" class="mode active">
-        <div class="layout">
-            <div class="card">
+        <div class="layout" id="layoutFirst">
+            <div class="card card-participants">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
                     <div>
@@ -619,13 +611,23 @@ input {
                         <label>Hasta Nº</label>
                         <input id="firstMax" type="number" value="20" oninput="autoGenerate('first')">
                     </div>
-                    <div class="full-width">
+                    <div>
+                        <label>Tamaño Ruleta</label>
+                        <select id="firstWheelSize" onchange="changeWheelSize(this.value)">
+                            <option value="320px">Pequeño</option>
+                            <option value="440px" selected>Normal</option>
+                            <option value="580px">Grande</option>
+                            <option value="720px">Gigante</option>
+                        </select>
+                    </div>
+                    <div>
                         <label>Estado</label>
                         <span id="firstBadge" class="badge">0 activos</span>
                     </div>
                 </div>
 
                 <div class="actions">
+                    <button class="btn soft" onclick="toggleParticipants('first')">👁️ Ocultar participantes</button>
                     <button class="btn soft" onclick="clearNames('first')">Limpiar</button>
                     <button class="btn soft" onclick="restoreNumbers('first')">Restaurar números</button>
                 </div>
@@ -639,12 +641,15 @@ input {
 
             <div class="card">
                 <div class="wheel-area">
-                    <h2>🥇 Primer número que sale</h2>
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <h2>🥇 Primer número que sale</h2>
+                        <button class="btn soft" id="btnShowFirst" style="display:none;" onclick="toggleParticipants('first')">👁️ Mostrar participantes</button>
+                    </div>
 
                     <div class="wheel-box">
                         <div class="pointer"></div>
-                        <canvas id="wheelFirst" width="900" height="900"></canvas>
-                        <div class="wheel-center"></div>
+                        <canvas id="wheelFirst" width="900" height="900" onclick="spinRoulette('first')"></canvas>
+                        <div class="wheel-center" onclick="spinRoulette('first')"></div>
                     </div>
 
                     <button id="firstSpin" class="btn primary spin-button" onclick="spinRoulette('first')">
@@ -669,8 +674,8 @@ input {
     </section>
 
     <section id="last" class="mode">
-        <div class="layout">
-            <div class="card">
+        <div class="layout" id="layoutLast">
+            <div class="card card-participants">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
                     <div>
@@ -681,13 +686,23 @@ input {
                         <label>Hasta Nº</label>
                         <input id="lastMax" type="number" value="20" oninput="autoGenerate('last')">
                     </div>
-                    <div class="full-width">
+                    <div>
+                        <label>Tamaño Ruleta</label>
+                        <select id="lastWheelSize" onchange="changeWheelSize(this.value)">
+                            <option value="320px">Pequeño</option>
+                            <option value="440px" selected>Normal</option>
+                            <option value="580px">Grande</option>
+                            <option value="720px">Gigante</option>
+                        </select>
+                    </div>
+                    <div>
                         <label>Estado</label>
                         <span id="lastBadge" class="badge">0 activos</span>
                     </div>
                 </div>
 
                 <div class="actions">
+                    <button class="btn soft" onclick="toggleParticipants('last')">👁️ Ocultar participantes</button>
                     <button class="btn soft" onclick="clearNames('last')">Limpiar</button>
                     <button class="btn soft" onclick="restoreNumbers('last')">Restaurar números</button>
                 </div>
@@ -701,12 +716,15 @@ input {
 
             <div class="card">
                 <div class="wheel-area">
-                    <h2>🏆 Último número en pie</h2>
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <h2>🏆 Último número en pie</h2>
+                        <button class="btn soft" id="btnShowLast" style="display:none;" onclick="toggleParticipants('last')">👁️ Mostrar participantes</button>
+                    </div>
 
                     <div class="wheel-box">
                         <div class="pointer"></div>
-                        <canvas id="wheelLast" width="900" height="900"></canvas>
-                        <div class="wheel-center"></div>
+                        <canvas id="wheelLast" width="900" height="900" onclick="spinRoulette('last')"></canvas>
+                        <div class="wheel-center" onclick="spinRoulette('last')"></div>
                     </div>
 
                     <button id="lastSpin" class="btn primary spin-button" onclick="spinRoulette('last')">
@@ -763,9 +781,8 @@ input {
 </div>
 
 <script>
-// Estado de la aplicación
 const state = {
-    participants: [], // Mantenemos una única fuente de participantes compartida
+    participants: [],
     first: {
         active: [],
         rotation: 0,
@@ -775,7 +792,8 @@ const state = {
         active: [],
         eliminated: [],
         rotation: 0,
-        spinning: false
+        spinning: false,
+        winnerShown: false
     }
 };
 
@@ -793,6 +811,24 @@ function escapeHTML(text){
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
+}
+
+function changeWheelSize(size) {
+    document.documentElement.style.setProperty('--wheel-max-width', size);
+    document.getElementById("firstWheelSize").value = size;
+    document.getElementById("lastWheelSize").value = size;
+}
+
+function toggleParticipants(mode) {
+    const layout = document.getElementById(mode === "first" ? "layoutFirst" : "layoutLast");
+    const btnShow = document.getElementById(mode === "first" ? "btnShowFirst" : "btnShowLast");
+    
+    layout.classList.toggle("hide-participants");
+    if(layout.classList.contains("hide-participants")){
+        btnShow.style.display = "inline-block";
+    } else {
+        btnShow.style.display = "none";
+    }
 }
 
 function generateRangeParticipants(minVal, maxVal){
@@ -814,7 +850,6 @@ function generateRangeParticipants(minVal, maxVal){
 
     const list = [];
     for (let i = min; i <= max; i++) {
-        // Preservar textos previos si ya existían para el mismo ID
         const existing = state.participants.find(p => p.id === i);
         list.push({ id: i, text: existing ? existing.text : "" });
     }
@@ -841,10 +876,10 @@ function autoGenerate(mode){
 
     state.participants = generateRangeParticipants(minInput, maxInput);
     
-    // Sincronizar listas activas
     state.first.active = state.participants.map(p => p.id);
     state.last.active = state.participants.map(p => p.id);
     state.last.eliminated = [];
+    state.last.winnerShown = false;
 
     resetCanvasTransform("first");
     resetCanvasTransform("last");
@@ -875,6 +910,7 @@ function resetWheelOnly(mode) {
 
     if (mode === "last") {
         state.last.eliminated = [];
+        state.last.winnerShown = false;
         renderHistory();
     }
 
@@ -911,7 +947,6 @@ function renderParticipants(mode){
         const input = row.querySelector("input");
         input.addEventListener("input", function(){
             p.text = this.value;
-            // Sincronizar inputs del otro modo si está visible
             syncParticipantTexts(p.id, this.value);
             drawWheel("first");
             drawWheel("last");
@@ -975,28 +1010,31 @@ function drawWheel(mode){
         ctx.fill();
 
         ctx.strokeStyle = "#07527f";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = active.length > 80 ? 1 : 3;
         ctx.stroke();
 
-        if(active.length <= 60){
-            const participant = state.participants.find(p => p.id === id);
-            let text = participant?.text || String(id);
+        const participant = state.participants.find(p => p.id === id);
+        let text = participant?.text ? `${id} · ${participant.text}` : String(id);
 
-            if(text.length > 17){
-                text = text.substring(0, 16) + "…";
-            }
+        let maxChars = Math.max(3, Math.floor(250 / active.length));
+        if (active.length > 60) maxChars = Math.max(2, Math.floor(180 / active.length));
 
-            ctx.save();
-            ctx.translate(center, center);
-            ctx.rotate(start + slice / 2);
-            ctx.textAlign = "right";
-            ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
-
-            const fontSize = Math.max(12, Math.min(27, 500 / active.length));
-            ctx.font = `900 ${fontSize}px Arial`;
-            ctx.fillText(id + " · " + text, radius - 14, 8);
-            ctx.restore();
+        if(text.length > maxChars && active.length > 30){
+            text = text.substring(0, Math.max(1, maxChars - 1)) + "…";
         }
+
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(start + slice / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
+
+        let fontSize = Math.max(14, Math.min(38, 750 / active.length));
+        ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+        
+        const textDistance = active.length > 80 ? radius - 8 : radius - 14;
+        ctx.fillText(text, textDistance, fontSize / 3.2);
+        ctx.restore();
     });
 
     ctx.beginPath();
@@ -1040,12 +1078,17 @@ function spinRoulette(mode){
     const index = randomNumber(modeState.active.length);
     const id = modeState.active[index];
     const participant = state.participants.find(p => p.id === id);
-    const slice = 360 / modeState.active.length;
+    
+    // Cálculo preciso del ángulo considerando la rotación previa acumulada
+    const numSlices = modeState.active.length;
+    const sliceAngle = 360 / numSlices;
+    const centerOfSliceDegree = index * sliceAngle + (sliceAngle / 2);
+    const currentModulo = modeState.rotation % 360;
+    const neededDegree = (360 - centerOfSliceDegree - currentModulo + 360) % 360;
+    const extraSpins = 360 * 7;
+    const totalAddedRotation = extraSpins + neededDegree;
 
-    const centerAngle = index * slice + slice / 2;
-    const rotation = 360 * 7 + (360 - centerAngle);
-
-    modeState.rotation += rotation;
+    modeState.rotation += totalAddedRotation;
 
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     canvas.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
@@ -1074,13 +1117,6 @@ function spinRoulette(mode){
         renderHistory();
 
         showEliminated(participant);
-
-        if(modeState.active.length === 1){
-            setTimeout(() => {
-                const winner = state.participants.find(p => p.id === modeState.active[0]);
-                showWinner(winner);
-            }, 1200);
-        }
     }, 5700);
 }
 
@@ -1117,6 +1153,7 @@ function undoLast(){
     const id = modeState.eliminated.pop();
     modeState.active.push(id);
     modeState.active.sort((a, b) => a - b);
+    modeState.winnerShown = false;
 
     renderParticipants("last");
     drawWheel("last");
@@ -1182,7 +1219,22 @@ function showEliminated(participant){
 }
 
 function closeVictory(){
-    document.getElementById("victoryOverlay").classList.remove("show");
+    const overlay = document.getElementById("victoryOverlay");
+    const modalGif = document.getElementById("modalGif");
+
+    overlay.classList.remove("show");
+    modalGif.src = "";
+
+    // Muestra la animación del ganador solo una vez al eliminar al penúltimo
+    if(state.last.active.length === 1 && state.last.eliminated.length > 0 && !state.last.winnerShown){
+        state.last.winnerShown = true;
+        const winner = state.participants.find(p => p.id === state.last.active[0]);
+        if(winner) {
+            setTimeout(() => {
+                showWinner(winner);
+            }, 200);
+        }
+    }
 }
 
 function createConfetti(){
@@ -1204,7 +1256,6 @@ function createConfetti(){
     setTimeout(() => { container.innerHTML = ""; }, 3500);
 }
 
-// Cambio de pestañas sin borrar datos
 document.querySelectorAll(".tab").forEach(button => {
     button.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
@@ -1214,12 +1265,10 @@ document.querySelectorAll(".tab").forEach(button => {
         const targetMode = button.dataset.mode;
         document.getElementById(targetMode).classList.add("active");
         
-        // Re-renderizar ruleta para asegurar ajuste al layout
         drawWheel(targetMode);
     });
 });
 
-// Inicialización
 autoGenerate("first");
 </script>
 
