@@ -284,14 +284,17 @@ input {
 .wheel-area {
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .wheel-box {
   position: relative;
-  width: min(65vw, 280px);
-  max-height: 52vh;
+  width: min(75vw, 280px);
   aspect-ratio: 1;
   margin: 5px auto 10px;
+  flex-shrink: 0;
 }
 
 #wheelFirst,
@@ -340,8 +343,9 @@ input {
   background: linear-gradient(135deg, var(--celeste), white);
 }
 
-/* RESULTADOS E HISTORIAL DE ELIMINADOS EN ESQUINA */
+/* RESULTADOS E HISTORIAL DE ELIMINADOS CORREGIDOS */
 .status {
+  width: 100%;
   margin: 8px auto;
   padding: 6px 10px;
   border-radius: 8px;
@@ -352,16 +356,15 @@ input {
 }
 
 .history {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 160px;
+  position: relative;
+  width: 100%;
+  margin-bottom: 8px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid #b9e9f1;
   border-radius: 10px;
   padding: 6px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  box-shadow: none;
+  z-index: 1;
 }
 
 .history h2 {
@@ -370,7 +373,7 @@ input {
 }
 
 .history-list {
-  max-height: 80px;
+  max-height: 90px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -388,7 +391,7 @@ input {
   font-size: 10px;
 }
 
-/* MODAL DE VICTORIA Y ELIMINACIÓN - MODIFICADO */
+/* MODAL DE VICTORIA Y ELIMINACIÓN CORREGIDO EN LANDSCAPE */
 .overlay {
   display: none;
   position: fixed;
@@ -397,7 +400,8 @@ input {
   background: rgba(6, 54, 83, 0.75);
   backdrop-filter: blur(8px);
   place-items: center;
-  padding: 16px;
+  padding: 12px;
+  overflow-y: auto;
 }
 
 .overlay.show {
@@ -405,13 +409,16 @@ input {
 }
 
 .victory {
-  width: min(92vw, 480px); /* Aumentado de 360px a 480px */
+  width: min(92vw, 440px);
+  max-height: 90vh;
+  overflow-y: auto;
   background: white;
   border: 3px solid #5bd5e3;
   border-radius: 20px;
-  padding: 20px 16px;
+  padding: 16px 12px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  margin: auto;
 }
 
 .victory.eliminated-modal {
@@ -420,9 +427,9 @@ input {
 
 .victory-gif-container {
   width: 100%;
-  max-width: 380px; /* Aumentado el ancho máximo */
-  height: 240px;    /* Aumentada la altura del contenedor del GIF */
-  margin: 0 auto 12px;
+  max-width: 320px;
+  height: 180px;
+  margin: 0 auto 10px;
   border-radius: 12px;
   overflow: hidden;
   background: #000;
@@ -435,13 +442,13 @@ input {
   border: 0;
   pointer-events: none;
   object-fit: cover;
-  transform: scale(1.15); /* Elimina bordes o márgenes negros del GIF */
+  transform: scale(1.15);
 }
 
 .victory h2 {
   margin: 0;
   color: var(--azul);
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .victory.eliminated-modal h2 {
@@ -449,11 +456,11 @@ input {
 }
 
 .winner-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 1000;
   color: var(--azul-oscuro);
-  margin: 10px 0 14px 0;
-  padding: 10px;
+  margin: 8px 0 12px 0;
+  padding: 8px;
   background: #e8fbff;
   border-radius: 10px;
   border: 2px dashed #65d9e7;
@@ -482,26 +489,24 @@ input {
 }
 
 /* MEDIA QUERIES PARA ADAPTACIÓN HORIZONTAL (LANDSCAPE) */
-@media (orientation: landscape) {
+@media (orientation: landscape) and (max-height: 500px) {
   .layout {
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
 
   .wheel-box {
-    width: min(40vw, 300px);
-    max-height: 55vh;
+    width: min(35vw, 220px);
+    max-height: none;
+    aspect-ratio: 1;
   }
 
   .people {
-    max-height: 22vh;
+    max-height: 120px;
   }
 
-  .history {
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    width: 140px;
+  .victory-gif-container {
+    height: 120px;
   }
 }
 
@@ -526,7 +531,7 @@ input {
   }
   
   .wheel-box {
-    width: min(50vw, 480px);
+    width: min(50vw, 440px);
     max-height: none;
   }
 
@@ -534,7 +539,7 @@ input {
     position: relative;
     width: 100%;
     margin-top: 10px;
-    box-shadow: none;
+    margin-bottom: 0;
   }
 
   .history h2 {
@@ -694,6 +699,10 @@ input {
                         <div class="wheel-center"></div>
                     </div>
 
+                    <button id="lastSpin" class="btn primary spin-button" onclick="spinRoulette('last')">
+                        🎯 GIRAR Y ELIMINAR
+                    </button>
+
                     <div class="history">
                         <h2>📋 Eliminados</h2>
                         <div id="lastHistory" class="history-list"></div>
@@ -701,10 +710,6 @@ input {
                             <button class="btn soft" style="font-size:10px; padding:3px;" onclick="undoLast()">↩️ Deshacer</button>
                         </div>
                     </div>
-
-                    <button id="lastSpin" class="btn primary spin-button" onclick="spinRoulette('last')">
-                        🎯 GIRAR Y ELIMINAR
-                    </button>
 
                     <div class="reset-controls">
                         <button class="btn danger" onclick="resetWheelOnly('last')">
