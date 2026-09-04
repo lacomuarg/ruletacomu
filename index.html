@@ -121,12 +121,16 @@ header {
   display: block;
 }
 
-/* Layout de 3 columnas */
+/* Layout por defecto (Mobile Vertical): Ruleta primero */
 .layout-3col {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
+.order-wheel { order: 1; }
+.order-sidebar { order: 2; }
+.order-config { order: 3; }
 
 .layout-3col.hide-participants .card-participants {
   display: none;
@@ -379,6 +383,10 @@ input, select {
   border: 1px solid #b9e9f1;
   font-weight: 800;
   font-size: 11px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .right-sidebar {
@@ -504,6 +512,7 @@ input, select {
 }
 
 .keyboard-shortcuts-card {
+  display: none; /* Oculto en dispositivos táctiles / móviles */
   background: #ffffff;
   border: 1px solid #bce9f1;
   border-left: 4px solid var(--celeste);
@@ -567,14 +576,50 @@ input, select {
   cursor: pointer;
 }
 
-/* Pantallas grandes: 3 columnas (Izquierda: Config, Centro: Ruleta, Derecha: Eliminados / Atajos) */
+/* Modo Horizontal para Celulares y Tablets */
+@media (orientation: landscape) and (max-width: 949px) {
+  .layout-3col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .order-wheel {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .order-sidebar {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .order-config {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+  }
+
+  .wheel-box {
+    width: min(42vh, var(--wheel-max-width));
+  }
+}
+
+/* Pantallas grandes (Escritorio) */
 @media (min-width: 950px) {
+  .keyboard-shortcuts-card {
+    display: block; /* Muestra los atajos solo en escritorio */
+  }
+
   .layout-3col {
     display: grid;
     grid-template-columns: 320px 1fr 300px;
     gap: 16px;
     align-items: start;
   }
+
+  .order-config { order: 1; }
+  .order-wheel { order: 2; }
+  .order-sidebar { order: 3; }
 
   .layout-3col.hide-participants {
     grid-template-columns: 1fr 320px;
@@ -634,11 +679,62 @@ input, select {
         <button class="tab" data-mode="last">🏆 Último número en pie</button>
     </div>
 
-    <!-- MODO 1: PRIMER NÚMERO -->
     <section id="first" class="mode active">
         <div class="layout-3col" id="layoutFirst">
-            <!-- IZQUIERDA: Configuración y Participantes -->
-            <div class="card card-participants">
+            
+            <div class="card order-wheel">
+                <div class="wheel-area">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <h2>🥇 Primer número que sale</h2>
+                        <button class="btn soft" id="btnShowFirst" style="display:none;" onclick="toggleParticipants('first')">👁️ Mostrar participantes</button>
+                    </div>
+
+                    <div class="wheel-box">
+                        <div class="pointer"></div>
+                        <canvas id="wheelFirst" width="900" height="900" onclick="spinRoulette('first')"></canvas>
+                        <div class="wheel-center" onclick="spinRoulette('first')"></div>
+                    </div>
+
+                    <button id="firstSpin" class="btn primary spin-button" onclick="spinRoulette('first')">
+                        🎯 GIRAR PARA ELEGIR GANADOR
+                    </button>
+
+                    <div class="reset-controls">
+                        <button class="btn danger" onclick="resetWheelOnly('first')">
+                            🔄 Reiniciar ruleta
+                        </button>
+                        <button class="btn danger" onclick="resetWheelFromZero('first')">
+                            ⚠️ Reiniciar de 0
+                        </button>
+                    </div>
+
+                    <div id="firstStatus" class="status">
+                        Preparado. <strong>¡Mucha suerte!</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-sidebar order-sidebar">
+                <div class="keyboard-shortcuts-card">
+                    <div class="shortcuts-title">⌨️ Atajos de teclado</div>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item">
+                            <kbd>Espacio</kbd>
+                            <span>Girar / Cerrar cartel</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>R</kbd>
+                            <span>Reiniciar ruleta</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>O</kbd>
+                            <span>Ocultar / Mostrar lista</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-participants order-config">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
                     <div>
@@ -677,41 +773,53 @@ input, select {
                 <div id="firstPeople" class="people"></div>
             </div>
 
-            <!-- CENTRO: Ruleta -->
-            <div class="card">
+        </div>
+    </section>
+
+    <section id="last" class="mode">
+        <div class="layout-3col" id="layoutLast">
+            
+            <div class="card order-wheel">
                 <div class="wheel-area">
                     <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                        <h2>🥇 Primer número que sale</h2>
-                        <button class="btn soft" id="btnShowFirst" style="display:none;" onclick="toggleParticipants('first')">👁️ Mostrar participantes</button>
+                        <h2>🏆 Último número en pie</h2>
+                        <button class="btn soft" id="btnShowLast" style="display:none;" onclick="toggleParticipants('last')">👁️ Mostrar participantes</button>
                     </div>
 
                     <div class="wheel-box">
                         <div class="pointer"></div>
-                        <canvas id="wheelFirst" width="900" height="900" onclick="spinRoulette('first')"></canvas>
-                        <div class="wheel-center" onclick="spinRoulette('first')"></div>
+                        <canvas id="wheelLast" width="900" height="900" onclick="spinRoulette('last')"></canvas>
+                        <div class="wheel-center" onclick="spinRoulette('last')"></div>
                     </div>
 
-                    <button id="firstSpin" class="btn primary spin-button" onclick="spinRoulette('first')">
-                        🎯 GIRAR PARA ELEGIR GANADOR
+                    <button id="lastSpin" class="btn primary spin-button" onclick="spinRoulette('last')">
+                        🎯 GIRAR Y ELIMINAR
                     </button>
 
                     <div class="reset-controls">
-                        <button class="btn danger" onclick="resetWheelOnly('first')">
+                        <button class="btn danger" onclick="resetWheelOnly('last')">
                             🔄 Reiniciar ruleta
                         </button>
-                        <button class="btn danger" onclick="resetWheelFromZero('first')">
+                        <button class="btn danger" onclick="resetWheelFromZero('last')">
                             ⚠️ Reiniciar de 0
                         </button>
                     </div>
 
-                    <div id="firstStatus" class="status">
-                        Preparado. <strong>¡Mucha suerte!</strong>
+                    <div id="lastStatus" class="status">
+                        Cada giro elimina un participante. <strong>El último gana.</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- DERECHA: Atajos / Comandos -->
-            <div class="right-sidebar">
+            <div class="right-sidebar order-sidebar">
+                <div class="history">
+                    <h2>📋 Eliminados</h2>
+                    <div id="lastHistory" class="history-list"></div>
+                    <div class="actions" style="margin-top:8px;">
+                        <button class="btn soft" style="font-size:11px; padding:6px; width:100%;" onclick="undoLast()">↩️ Deshacer último eliminado</button>
+                    </div>
+                </div>
+
                 <div class="keyboard-shortcuts-card">
                     <div class="shortcuts-title">⌨️ Atajos de teclado</div>
                     <div class="shortcuts-grid">
@@ -724,20 +832,18 @@ input, select {
                             <span>Reiniciar ruleta</span>
                         </div>
                         <div class="shortcut-item">
+                            <kbd>V</kbd>
+                            <span>Deshacer eliminado</span>
+                        </div>
+                        <div class="shortcut-item">
                             <kbd>O</kbd>
                             <span>Ocultar / Mostrar lista</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- MODO 2: ÚLTIMO NÚMERO EN PIE -->
-    <section id="last" class="mode">
-        <div class="layout-3col" id="layoutLast">
-            <!-- IZQUIERDA: Configuración y Participantes -->
-            <div class="card card-participants">
+            <div class="card card-participants order-config">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
                     <div>
@@ -776,71 +882,6 @@ input, select {
                 <div id="lastPeople" class="people"></div>
             </div>
 
-            <!-- CENTRO: Ruleta -->
-            <div class="card">
-                <div class="wheel-area">
-                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                        <h2>🏆 Último número en pie</h2>
-                        <button class="btn soft" id="btnShowLast" style="display:none;" onclick="toggleParticipants('last')">👁️ Mostrar participantes</button>
-                    </div>
-
-                    <div class="wheel-box">
-                        <div class="pointer"></div>
-                        <canvas id="wheelLast" width="900" height="900" onclick="spinRoulette('last')"></canvas>
-                        <div class="wheel-center" onclick="spinRoulette('last')"></div>
-                    </div>
-
-                    <button id="lastSpin" class="btn primary spin-button" onclick="spinRoulette('last')">
-                        🎯 GIRAR Y ELIMINAR
-                    </button>
-
-                    <div class="reset-controls">
-                        <button class="btn danger" onclick="resetWheelOnly('last')">
-                            🔄 Reiniciar ruleta
-                        </button>
-                        <button class="btn danger" onclick="resetWheelFromZero('last')">
-                            ⚠️ Reiniciar de 0
-                        </button>
-                    </div>
-
-                    <div id="lastStatus" class="status">
-                        Cada giro elimina un participante. <strong>El último gana.</strong>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DERECHA: Lista de Eliminados + Atajos -->
-            <div class="right-sidebar">
-                <div class="history">
-                    <h2>📋 Eliminados</h2>
-                    <div id="lastHistory" class="history-list"></div>
-                    <div class="actions" style="margin-top:8px;">
-                        <button class="btn soft" style="font-size:11px; padding:6px; width:100%;" onclick="undoLast()">↩️ Deshacer último eliminado</button>
-                    </div>
-                </div>
-
-                <div class="keyboard-shortcuts-card">
-                    <div class="shortcuts-title">⌨️ Atajos de teclado</div>
-                    <div class="shortcuts-grid">
-                        <div class="shortcut-item">
-                            <kbd>Espacio</kbd>
-                            <span>Girar / Cerrar cartel</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>R</kbd>
-                            <span>Reiniciar ruleta</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>V</kbd>
-                            <span>Deshacer eliminado</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>O</kbd>
-                            <span>Ocultar / Mostrar lista</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -874,14 +915,16 @@ const state = {
     first: {
         active: [],
         rotation: 0,
-        spinning: false
+        spinning: false,
+        animFrame: null
     },
     last: {
         active: [],
         eliminated: [],
         rotation: 0,
         spinning: false,
-        winnerShown: false
+        winnerShown: false,
+        animFrame: null
     }
 };
 
@@ -986,6 +1029,7 @@ function autoGenerate(mode){
 }
 
 function resetCanvasTransform(m) {
+    if (state[m].animFrame) cancelAnimationFrame(state[m].animFrame);
     state[m].rotation = 0;
     state[m].spinning = false;
     const canvas = document.getElementById(m === "first" ? "wheelFirst" : "wheelLast");
@@ -996,6 +1040,8 @@ function resetCanvasTransform(m) {
 }
 
 function resetWheelOnly(mode) {
+    if (!confirm("¿Estás seguro de que deseas reiniciar la ruleta?")) return;
+
     state[mode].spinning = false;
     state[mode].rotation = 0;
     state[mode].active = state.participants.map(p => p.id);
@@ -1015,6 +1061,8 @@ function resetWheelOnly(mode) {
 }
 
 function resetWheelFromZero(mode) {
+    if (!confirm("¿Estás seguro de reiniciar todo desde 0?")) return;
+
     document.getElementById("firstMin").value = 1;
     document.getElementById("firstMax").value = 20;
     document.getElementById("lastMin").value = 1;
@@ -1155,6 +1203,45 @@ function updateRouletteUI(mode){
     }
 }
 
+/* Rastreo dinámico en tiempo real del participante sobre el cual pasa la aguja */
+function trackLiveSpin(mode) {
+    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
+    const modeState = state[mode];
+    const statusEl = document.getElementById(mode + "Status");
+
+    function update() {
+        if (!modeState.spinning) return;
+
+        const st = window.getComputedStyle(canvas);
+        const tr = st.getPropertyValue("transform");
+        let currentAngle = 0;
+
+        if (tr && tr !== "none") {
+            const values = tr.split('(')[1].split(')')[0].split(',');
+            const a = parseFloat(values[0]);
+            const b = parseFloat(values[1]);
+            currentAngle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
+            if (currentAngle < 0) currentAngle += 360;
+        }
+
+        const activeCount = modeState.active.length;
+        if (activeCount > 0) {
+            const sliceAngle = 360 / activeCount;
+            const adjustedDeg = (360 - (currentAngle % 360)) % 360;
+            const currentIndex = Math.floor(adjustedDeg / sliceAngle) % activeCount;
+            
+            const currentId = modeState.active[currentIndex];
+            const p = state.participants.find(item => item.id === currentId);
+            
+            statusEl.innerHTML = `🎡 Paso por: <strong>Nº ${currentId}</strong> ${p?.text ? '— ' + escapeHTML(p.text) : ''}`;
+        }
+
+        modeState.animFrame = requestAnimationFrame(update);
+    }
+
+    modeState.animFrame = requestAnimationFrame(update);
+}
+
 function spinRoulette(mode){
     const modeState = state[mode];
 
@@ -1187,10 +1274,11 @@ function spinRoulette(mode){
     canvas.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
     canvas.style.transform = `rotate(${modeState.rotation}deg)`;
 
-    document.getElementById(mode + "Status").innerHTML = "🎡 Girando…";
+    trackLiveSpin(mode);
 
     setTimeout(() => {
         modeState.spinning = false;
+        if (modeState.animFrame) cancelAnimationFrame(modeState.animFrame);
 
         if(mode === "first"){
             document.getElementById("firstStatus").innerHTML = `Ganador: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
