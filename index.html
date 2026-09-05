@@ -121,7 +121,7 @@ header {
   display: block;
 }
 
-/* Layout por defecto (Mobile Vertical): Ruleta primero */
+/* Layout por defecto (Mobile Vertical) */
 .layout-3col {
   display: flex;
   flex-direction: column;
@@ -512,7 +512,7 @@ input, select {
 }
 
 .keyboard-shortcuts-card {
-  display: none; /* Oculto en dispositivos táctiles / móviles */
+  display: none;
   background: #ffffff;
   border: 1px solid #bce9f1;
   border-left: 4px solid var(--celeste);
@@ -580,8 +580,9 @@ input, select {
 @media (orientation: landscape) and (max-width: 949px) {
   .layout-3col {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.2fr 1fr;
     gap: 12px;
+    align-items: start;
   }
   
   .order-wheel {
@@ -600,14 +601,19 @@ input, select {
   }
 
   .wheel-box {
-    width: min(42vh, var(--wheel-max-width));
+    width: min(75vh, 480px);
+    max-width: 100%;
+  }
+
+  .history-list {
+    max-height: 50vh;
   }
 }
 
 /* Pantallas grandes (Escritorio) */
 @media (min-width: 950px) {
   .keyboard-shortcuts-card {
-    display: block; /* Muestra los atajos solo en escritorio */
+    display: block;
   }
 
   .layout-3col {
@@ -887,7 +893,7 @@ input, select {
 
 </main>
 
-<div id="victoryOverlay" class="overlay">
+<div id="victoryOverlay" class="overlay" onclick="closeOverlayOutside(event)">
     <div id="modalCard" class="victory">
         <div class="victory-gif-container">
             <iframe id="modalGif" src="" width="480" height="379" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
@@ -1156,14 +1162,9 @@ function drawWheel(mode){
         ctx.stroke();
 
         const participant = state.participants.find(p => p.id === id);
+        
+        // Muestra el texto completo siempre sin recortar
         let text = participant?.text ? `${id} · ${participant.text}` : String(id);
-
-        let maxChars = Math.max(3, Math.floor(250 / active.length));
-        if (active.length > 60) maxChars = Math.max(2, Math.floor(180 / active.length));
-
-        if(text.length > maxChars && active.length > 30){
-            text = text.substring(0, Math.max(1, maxChars - 1)) + "…";
-        }
 
         ctx.save();
         ctx.translate(center, center);
@@ -1171,7 +1172,8 @@ function drawWheel(mode){
         ctx.textAlign = "right";
         ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
 
-        let fontSize = Math.max(14, Math.min(38, 750 / active.length));
+        // Ajuste progresivo del tamaño según cantidad de elementos (mínimo 6px)
+        let fontSize = Math.max(6, Math.min(38, 750 / active.length));
         ctx.font = `900 ${fontSize}px Arial, sans-serif`;
         
         const textDistance = active.length > 80 ? radius - 8 : radius - 14;
@@ -1203,7 +1205,6 @@ function updateRouletteUI(mode){
     }
 }
 
-/* Rastreo dinámico en tiempo real del participante sobre el cual pasa la aguja */
 function trackLiveSpin(mode) {
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     const modeState = state[mode];
@@ -1414,6 +1415,12 @@ function closeVictory(){
                 showWinner(winner);
             }, 200);
         }
+    }
+}
+
+function closeOverlayOutside(event) {
+    if (event.target.id === "victoryOverlay") {
+        closeVictory();
     }
 }
 
