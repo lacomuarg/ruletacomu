@@ -90,10 +90,12 @@ header {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .tab {
   flex: 1;
+  min-width: 140px;
   text-align: center;
   border: 2px solid #bce9f0;
   background: white;
@@ -165,7 +167,7 @@ label {
   margin-bottom: 2px;
 }
 
-input, select {
+input, select, textarea {
   width: 100%;
   padding: 6px;
   border: 2px solid #d7eef3;
@@ -173,6 +175,12 @@ input, select {
   outline: none;
   font-size: 14px;
   background: white;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
 }
 
 .actions {
@@ -311,17 +319,22 @@ input, select {
   align-items: center;
 }
 
+/* Solución del temblor en iOS: Dimensiones fijas con aspect-ratio y backface-visibility */
 .wheel-box {
   position: relative;
   width: min(88vw, var(--wheel-max-width));
-  aspect-ratio: 1;
+  height: min(88vw, var(--wheel-max-width));
+  aspect-ratio: 1 / 1;
   margin: 10px auto 15px;
   flex-shrink: 0;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, height 0.3s ease;
+  transform: translateZ(0);
 }
 
 #wheelFirst,
-#wheelLast {
+#wheelLast,
+#wheelBreakPrizes,
+#wheelBreakPeople {
   width: 100%;
   height: 100%;
   display: block;
@@ -329,6 +342,9 @@ input, select {
   transition: transform 5.5s cubic-bezier(0.08, 0.82, 0.13, 1);
   filter: drop-shadow(0 6px 12px rgba(7, 82, 127, 0.2));
   cursor: pointer;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
 }
 
 .pointer {
@@ -576,6 +592,19 @@ input, select {
   cursor: pointer;
 }
 
+/* Estilos Modo Break */
+.break-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  .break-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Modo Horizontal para Celulares y Tablets */
 @media (orientation: landscape) and (max-width: 949px) {
   .layout-3col {
@@ -602,6 +631,7 @@ input, select {
 
   .wheel-box {
     width: min(75vh, 480px);
+    height: min(75vh, 480px);
     max-width: 100%;
   }
 
@@ -671,7 +701,7 @@ input, select {
     <div class="logo-title">
         <img src="logo.png" alt="Logo">
         <div>
-            <div class="title">La ruleta de La Comu Argentina</div>
+            <div class="title" id="mainHeaderTitle">La ruleta de La Comu Argentina</div>
             <div class="subtitle">Sorteos · Eliminaciones</div>
         </div>
     </div>
@@ -683,6 +713,7 @@ input, select {
     <div class="tabs">
         <button class="tab active" data-mode="first">🥇 Primer número</button>
         <button class="tab" data-mode="last">🏆 Último número en pie</button>
+        <button class="tab" data-mode="break">🔥 Modo Break (BETA)</button>
     </div>
 
     <section id="first" class="mode active">
@@ -891,6 +922,60 @@ input, select {
         </div>
     </section>
 
+    <section id="break" class="mode">
+        <div class="break-grid">
+            
+            <div class="card">
+                <h2>🎁 Ruleta 1: Premios / Ítems</h2>
+                <div class="wheel-area">
+                    <div class="wheel-box">
+                        <div class="pointer"></div>
+                        <canvas id="wheelBreakPrizes" width="900" height="900" onclick="spinBreak('prizes')"></canvas>
+                        <div class="wheel-center" onclick="spinBreak('prizes')"></div>
+                    </div>
+
+                    <button id="breakPrizesSpin" class="btn primary spin-button" onclick="spinBreak('prizes')">
+                        🎯 GIRAR PREMIOS
+                    </button>
+
+                    <div id="breakPrizesStatus" class="status">
+                        Añade elementos abajo.
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <label>Premios / Ítems (uno por línea):</label>
+                    <textarea id="breakPrizesInput" oninput="updateBreakList('prizes')">Premio 1&#10;Premio 2&#10;Premio 3&#10;Premio 4</textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>👥 Ruleta 2: Participantes</h2>
+                <div class="wheel-area">
+                    <div class="wheel-box">
+                        <div class="pointer"></div>
+                        <canvas id="wheelBreakPeople" width="900" height="900" onclick="spinBreak('people')"></canvas>
+                        <div class="wheel-center" onclick="spinBreak('people')"></div>
+                    </div>
+
+                    <button id="breakPeopleSpin" class="btn primary spin-button" onclick="spinBreak('people')">
+                        🎯 GIRAR PARTICIPANTES
+                    </button>
+
+                    <div id="breakPeopleStatus" class="status">
+                        Añade participantes abajo.
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <label>Participantes (uno por línea):</label>
+                    <textarea id="breakPeopleInput" oninput="updateBreakList('people')">Participante 1&#10;Participante 2&#10;Participante 3&#10;Participante 4</textarea>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
 </main>
 
 <div id="victoryOverlay" class="overlay" onclick="closeOverlayOutside(event)">
@@ -931,6 +1016,10 @@ const state = {
         spinning: false,
         winnerShown: false,
         animFrame: null
+    },
+    break: {
+        prizes: { items: [], rotation: 0, spinning: false, animFrame: null },
+        people: { items: [], rotation: 0, spinning: false, animFrame: null }
     }
 };
 
@@ -1162,8 +1251,6 @@ function drawWheel(mode){
         ctx.stroke();
 
         const participant = state.participants.find(p => p.id === id);
-        
-        // Muestra el texto completo siempre sin recortar
         let text = participant?.text ? `${id} · ${participant.text}` : String(id);
 
         ctx.save();
@@ -1172,7 +1259,6 @@ function drawWheel(mode){
         ctx.textAlign = "right";
         ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
 
-        // Ajuste progresivo del tamaño según cantidad de elementos (mínimo 6px)
         let fontSize = Math.max(6, Math.min(38, 750 / active.length));
         ctx.font = `900 ${fontSize}px Arial, sans-serif`;
         
@@ -1205,30 +1291,31 @@ function updateRouletteUI(mode){
     }
 }
 
+/* Solución del temblor en iOS al rastrear el giro en tiempo real */
 function trackLiveSpin(mode) {
-    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     const modeState = state[mode];
     const statusEl = document.getElementById(mode + "Status");
+    const startTime = performance.now();
+    const duration = 5500;
+    const startRotation = modeState.startRotation;
+    const targetRotation = modeState.rotation;
 
-    function update() {
+    function cubicBezier(t) {
+        return t * t * (3 - 2 * t);
+    }
+
+    function update(now) {
         if (!modeState.spinning) return;
 
-        const st = window.getComputedStyle(canvas);
-        const tr = st.getPropertyValue("transform");
-        let currentAngle = 0;
-
-        if (tr && tr !== "none") {
-            const values = tr.split('(')[1].split(')')[0].split(',');
-            const a = parseFloat(values[0]);
-            const b = parseFloat(values[1]);
-            currentAngle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
-            if (currentAngle < 0) currentAngle += 360;
-        }
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = cubicBezier(progress);
+        const currentAngleDegree = (startRotation + (targetRotation - startRotation) * easeProgress) % 360;
 
         const activeCount = modeState.active.length;
         if (activeCount > 0) {
             const sliceAngle = 360 / activeCount;
-            const adjustedDeg = (360 - (currentAngle % 360)) % 360;
+            const adjustedDeg = (360 - (currentAngleDegree % 360)) % 360;
             const currentIndex = Math.floor(adjustedDeg / sliceAngle) % activeCount;
             
             const currentId = modeState.active[currentIndex];
@@ -1237,7 +1324,9 @@ function trackLiveSpin(mode) {
             statusEl.innerHTML = `🎡 Paso por: <strong>Nº ${currentId}</strong> ${p?.text ? '— ' + escapeHTML(p.text) : ''}`;
         }
 
-        modeState.animFrame = requestAnimationFrame(update);
+        if (progress < 1) {
+            modeState.animFrame = requestAnimationFrame(update);
+        }
     }
 
     modeState.animFrame = requestAnimationFrame(update);
@@ -1269,6 +1358,7 @@ function spinRoulette(mode){
     const extraSpins = 360 * 7;
     const totalAddedRotation = extraSpins + neededDegree;
 
+    modeState.startRotation = modeState.rotation;
     modeState.rotation += totalAddedRotation;
 
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
@@ -1299,6 +1389,115 @@ function spinRoulette(mode){
         renderHistory();
 
         showEliminated(participant);
+    }, 5700);
+}
+
+/* LÓGICA MODO BREAK */
+
+function updateBreakList(subMode) {
+    const text = document.getElementById(subMode === "prizes" ? "breakPrizesInput" : "breakPeopleInput").value;
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    state.break[subMode].items = lines;
+    drawBreakWheel(subMode);
+    
+    const btn = document.getElementById(subMode === "prizes" ? "breakPrizesSpin" : "breakPeopleSpin");
+    if(btn) btn.disabled = lines.length === 0 || state.break[subMode].spinning;
+}
+
+function drawBreakWheel(subMode) {
+    const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
+    if(!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const size = 900;
+    const center = 450;
+    const radius = 410;
+    const items = state.break[subMode].items;
+
+    ctx.clearRect(0, 0, size, size);
+
+    if(items.length === 0){
+        ctx.beginPath();
+        ctx.arc(center, center, radius, 0, Math.PI * 2);
+        ctx.fillStyle = "#e8fbff";
+        ctx.fill();
+        ctx.strokeStyle = "#07527f";
+        ctx.lineWidth = 10;
+        ctx.stroke();
+        return;
+    }
+
+    const slice = Math.PI * 2 / items.length;
+
+    items.forEach((itemText, index) => {
+        const start = -Math.PI / 2 + index * slice;
+        const end = start + slice;
+
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, start, end);
+        ctx.closePath();
+
+        ctx.fillStyle = (index % 2 === 0) ? "#20c4df" : "#ffffff";
+        ctx.fill();
+
+        ctx.strokeStyle = "#07527f";
+        ctx.lineWidth = items.length > 80 ? 1 : 3;
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(start + slice / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
+
+        let fontSize = Math.max(10, Math.min(38, 750 / items.length));
+        ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+        
+        ctx.fillText(itemText, radius - 14, fontSize / 3.2);
+        ctx.restore();
+    });
+
+    ctx.beginPath();
+    ctx.arc(center, center, radius, 0, Math.PI * 2);
+    ctx.strokeStyle = "#063653";
+    ctx.lineWidth = 9;
+    ctx.stroke();
+}
+
+function spinBreak(subMode) {
+    const bState = state.break[subMode];
+    if (bState.spinning || bState.items.length === 0) return;
+
+    bState.spinning = true;
+    const btn = document.getElementById(subMode === "prizes" ? "breakPrizesSpin" : "breakPeopleSpin");
+    if(btn) btn.disabled = true;
+
+    const index = randomNumber(bState.items.length);
+    const selectedItem = bState.items[index];
+
+    const numSlices = bState.items.length;
+    const sliceAngle = 360 / numSlices;
+    const centerOfSliceDegree = index * sliceAngle + (sliceAngle / 2);
+    const currentModulo = bState.rotation % 360;
+    const neededDegree = (360 - centerOfSliceDegree - currentModulo + 360) % 360;
+    const extraSpins = 360 * 7;
+    const totalAddedRotation = extraSpins + neededDegree;
+
+    bState.rotation += totalAddedRotation;
+
+    const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
+    canvas.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
+    canvas.style.transform = `rotate(${bState.rotation}deg)`;
+
+    const statusEl = document.getElementById(subMode === "prizes" ? "breakPrizesStatus" : "breakPeopleStatus");
+    statusEl.innerHTML = "🎡 Girando...";
+
+    setTimeout(() => {
+        bState.spinning = false;
+        if(btn) btn.disabled = false;
+        statusEl.innerHTML = `Seleccionado: <strong>${escapeHTML(selectedItem)}</strong>`;
+
+        showWinner({ id: subMode === "prizes" ? "Premio" : "Participante", text: selectedItem });
     }, 5700);
 }
 
@@ -1375,7 +1574,7 @@ function showWinner(participant){
     winnerName.classList.remove("eliminated-box");
 
     modalTitle.innerHTML = "¡TENEMOS GANADOR!";
-    winnerName.innerHTML = `Nº ${participant.id}<br><small style="font-size:14px; font-weight:normal; color:#47788c;">${escapeHTML(participant.text || "Sin texto")}</small>`;
+    winnerName.innerHTML = `${participant.id ? participant.id + '<br>' : ''}<small style="font-size:16px; font-weight:bold; color:#07527f;">${escapeHTML(participant.text || "Sin texto")}</small>`;
     
     document.getElementById("victoryOverlay").classList.add("show");
     createConfetti();
@@ -1451,8 +1650,16 @@ document.querySelectorAll(".tab").forEach(button => {
         
         const targetMode = button.dataset.mode;
         document.getElementById(targetMode).classList.add("active");
-        
-        drawWheel(targetMode);
+
+        const headerTitle = document.getElementById("mainHeaderTitle");
+        if(targetMode === "break") {
+            headerTitle.textContent = "La ruleta de La Comu Argentina · BETA";
+            updateBreakList('prizes');
+            updateBreakList('people');
+        } else {
+            headerTitle.textContent = "La ruleta de La Comu Argentina";
+            drawWheel(targetMode);
+        }
     });
 });
 
@@ -1469,24 +1676,22 @@ document.addEventListener("keydown", (event) => {
         event.preventDefault();
         if (isModalOpen) {
             closeVictory();
-        } else {
+        } else if (activeMode !== "break") {
             spinRoulette(activeMode);
         }
     }
 
-    if (event.code === "KeyR") {
+    if (event.code === "KeyR" && activeMode !== "break") {
         event.preventDefault();
         resetWheelOnly(activeMode);
     }
 
-    if (event.code === "KeyV") {
+    if (event.code === "KeyV" && activeMode === "last") {
         event.preventDefault();
-        if (activeMode === "last") {
-            undoLast();
-        }
+        undoLast();
     }
 
-    if (event.code === "KeyO") {
+    if (event.code === "KeyO" && activeMode !== "break") {
         event.preventDefault();
         toggleParticipants(activeMode);
     }
