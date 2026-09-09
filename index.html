@@ -16,6 +16,7 @@
   --gris: #587786;
   --rojo: #d94157;
   --amarillo: #ffd54d;
+  --dorado: #f59e0b;
   --wheel-max-width: 440px;
 }
 
@@ -160,6 +161,43 @@ header {
   gap: 6px;
 }
 
+.tier-section {
+  grid-column: 1 / span 2;
+  background: #f0fdfa;
+  border: 1.5px dashed #0d9488;
+  border-radius: 10px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.tier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tier-toggle-label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #0f766e;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.tier-toggle-label input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+}
+
+.tier-inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
 label {
   display: block;
   font-size: 10px;
@@ -274,6 +312,7 @@ input, select, textarea {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .person {
@@ -338,11 +377,13 @@ canvas {
   height: 100%;
   display: block;
   border-radius: 50%;
-  filter: drop-shadow(0 6px 12px rgba(7, 82, 127, 0.2));
+  box-shadow: 0 6px 12px rgba(7, 82, 127, 0.2);
   cursor: pointer;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform-origin: center center;
+  -webkit-transform-origin: center center;
+  will-change: transform;
 }
 
 .pointer {
@@ -351,6 +392,7 @@ canvas {
   left: 50%;
   top: -2px;
   transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 14px solid transparent;
@@ -366,6 +408,7 @@ canvas {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -428,6 +471,7 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .history-item {
@@ -439,6 +483,11 @@ canvas {
   justify-content: space-between;
   gap: 4px;
   font-size: 11px;
+}
+
+.history-item.tier {
+  border-left-color: var(--dorado);
+  background: #fef3c7;
 }
 
 .history-item.match {
@@ -453,6 +502,7 @@ canvas {
   z-index: 1000;
   background: rgba(6, 54, 83, 0.75);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   place-items: center;
   padding: 12px;
   overflow-y: auto;
@@ -479,6 +529,10 @@ canvas {
   border-color: var(--rojo);
 }
 
+.victory.tier-modal {
+  border-color: var(--dorado);
+}
+
 .victory-gif-container {
   width: 100%;
   max-width: 320px;
@@ -498,6 +552,7 @@ canvas {
   pointer-events: none;
   object-fit: cover;
   transform: scale(1.15);
+  -webkit-transform: scale(1.15);
 }
 
 .victory h2 {
@@ -508,6 +563,10 @@ canvas {
 
 .victory.eliminated-modal h2 {
   color: var(--rojo);
+}
+
+.victory.tier-modal h2 {
+  color: #b45309;
 }
 
 .winner-name {
@@ -525,6 +584,12 @@ canvas {
   background: #fff0f2;
   border-color: #ffd0d7;
   color: #bd3047;
+}
+
+.winner-name.tier-box {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
 }
 
 .break-layout {
@@ -545,7 +610,6 @@ canvas {
   }
 }
 
-/* Atajos ocultos en móviles y tablets por defecto */
 .keyboard-shortcuts-card {
   display: none;
   background: #ffffff;
@@ -629,7 +693,6 @@ canvas {
   }
 }
 
-/* Mostrar atajos solo en escritorio */
 @media (min-width: 950px) {
   .keyboard-shortcuts-card { display: block; }
 
@@ -728,6 +791,11 @@ canvas {
             </div>
 
             <div class="right-sidebar order-sidebar">
+                <div class="history">
+                    <h2>📋 Resultados / Tiers</h2>
+                    <div id="firstHistory" class="history-list"></div>
+                </div>
+
                 <div class="keyboard-shortcuts-card">
                     <div class="shortcuts-title">⌨️ Atajos de teclado</div>
                     <div class="shortcuts-grid">
@@ -762,6 +830,29 @@ canvas {
                         <label>Estado</label>
                         <span id="firstBadge" class="badge">0 activos</span>
                     </div>
+
+                    <div class="tier-section">
+                        <div class="tier-header">
+                            <label class="tier-toggle-label">
+                                <input type="checkbox" id="firstTierModeActive" onchange="toggleTierMode('first', this.checked)">
+                                🏆 Modo Tier (Elimina al salir)
+                            </label>
+                        </div>
+                        <div id="firstTierConfigContainer" style="display:none;" class="tier-inputs-grid">
+                            <div>
+                                <label>Cant. Tiers (1-100):</label>
+                                <input type="number" id="firstTierCount" min="1" max="100" value="3" onchange="updateTierConfig('first')">
+                            </div>
+                            <div>
+                                <label>Orden:</label>
+                                <select id="firstTierOrder" onchange="updateTierConfig('first')">
+                                    <option value="asc">Ascendente (1º ➔ Xº)</option>
+                                    <option value="desc">Descendente (Xº ➔ 1º)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="actions">
@@ -811,7 +902,7 @@ canvas {
 
             <div class="right-sidebar order-sidebar">
                 <div class="history">
-                    <h2>📋 Eliminados</h2>
+                    <h2>📋 Eliminados / Tiers</h2>
                     <div id="lastHistory" class="history-list"></div>
                     <div class="actions" style="margin-top:8px;">
                         <button class="btn soft" style="font-size:11px; padding:6px; width:100%;" onclick="undoLast()">↩️ Deshacer último eliminado</button>
@@ -853,6 +944,20 @@ canvas {
                         <label>Estado</label>
                         <span id="lastBadge" class="badge">0 activos</span>
                     </div>
+
+                    <div class="tier-section">
+                        <div class="tier-header">
+                            <label class="tier-toggle-label">
+                                <input type="checkbox" id="lastTierModeActive" onchange="toggleTierMode('last', this.checked)">
+                                🏆 Modo Tier / Podio
+                            </label>
+                        </div>
+                        <div id="lastTierConfigContainer" style="display:none; margin-top:6px;">
+                            <label>Cant. Tiers (1-100):</label>
+                            <input type="number" id="lastTierCount" min="1" max="100" value="3" onchange="updateTierConfig('last')">
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="actions">
@@ -1044,17 +1149,24 @@ const state = {
     participants: [],
     first: {
         active: [],
+        results: [], // { id, tierRank }
         rotation: 0,
         spinning: false,
-        animFrame: null
+        animFrame: null,
+        tierEnabled: false,
+        maxTiers: 3,
+        tierOrder: 'asc', // 'asc' | 'desc'
+        currentTierStep: 1
     },
     last: {
         active: [],
-        eliminated: [],
+        eliminated: [], // { id, tierRank }
         rotation: 0,
         spinning: false,
         winnerShown: false,
-        animFrame: null
+        animFrame: null,
+        tierEnabled: false,
+        maxTiers: 3
     },
     break: {
         prizes: { items: [], active: [], rotation: 0, spinning: false, animFrame: null },
@@ -1115,6 +1227,33 @@ function toggleBreakParticipants(subMode) {
     }
 }
 
+function toggleTierMode(mode, enabled) {
+    state[mode].tierEnabled = enabled;
+    const container = document.getElementById(`${mode}TierConfigContainer`);
+    if(container) container.style.display = enabled ? "grid" : "none";
+
+    if(mode === 'first') {
+        state.first.currentTierStep = 1;
+        state.first.results = [];
+        renderFirstHistory();
+    }
+}
+
+function updateTierConfig(mode) {
+    const inputCount = document.getElementById(`${mode}TierCount`);
+    let val = parseInt(inputCount.value);
+    if(isNaN(val) || val < 1) val = 1;
+    if(val > 100) val = 100;
+    inputCount.value = val;
+
+    state[mode].maxTiers = val;
+
+    if(mode === 'first') {
+        state.first.tierOrder = document.getElementById("firstTierOrder").value;
+        state.first.currentTierStep = 1;
+    }
+}
+
 function generateRangeParticipants(minVal, maxVal, currentList = []){
     let min = parseInt(minVal);
     let max = parseInt(maxVal);
@@ -1161,6 +1300,9 @@ function autoGenerate(mode){
     state.participants = generateRangeParticipants(minInput, maxInput, state.participants);
     
     state.first.active = state.participants.map(p => p.id);
+    state.first.results = [];
+    state.first.currentTierStep = 1;
+
     state.last.active = state.participants.map(p => p.id);
     state.last.eliminated = [];
     state.last.winnerShown = false;
@@ -1175,6 +1317,7 @@ function autoGenerate(mode){
     updateRouletteUI("first");
     updateRouletteUI("last");
     renderHistory();
+    renderFirstHistory();
 }
 
 function resetCanvasTransform(m) {
@@ -1183,7 +1326,9 @@ function resetCanvasTransform(m) {
     const canvas = document.getElementById(m === "first" ? "wheelFirst" : "wheelLast");
     if(canvas) {
         canvas.style.transition = "none";
+        canvas.style.webkitTransition = "none";
         canvas.style.transform = `rotate(${state[m].rotation}deg)`;
+        canvas.style.webkitTransform = `rotate(${state[m].rotation}deg)`;
     }
 }
 
@@ -1197,6 +1342,10 @@ function resetWheelOnly(mode) {
         state.last.eliminated = [];
         state.last.winnerShown = false;
         renderHistory();
+    } else if (mode === "first") {
+        state.first.results = [];
+        state.first.currentTierStep = 1;
+        renderFirstHistory();
     }
 
     resetCanvasTransform(mode);
@@ -1219,7 +1368,9 @@ function resetWheelFromZero(mode) {
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     if(canvas) {
         canvas.style.transition = "none";
+        canvas.style.webkitTransition = "none";
         canvas.style.transform = "rotate(0deg)";
+        canvas.style.webkitTransform = "rotate(0deg)";
     }
 
     autoGenerate(mode);
@@ -1231,8 +1382,12 @@ function renderParticipants(mode){
     if(!container) return;
     container.innerHTML = "";
 
+    const eliminatedIds = mode === "last" 
+        ? state.last.eliminated.map(e => e.id) 
+        : (state.first.tierEnabled ? state.first.results.map(r => r.id) : []);
+
     state.participants.forEach(p => {
-        const isEliminated = mode === "last" && state.last.eliminated.includes(p.id);
+        const isEliminated = eliminatedIds.includes(p.id);
         const row = document.createElement("div");
         row.className = `person ${isEliminated ? 'eliminated' : ''}`;
         row.innerHTML = `
@@ -1352,24 +1507,36 @@ function updateRouletteUI(mode){
     button.disabled = state[mode].spinning || active === 0;
 
     if(mode === "first"){
-        button.textContent = "🎯 GIRAR PARA ELEGIR GANADOR";
+        if (state.first.tierEnabled && state.first.currentTierStep <= state.first.maxTiers) {
+            let currentRank = state.first.tierOrder === 'asc' 
+                ? state.first.currentTierStep 
+                : (state.first.maxTiers - state.first.currentTierStep + 1);
+            button.textContent = `🎯 GIRAR PARA TIER ${currentRank}`;
+        } else {
+            button.textContent = "🎯 GIRAR PARA ELEGIR GANADOR";
+        }
     } else {
         button.textContent = active === 1 ? "🏆 MOSTRAR GANADOR" : "🎯 GIRAR Y ELIMINAR";
     }
 }
 
-function trackLiveSpin(mode) {
+function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+}
+
+function trackLiveSpin(mode, startRotation, totalAddedRotation, duration) {
     const modeState = state[mode];
     const statusEl = document.getElementById(mode + "Status");
-    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
+    const startTime = performance.now();
 
-    function update() {
+    function update(now) {
         if (!modeState.spinning) return;
 
-        const style = window.getComputedStyle(canvas);
-        const matrix = new WebKitCSSMatrix(style.transform);
-        
-        let angleDeg = Math.round(Math.atan2(matrix.b, matrix.a) * (180 / Math.PI));
+        const elapsed = (now - startTime) / duration;
+        const progress = Math.min(Math.max(elapsed, 0), 1);
+        const currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
+
+        let angleDeg = Math.round(currentRotation % 360);
         if (angleDeg < 0) angleDeg += 360;
 
         const activeList = modeState.active;
@@ -1388,7 +1555,9 @@ function trackLiveSpin(mode) {
             }
         }
 
-        modeState.animFrame = requestAnimationFrame(update);
+        if (progress < 1) {
+            modeState.animFrame = requestAnimationFrame(update);
+        }
     }
 
     modeState.animFrame = requestAnimationFrame(update);
@@ -1401,7 +1570,11 @@ function spinRoulette(mode){
 
     if(mode === "last" && modeState.active.length === 1){
         const winner = state.participants.find(p => p.id === modeState.active[0]);
-        showWinner(winner);
+        if (modeState.tierEnabled) {
+            showTierResult(winner, 1);
+        } else {
+            showWinner(winner);
+        }
         return;
     }
 
@@ -1420,36 +1593,69 @@ function spinRoulette(mode){
     const extraSpins = 360 * 7;
     const totalAddedRotation = extraSpins + neededDegree;
 
+    const startRotation = modeState.rotation;
     modeState.rotation += totalAddedRotation;
 
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     canvas.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
+    canvas.style.webkitTransition = "-webkit-transform 5.5s cubic-bezier(.08,.82,.13,1)";
     canvas.style.transform = `rotate(${modeState.rotation}deg)`;
+    canvas.style.webkitTransform = `rotate(${modeState.rotation}deg)`;
 
-    trackLiveSpin(mode);
+    trackLiveSpin(mode, startRotation, totalAddedRotation, 5500);
 
     setTimeout(() => {
         modeState.spinning = false;
         if (modeState.animFrame) cancelAnimationFrame(modeState.animFrame);
 
         if(mode === "first"){
-            document.getElementById("firstStatus").innerHTML = `Ganador: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
-            showWinner(participant);
+            if(modeState.tierEnabled && modeState.currentTierStep <= modeState.maxTiers) {
+                let tierRank = modeState.tierOrder === 'asc' 
+                    ? modeState.currentTierStep 
+                    : (modeState.maxTiers - modeState.currentTierStep + 1);
+
+                modeState.results.push({ id, tierRank });
+                modeState.active = modeState.active.filter(val => val !== id);
+                modeState.currentTierStep++;
+
+                document.getElementById("firstStatus").innerHTML = `🏆 TIER ${tierRank}: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
+                showTierResult(participant, tierRank);
+
+                renderParticipants("first");
+                drawWheel("first");
+                renderFirstHistory();
+            } else {
+                document.getElementById("firstStatus").innerHTML = `Ganador: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
+                showWinner(participant);
+            }
             updateRouletteUI(mode);
             return;
         }
 
-        modeState.active = modeState.active.filter(value => value !== id);
-        modeState.eliminated.push(id);
+        // Modo LAST
+        const currentActiveCount = modeState.active.length;
+        let tierRank = null;
 
-        document.getElementById("lastStatus").innerHTML = `❌ Eliminado: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
+        if (modeState.tierEnabled && currentActiveCount <= modeState.maxTiers) {
+            tierRank = currentActiveCount;
+        }
+
+        modeState.active = modeState.active.filter(value => value !== id);
+        modeState.eliminated.push({ id, tierRank });
+
+        if (tierRank) {
+            document.getElementById("lastStatus").innerHTML = `🏆 TIER ${tierRank}: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
+            showTierResult(participant, tierRank);
+        } else {
+            document.getElementById("lastStatus").innerHTML = `❌ Eliminado: <strong>Nº ${id}</strong> — ${escapeHTML(participant.text || "Sin texto")}`;
+            showEliminated(participant);
+        }
 
         renderParticipants(mode);
         drawWheel(mode);
         updateRouletteUI(mode);
         renderHistory();
 
-        showEliminated(participant);
     }, 5700);
 }
 
@@ -1479,7 +1685,9 @@ function resetBreakWheelOnly(subMode) {
     const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
     if(canvas) {
         canvas.style.transition = "none";
+        canvas.style.webkitTransition = "none";
         canvas.style.transform = `rotate(${bState.rotation}deg)`;
+        canvas.style.webkitTransform = `rotate(${bState.rotation}deg)`;
     }
 
     renderBreakParticipants(subMode);
@@ -1500,7 +1708,9 @@ function resetBreakFromZero(subMode) {
     const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
     if(canvas) {
         canvas.style.transition = "none";
+        canvas.style.webkitTransition = "none";
         canvas.style.transform = "rotate(0deg)";
+        canvas.style.webkitTransform = "rotate(0deg)";
     }
 
     autoGenerateBreak(subMode);
@@ -1605,18 +1815,19 @@ function updateBreakUI(subMode) {
     }
 }
 
-function trackBreakLiveSpin(subMode) {
+function trackBreakLiveSpin(subMode, startRotation, totalAddedRotation, duration) {
     const bState = state.break[subMode];
     const statusEl = document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Status`);
-    const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
+    const startTime = performance.now();
 
-    function update() {
+    function update(now) {
         if (!bState.spinning) return;
 
-        const style = window.getComputedStyle(canvas);
-        const matrix = new WebKitCSSMatrix(style.transform);
-        
-        let angleDeg = Math.round(Math.atan2(matrix.b, matrix.a) * (180 / Math.PI));
+        const elapsed = (now - startTime) / duration;
+        const progress = Math.min(Math.max(elapsed, 0), 1);
+        const currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
+
+        let angleDeg = Math.round(currentRotation % 360);
         if (angleDeg < 0) angleDeg += 360;
 
         const activeList = bState.active;
@@ -1635,7 +1846,9 @@ function trackBreakLiveSpin(subMode) {
             }
         }
 
-        bState.animFrame = requestAnimationFrame(update);
+        if (progress < 1) {
+            bState.animFrame = requestAnimationFrame(update);
+        }
     }
 
     bState.animFrame = requestAnimationFrame(update);
@@ -1670,7 +1883,9 @@ function spinBreakSimultaneous() {
     const pCenterDegree = prizeIndex * pSliceAngle + (pSliceAngle / 2);
     const pCurrentModulo = state.break.prizes.rotation % 360;
     const pNeededDegree = (360 - pCenterDegree - pCurrentModulo + 360) % 360;
-    state.break.prizes.rotation += (360 * 7) + pNeededDegree;
+    const pTotalAdded = (360 * 7) + pNeededDegree;
+    const pStartRot = state.break.prizes.rotation;
+    state.break.prizes.rotation += pTotalAdded;
 
     // Giros Ruleta 2
     const peSlices = peopleActive.length;
@@ -1678,19 +1893,25 @@ function spinBreakSimultaneous() {
     const peCenterDegree = peopleIndex * peSliceAngle + (peSliceAngle / 2);
     const peCurrentModulo = state.break.people.rotation % 360;
     const peNeededDegree = (360 - peCenterDegree - peCurrentModulo + 360) % 360;
-    state.break.people.rotation += (360 * 7) + peNeededDegree;
+    const peTotalAdded = (360 * 7) + peNeededDegree;
+    const peStartRot = state.break.people.rotation;
+    state.break.people.rotation += peTotalAdded;
 
     const canvasPrizes = document.getElementById("wheelBreakPrizes");
     const canvasPeople = document.getElementById("wheelBreakPeople");
 
     canvasPrizes.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
+    canvasPrizes.style.webkitTransition = "-webkit-transform 5.5s cubic-bezier(.08,.82,.13,1)";
     canvasPrizes.style.transform = `rotate(${state.break.prizes.rotation}deg)`;
+    canvasPrizes.style.webkitTransform = `rotate(${state.break.prizes.rotation}deg)`;
 
     canvasPeople.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
+    canvasPeople.style.webkitTransition = "-webkit-transform 5.5s cubic-bezier(.08,.82,.13,1)";
     canvasPeople.style.transform = `rotate(${state.break.people.rotation}deg)`;
+    canvasPeople.style.webkitTransform = `rotate(${state.break.people.rotation}deg)`;
 
-    trackBreakLiveSpin('prizes');
-    trackBreakLiveSpin('people');
+    trackBreakLiveSpin('prizes', pStartRot, pTotalAdded, 5500);
+    trackBreakLiveSpin('people', peStartRot, peTotalAdded, 5500);
 
     setTimeout(() => {
         state.break.spinning = false;
@@ -1730,8 +1951,8 @@ function showBreakMatch(prize, person) {
     const gifContainer = document.getElementById("modalGifContainer");
 
     gifContainer.style.display = "none";
-    modalCard.classList.remove("eliminated-modal");
-    winnerName.classList.remove("eliminated-box");
+    modalCard.className = "victory";
+    winnerName.className = "winner-name";
 
     modalTitle.innerHTML = "¡TOCÓ!";
     winnerName.innerHTML = `
@@ -1755,14 +1976,66 @@ function renderHistory(){
 
     container.innerHTML = "";
 
-    [...eliminated].reverse().forEach(id => {
-        const participant = state.participants.find(p => p.id === id);
+    [...eliminated].reverse().forEach(item => {
+        const participant = state.participants.find(p => p.id === item.id);
         const row = document.createElement("div");
-        row.className = "history-item";
-        row.innerHTML = `
-            <span><strong>Nº ${id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}</span>
-            <b>❌</b>
-        `;
+        
+        if (item.tierRank) {
+            row.className = "history-item tier";
+            let medal = "🏆";
+            if(item.tierRank === 1) medal = "🥇";
+            else if(item.tierRank === 2) medal = "🥈";
+            else if(item.tierRank === 3) medal = "🥉";
+
+            row.innerHTML = `
+                <span><strong>Nº ${item.id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}</span>
+                <b>${medal} TIER ${item.tierRank}</b>
+            `;
+        } else {
+            row.className = "history-item";
+            row.innerHTML = `
+                <span><strong>Nº ${item.id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}</span>
+                <b>❌</b>
+            `;
+        }
+        container.appendChild(row);
+    });
+}
+
+function renderFirstHistory() {
+    const container = document.getElementById("firstHistory");
+    if(!container) return;
+    const results = state.first.results;
+
+    if(results.length === 0){
+        container.innerHTML = `<div style="padding:4px; color:#678b99; font-size:10px;">Sin resultados.</div>`;
+        return;
+    }
+
+    container.innerHTML = "";
+
+    [...results].reverse().forEach(item => {
+        const participant = state.participants.find(p => p.id === item.id);
+        const row = document.createElement("div");
+        
+        if (item.tierRank) {
+            row.className = "history-item tier";
+            let medal = "🏆";
+            if(item.tierRank === 1) medal = "🥇";
+            else if(item.tierRank === 2) medal = "🥈";
+            else if(item.tierRank === 3) medal = "🥉";
+
+            row.innerHTML = `
+                <span><strong>Nº ${item.id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}</span>
+                <b>${medal} TIER ${item.tierRank}</b>
+            `;
+        } else {
+            row.className = "history-item match";
+            row.innerHTML = `
+                <span><strong>Nº ${item.id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}</span>
+                <b>🎯</b>
+            `;
+        }
         container.appendChild(row);
     });
 }
@@ -1793,8 +2066,8 @@ function undoLast(){
     const modeState = state.last;
     if(modeState.spinning || modeState.eliminated.length === 0) return;
 
-    const id = modeState.eliminated.pop();
-    modeState.active.push(id);
+    const removed = modeState.eliminated.pop();
+    modeState.active.push(removed.id);
     modeState.active.sort((a, b) => a - b);
     modeState.winnerShown = false;
 
@@ -1803,7 +2076,7 @@ function undoLast(){
     updateRouletteUI("last");
     renderHistory();
 
-    document.getElementById("lastStatus").innerHTML = `↩️ Nº ${id} volvió a participar.`;
+    document.getElementById("lastStatus").innerHTML = `↩️ Nº ${removed.id} volvió a participar.`;
 }
 
 function clearNames(mode){
@@ -1834,11 +2107,37 @@ function showWinner(participant){
     gifContainer.style.display = "block";
     modalGif.src = "https://giphy.com/embed/OdOArbU8HKuWtuoBsf";
 
-    modalCard.classList.remove("eliminated-modal");
-    winnerName.classList.remove("eliminated-box");
+    modalCard.className = "victory";
+    winnerName.className = "winner-name";
 
     modalTitle.innerHTML = "¡TENEMOS GANADOR!";
     winnerName.innerHTML = `${participant.id ? 'Nº ' + participant.id + '<br>' : ''}<small style="font-size:16px; font-weight:bold; color:#07527f;">${escapeHTML(participant.text || "Sin texto")}</small>`;
+    
+    document.getElementById("victoryOverlay").classList.add("show");
+}
+
+function showTierResult(participant, rank) {
+    if(!participant) return;
+
+    const modalCard = document.getElementById("modalCard");
+    const modalTitle = document.getElementById("modalTitle");
+    const winnerName = document.getElementById("winnerName");
+    const modalGif = document.getElementById("modalGif");
+    const gifContainer = document.getElementById("modalGifContainer");
+
+    gifContainer.style.display = "block";
+    modalGif.src = "https://giphy.com/embed/OdOArbU8HKuWtuoBsf";
+
+    modalCard.className = "victory tier-modal";
+    winnerName.className = "winner-name tier-box";
+
+    let medal = "🏆";
+    if(rank === 1) medal = "🥇";
+    else if(rank === 2) medal = "🥈";
+    else if(rank === 3) medal = "🥉";
+
+    modalTitle.innerHTML = `${medal} ¡TIER ${rank}!`;
+    winnerName.innerHTML = `<strong>Nº ${participant.id}</strong><br><small style="font-size:16px; font-weight:bold; color:#92400e;">${escapeHTML(participant.text || "Sin texto")}</small>`;
     
     document.getElementById("victoryOverlay").classList.add("show");
 }
@@ -1855,8 +2154,8 @@ function showEliminated(participant){
     gifContainer.style.display = "block";
     modalGif.src = "https://giphy.com/embed/hMDkLT1MkXJISMGCAO";
 
-    modalCard.classList.add("eliminated-modal");
-    winnerName.classList.add("eliminated-box");
+    modalCard.className = "victory eliminated-modal";
+    winnerName.className = "winner-name eliminated-box";
 
     modalTitle.innerHTML = "❌ ELIMINADO";
     winnerName.innerHTML = `Nº ${participant.id}<br><small style="font-size:14px; font-weight:normal;">${escapeHTML(participant.text || "Sin texto")}</small>`;
@@ -1890,11 +2189,17 @@ function closeVictory(){
         return;
     }
 
-    if(state.last.active.length === 1 && state.last.eliminated.length > 0 && !state.last.winnerShown){
+    if(getActiveMode() === "last" && state.last.active.length === 1 && state.last.eliminated.length > 0 && !state.last.winnerShown){
         state.last.winnerShown = true;
         const winner = state.participants.find(p => p.id === state.last.active[0]);
         if(winner) {
-            setTimeout(() => { showWinner(winner); }, 200);
+            setTimeout(() => { 
+                if (state.last.tierEnabled) {
+                    showTierResult(winner, 1);
+                } else {
+                    showWinner(winner); 
+                }
+            }, 200);
         }
     }
 }
