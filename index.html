@@ -545,6 +545,7 @@ canvas {
   }
 }
 
+/* Atajos ocultos en móviles y tablets por defecto */
 .keyboard-shortcuts-card {
   display: none;
   background: #ffffff;
@@ -628,6 +629,7 @@ canvas {
   }
 }
 
+/* Mostrar atajos solo en escritorio */
 @media (min-width: 950px) {
   .keyboard-shortcuts-card { display: block; }
 
@@ -1004,10 +1006,12 @@ canvas {
                     <div id="breakHistory" class="history-list"></div>
                 </div>
 
-                <div class="keyboard-shortcuts-card" style="display: block;">
+                <div class="keyboard-shortcuts-card">
                     <div class="shortcuts-title">⌨️ Atajos de teclado</div>
                     <div class="shortcuts-grid">
                         <div class="shortcut-item"><kbd>Espacio</kbd><span>Girar ambas / Cerrar</span></div>
+                        <div class="shortcut-item"><kbd>R</kbd><span>Reiniciar ambas ruletas</span></div>
+                        <div class="shortcut-item"><kbd>O</kbd><span>Ocultar / Mostrar listas</span></div>
                     </div>
                 </div>
             </div>
@@ -1175,11 +1179,11 @@ function autoGenerate(mode){
 
 function resetCanvasTransform(m) {
     if (state[m].animFrame) cancelAnimationFrame(state[m].animFrame);
-    state[m].rotation = 0;
     state[m].spinning = false;
     const canvas = document.getElementById(m === "first" ? "wheelFirst" : "wheelLast");
     if(canvas) {
-        canvas.style.transform = "rotate(0deg)";
+        canvas.style.transition = "none";
+        canvas.style.transform = `rotate(${state[m].rotation}deg)`;
     }
 }
 
@@ -1187,7 +1191,6 @@ function resetWheelOnly(mode) {
     if (!confirm("¿Estás seguro de que deseas reiniciar la ruleta?")) return;
 
     state[mode].spinning = false;
-    state[mode].rotation = 0;
     state[mode].active = state.participants.map(p => p.id);
 
     if (mode === "last") {
@@ -1211,6 +1214,14 @@ function resetWheelFromZero(mode) {
     document.getElementById("firstMax").value = 20;
     document.getElementById("lastMin").value = 1;
     document.getElementById("lastMax").value = 20;
+    
+    state[mode].rotation = 0;
+    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
+    if(canvas) {
+        canvas.style.transition = "none";
+        canvas.style.transform = "rotate(0deg)";
+    }
+
     autoGenerate(mode);
     document.getElementById(mode + "Status").innerHTML = "⚠️ Ruleta reiniciada desde 0.";
 }
@@ -1464,10 +1475,12 @@ function resetBreakWheelOnly(subMode) {
 
     const bState = state.break[subMode];
     bState.active = bState.items.map(p => p.id);
-    bState.rotation = 0;
 
     const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
-    if(canvas) canvas.style.transform = "rotate(0deg)";
+    if(canvas) {
+        canvas.style.transition = "none";
+        canvas.style.transform = `rotate(${bState.rotation}deg)`;
+    }
 
     renderBreakParticipants(subMode);
     drawBreakWheel(subMode);
@@ -1481,6 +1494,14 @@ function resetBreakFromZero(subMode) {
 
     document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Min`).value = 1;
     document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Max`).value = 10;
+
+    const bState = state.break[subMode];
+    bState.rotation = 0;
+    const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
+    if(canvas) {
+        canvas.style.transition = "none";
+        canvas.style.transform = "rotate(0deg)";
+    }
 
     autoGenerateBreak(subMode);
     document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Status`).innerHTML = "⚠️ Reiniciado desde 0.";
@@ -1708,7 +1729,7 @@ function showBreakMatch(prize, person) {
     const winnerName = document.getElementById("winnerName");
     const gifContainer = document.getElementById("modalGifContainer");
 
-    gifContainer.style.display = "none"; // Ocultar GIF en Modo Break
+    gifContainer.style.display = "none";
     modalCard.classList.remove("eliminated-modal");
     winnerName.classList.remove("eliminated-box");
 
@@ -1926,9 +1947,14 @@ document.addEventListener("keydown", (event) => {
         }
     }
 
-    if (event.code === "KeyR" && activeMode !== "break") {
+    if (event.code === "KeyR") {
         event.preventDefault();
-        resetWheelOnly(activeMode);
+        if (activeMode === "break") {
+            resetBreakWheelOnly('prizes');
+            resetBreakWheelOnly('people');
+        } else {
+            resetWheelOnly(activeMode);
+        }
     }
 
     if (event.code === "KeyV" && activeMode === "last") {
@@ -1936,9 +1962,14 @@ document.addEventListener("keydown", (event) => {
         undoLast();
     }
 
-    if (event.code === "KeyO" && activeMode !== "break") {
+    if (event.code === "KeyO") {
         event.preventDefault();
-        toggleParticipants(activeMode);
+        if (activeMode === "break") {
+            toggleBreakParticipants('prizes');
+            toggleBreakParticipants('people');
+        } else {
+            toggleParticipants(activeMode);
+        }
     }
 });
 
