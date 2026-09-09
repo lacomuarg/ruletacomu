@@ -2,9 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>La ruleta de La Comu Argentina · Eliminaciones</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La ruleta de La Comu Argentina</title>
 
 <style>
 :root {
@@ -22,15 +21,18 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-body {
+html, body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--azul-oscuro);
   background: radial-gradient(circle at 10% 0%, #b7f3fa 0%, transparent 30%),
               linear-gradient(135deg, #ffffff, #e8fbff, #ffffff);
   min-height: 100vh;
+  touch-action: manipulation;
 }
 
 header {
@@ -105,7 +107,7 @@ header {
   font-weight: 900;
   font-size: 12px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .tab.active {
@@ -123,7 +125,6 @@ header {
   display: block;
 }
 
-/* Layout por defecto (Mobile Vertical) */
 .layout-3col {
   display: flex;
   flex-direction: column;
@@ -177,12 +178,6 @@ input, select, textarea {
   background: white;
 }
 
-textarea {
-  resize: vertical;
-  min-height: 120px;
-  font-family: inherit;
-}
-
 .actions {
   display: flex;
   gap: 6px;
@@ -202,10 +197,19 @@ textarea {
   font-weight: 900;
   font-size: 12px;
   cursor: pointer;
-  transition: 0.18s;
+  transition: transform 0.1s, opacity 0.2s;
   text-align: center;
   text-decoration: none;
   display: inline-block;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .spin-button {
@@ -277,7 +281,6 @@ textarea {
   grid-template-columns: 35px 1fr auto;
   gap: 6px;
   align-items: center;
-  transition: all 0.2s ease;
 }
 
 .person.eliminated {
@@ -319,32 +322,27 @@ textarea {
   align-items: center;
 }
 
-/* Solución del temblor en iOS: Dimensiones fijas con aspect-ratio y backface-visibility */
 .wheel-box {
   position: relative;
-  width: min(88vw, var(--wheel-max-width));
-  height: min(88vw, var(--wheel-max-width));
+  width: min(85vw, var(--wheel-max-width));
+  height: min(85vw, var(--wheel-max-width));
   aspect-ratio: 1 / 1;
   margin: 10px auto 15px;
   flex-shrink: 0;
-  transition: width 0.3s ease, height 0.3s ease;
   transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
-#wheelFirst,
-#wheelLast,
-#wheelBreakPrizes,
-#wheelBreakPeople {
+canvas {
   width: 100%;
   height: 100%;
   display: block;
   border-radius: 50%;
-  transition: transform 5.5s cubic-bezier(0.08, 0.82, 0.13, 1);
   filter: drop-shadow(0 6px 12px rgba(7, 82, 127, 0.2));
   cursor: pointer;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  will-change: transform;
+  transform-origin: center center;
 }
 
 .pointer {
@@ -375,11 +373,6 @@ textarea {
   border: 4px solid var(--azul);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.wheel-center:hover {
-  transform: translate(-50%, -50%) scale(1.08);
 }
 
 .wheel-center::after {
@@ -403,6 +396,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 .right-sidebar {
@@ -447,6 +441,11 @@ textarea {
   font-size: 11px;
 }
 
+.history-item.match {
+  border-left-color: var(--celeste);
+  background: var(--celeste-claro);
+}
+
 .overlay {
   display: none;
   position: fixed;
@@ -489,6 +488,7 @@ textarea {
   overflow: hidden;
   background: #000;
   position: relative;
+  display: block;
 }
 
 .victory-gif-container iframe {
@@ -511,13 +511,13 @@ textarea {
 }
 
 .winner-name {
-  font-size: 16px;
-  font-weight: 1000;
+  font-size: 18px;
+  font-weight: 900;
   color: var(--azul-oscuro);
   margin: 8px 0 12px 0;
-  padding: 8px;
+  padding: 12px;
   background: #e8fbff;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 2px dashed #65d9e7;
 }
 
@@ -525,6 +525,24 @@ textarea {
   background: #fff0f2;
   border-color: #ffd0d7;
   color: #bd3047;
+}
+
+.break-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.break-wheels-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  .break-wheels-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .keyboard-shortcuts-card {
@@ -580,7 +598,7 @@ textarea {
 .credit {
   position: static;
   text-align: center;
-  margin: 10px 0 5px;
+  margin: 10px 0 15px;
   font-size: 10px;
   font-weight: 900;
   color: #54798b;
@@ -592,20 +610,6 @@ textarea {
   cursor: pointer;
 }
 
-/* Estilos Modo Break */
-.break-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-@media (max-width: 800px) {
-  .break-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Modo Horizontal para Celulares y Tablets */
 @media (orientation: landscape) and (max-width: 949px) {
   .layout-3col {
     display: grid;
@@ -614,37 +618,18 @@ textarea {
     align-items: start;
   }
   
-  .order-wheel {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .order-sidebar {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .order-config {
-    grid-column: 1 / span 2;
-    grid-row: 2;
-  }
+  .order-wheel { grid-column: 1; grid-row: 1; }
+  .order-sidebar { grid-column: 2; grid-row: 1; }
+  .order-config { grid-column: 1 / span 2; grid-row: 2; }
 
   .wheel-box {
-    width: min(75vh, 480px);
-    height: min(75vh, 480px);
-    max-width: 100%;
-  }
-
-  .history-list {
-    max-height: 50vh;
+    width: min(70vh, 420px);
+    height: min(70vh, 420px);
   }
 }
 
-/* Pantallas grandes (Escritorio) */
 @media (min-width: 950px) {
-  .keyboard-shortcuts-card {
-    display: block;
-  }
+  .keyboard-shortcuts-card { display: block; }
 
   .layout-3col {
     display: grid;
@@ -661,13 +646,8 @@ textarea {
     grid-template-columns: 1fr 320px;
   }
 
-  .people {
-    max-height: 420px;
-  }
-
-  .history-list {
-    max-height: 280px;
-  }
+  .people { max-height: 420px; }
+  .history-list { max-height: 280px; }
 
   .pointer {
     border-left-width: 18px;
@@ -699,7 +679,7 @@ textarea {
 
 <header>
     <div class="logo-title">
-        <img src="logo.png" alt="Logo">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         <div>
             <div class="title" id="mainHeaderTitle">La ruleta de La Comu Argentina</div>
             <div class="subtitle">Sorteos · Eliminaciones</div>
@@ -713,7 +693,7 @@ textarea {
     <div class="tabs">
         <button class="tab active" data-mode="first">🥇 Primer número</button>
         <button class="tab" data-mode="last">🏆 Último número en pie</button>
-        <button class="tab" data-mode="break">🔥 Modo Break (BETA)</button>
+        <button class="tab" data-mode="break">🔥 Modo Break</button>
     </div>
 
     <section id="first" class="mode active">
@@ -728,7 +708,7 @@ textarea {
 
                     <div class="wheel-box">
                         <div class="pointer"></div>
-                        <canvas id="wheelFirst" width="900" height="900" onclick="spinRoulette('first')"></canvas>
+                        <canvas id="wheelFirst" onclick="spinRoulette('first')"></canvas>
                         <div class="wheel-center" onclick="spinRoulette('first')"></div>
                     </div>
 
@@ -737,17 +717,11 @@ textarea {
                     </button>
 
                     <div class="reset-controls">
-                        <button class="btn danger" onclick="resetWheelOnly('first')">
-                            🔄 Reiniciar ruleta
-                        </button>
-                        <button class="btn danger" onclick="resetWheelFromZero('first')">
-                            ⚠️ Reiniciar de 0
-                        </button>
+                        <button class="btn danger" onclick="resetWheelOnly('first')">🔄 Reiniciar ruleta</button>
+                        <button class="btn danger" onclick="resetWheelFromZero('first')">⚠️ Reiniciar de 0</button>
                     </div>
 
-                    <div id="firstStatus" class="status">
-                        Preparado. <strong>¡Mucha suerte!</strong>
-                    </div>
+                    <div id="firstStatus" class="status">Preparado. <strong>¡Mucha suerte!</strong></div>
                 </div>
             </div>
 
@@ -755,18 +729,9 @@ textarea {
                 <div class="keyboard-shortcuts-card">
                     <div class="shortcuts-title">⌨️ Atajos de teclado</div>
                     <div class="shortcuts-grid">
-                        <div class="shortcut-item">
-                            <kbd>Espacio</kbd>
-                            <span>Girar / Cerrar cartel</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>R</kbd>
-                            <span>Reiniciar ruleta</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>O</kbd>
-                            <span>Ocultar / Mostrar lista</span>
-                        </div>
+                        <div class="shortcut-item"><kbd>Espacio</kbd><span>Girar / Cerrar cartel</span></div>
+                        <div class="shortcut-item"><kbd>R</kbd><span>Reiniciar ruleta</span></div>
+                        <div class="shortcut-item"><kbd>O</kbd><span>Ocultar / Mostrar lista</span></div>
                     </div>
                 </div>
             </div>
@@ -825,7 +790,7 @@ textarea {
 
                     <div class="wheel-box">
                         <div class="pointer"></div>
-                        <canvas id="wheelLast" width="900" height="900" onclick="spinRoulette('last')"></canvas>
+                        <canvas id="wheelLast" onclick="spinRoulette('last')"></canvas>
                         <div class="wheel-center" onclick="spinRoulette('last')"></div>
                     </div>
 
@@ -834,17 +799,11 @@ textarea {
                     </button>
 
                     <div class="reset-controls">
-                        <button class="btn danger" onclick="resetWheelOnly('last')">
-                            🔄 Reiniciar ruleta
-                        </button>
-                        <button class="btn danger" onclick="resetWheelFromZero('last')">
-                            ⚠️ Reiniciar de 0
-                        </button>
+                        <button class="btn danger" onclick="resetWheelOnly('last')">🔄 Reiniciar ruleta</button>
+                        <button class="btn danger" onclick="resetWheelFromZero('last')">⚠️ Reiniciar de 0</button>
                     </div>
 
-                    <div id="lastStatus" class="status">
-                        Cada giro elimina un participante. <strong>El último gana.</strong>
-                    </div>
+                    <div id="lastStatus" class="status">Cada giro elimina un participante. <strong>El último gana.</strong></div>
                 </div>
             </div>
 
@@ -860,22 +819,10 @@ textarea {
                 <div class="keyboard-shortcuts-card">
                     <div class="shortcuts-title">⌨️ Atajos de teclado</div>
                     <div class="shortcuts-grid">
-                        <div class="shortcut-item">
-                            <kbd>Espacio</kbd>
-                            <span>Girar / Cerrar cartel</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>R</kbd>
-                            <span>Reiniciar ruleta</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>V</kbd>
-                            <span>Deshacer eliminado</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>O</kbd>
-                            <span>Ocultar / Mostrar lista</span>
-                        </div>
+                        <div class="shortcut-item"><kbd>Espacio</kbd><span>Girar / Cerrar cartel</span></div>
+                        <div class="shortcut-item"><kbd>R</kbd><span>Reiniciar ruleta</span></div>
+                        <div class="shortcut-item"><kbd>V</kbd><span>Deshacer eliminado</span></div>
+                        <div class="shortcut-item"><kbd>O</kbd><span>Ocultar / Mostrar lista</span></div>
                     </div>
                 </div>
             </div>
@@ -923,53 +870,145 @@ textarea {
     </section>
 
     <section id="break" class="mode">
-        <div class="break-grid">
+        <div class="break-layout">
             
-            <div class="card">
-                <h2>🎁 Ruleta 1: Premios / Ítems</h2>
-                <div class="wheel-area">
-                    <div class="wheel-box">
-                        <div class="pointer"></div>
-                        <canvas id="wheelBreakPrizes" width="900" height="900" onclick="spinBreak('prizes')"></canvas>
-                        <div class="wheel-center" onclick="spinBreak('prizes')"></div>
-                    </div>
-
-                    <button id="breakPrizesSpin" class="btn primary spin-button" onclick="spinBreak('prizes')">
-                        🎯 GIRAR PREMIOS
-                    </button>
-
-                    <div id="breakPrizesStatus" class="status">
-                        Añade elementos abajo.
-                    </div>
-                </div>
-
-                <div style="margin-top: 12px;">
-                    <label>Premios / Ítems (uno por línea):</label>
-                    <textarea id="breakPrizesInput" oninput="updateBreakList('prizes')">Premio 1&#10;Premio 2&#10;Premio 3&#10;Premio 4</textarea>
-                </div>
+            <div style="text-align:center; margin-bottom: 8px;">
+                <button id="breakBothSpin" class="btn primary spin-button" style="max-width: 400px;" onclick="spinBreakSimultaneous()">
+                    🎯 GIRAR AMBAS RULETAS
+                </button>
             </div>
 
-            <div class="card">
-                <h2>👥 Ruleta 2: Participantes</h2>
-                <div class="wheel-area">
-                    <div class="wheel-box">
-                        <div class="pointer"></div>
-                        <canvas id="wheelBreakPeople" width="900" height="900" onclick="spinBreak('people')"></canvas>
-                        <div class="wheel-center" onclick="spinBreak('people')"></div>
+            <div class="break-wheels-grid">
+                
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h2>🎁 Ruleta 1: Premios / Ítems</h2>
+                        <button class="btn soft" id="btnShowBreakPrizes" style="display:none;" onclick="toggleBreakParticipants('prizes')">👁️ Mostrar</button>
+                    </div>
+                    
+                    <div class="wheel-area">
+                        <div class="wheel-box">
+                            <div class="pointer"></div>
+                            <canvas id="wheelBreakPrizes" onclick="spinBreakSimultaneous()"></canvas>
+                            <div class="wheel-center" onclick="spinBreakSimultaneous()"></div>
+                        </div>
+                        <div id="breakPrizesStatus" class="status">Añade elementos abajo.</div>
                     </div>
 
-                    <button id="breakPeopleSpin" class="btn primary spin-button" onclick="spinBreak('people')">
-                        🎯 GIRAR PARTICIPANTES
-                    </button>
+                    <div id="breakPrizesConfigCard" class="card card-participants" style="margin-top: 12px; box-shadow:none; border: 1px solid #d7eef3;">
+                        <h2>⚙️ Configuración Premios</h2>
+                        <div class="controls">
+                            <div>
+                                <label>Desde Nº</label>
+                                <input id="breakPrizesMin" type="number" value="1" oninput="autoGenerateBreak('prizes')">
+                            </div>
+                            <div>
+                                <label>Hasta Nº</label>
+                                <input id="breakPrizesMax" type="number" value="10" oninput="autoGenerateBreak('prizes')">
+                            </div>
+                            <div>
+                                <label>Tamaño</label>
+                                <select id="breakPrizesWheelSize" onchange="changeWheelSize(this.value)">
+                                    <option value="320px">Pequeño</option>
+                                    <option value="440px" selected>Normal</option>
+                                    <option value="580px">Grande</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Estado</label>
+                                <span id="breakPrizesBadge" class="badge">0 activos</span>
+                            </div>
+                        </div>
 
-                    <div id="breakPeopleStatus" class="status">
-                        Añade participantes abajo.
+                        <div class="actions">
+                            <button class="btn soft" onclick="toggleBreakParticipants('prizes')">👁️ Ocultar</button>
+                            <button class="btn soft" onclick="clearBreakList('prizes')">Limpiar</button>
+                            <button class="btn soft" onclick="restoreBreakNumbers('prizes')">Restaurar números</button>
+                        </div>
+
+                        <div class="reset-controls">
+                            <button class="btn danger" onclick="resetBreakWheelOnly('prizes')">🔄 Reiniciar ruleta</button>
+                            <button class="btn danger" onclick="resetBreakFromZero('prizes')">⚠️ Reiniciar de 0</button>
+                        </div>
+
+                        <div class="participants-header">
+                            <h2 style="font-size:14px">Lista de Premios</h2>
+                        </div>
+                        <div id="breakPrizesPeople" class="people"></div>
                     </div>
                 </div>
 
-                <div style="margin-top: 12px;">
-                    <label>Participantes (uno por línea):</label>
-                    <textarea id="breakPeopleInput" oninput="updateBreakList('people')">Participante 1&#10;Participante 2&#10;Participante 3&#10;Participante 4</textarea>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h2>👥 Ruleta 2: Participantes</h2>
+                        <button class="btn soft" id="btnShowBreakPeople" style="display:none;" onclick="toggleBreakParticipants('people')">👁️ Mostrar</button>
+                    </div>
+
+                    <div class="wheel-area">
+                        <div class="wheel-box">
+                            <div class="pointer"></div>
+                            <canvas id="wheelBreakPeople" onclick="spinBreakSimultaneous()"></canvas>
+                            <div class="wheel-center" onclick="spinBreakSimultaneous()"></div>
+                        </div>
+                        <div id="breakPeopleStatus" class="status">Añade participantes abajo.</div>
+                    </div>
+
+                    <div id="breakPeopleConfigCard" class="card card-participants" style="margin-top: 12px; box-shadow:none; border: 1px solid #d7eef3;">
+                        <h2>⚙️ Configuración Participantes</h2>
+                        <div class="controls">
+                            <div>
+                                <label>Desde Nº</label>
+                                <input id="breakPeopleMin" type="number" value="1" oninput="autoGenerateBreak('people')">
+                            </div>
+                            <div>
+                                <label>Hasta Nº</label>
+                                <input id="breakPeopleMax" type="number" value="10" oninput="autoGenerateBreak('people')">
+                            </div>
+                            <div>
+                                <label>Tamaño</label>
+                                <select id="breakPeopleWheelSize" onchange="changeWheelSize(this.value)">
+                                    <option value="320px">Pequeño</option>
+                                    <option value="440px" selected>Normal</option>
+                                    <option value="580px">Grande</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Estado</label>
+                                <span id="breakPeopleBadge" class="badge">0 activos</span>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn soft" onclick="toggleBreakParticipants('people')">👁️ Ocultar</button>
+                            <button class="btn soft" onclick="clearBreakList('people')">Limpiar</button>
+                            <button class="btn soft" onclick="restoreBreakNumbers('people')">Restaurar números</button>
+                        </div>
+
+                        <div class="reset-controls">
+                            <button class="btn danger" onclick="resetBreakWheelOnly('people')">🔄 Reiniciar ruleta</button>
+                            <button class="btn danger" onclick="resetBreakFromZero('people')">⚠️ Reiniciar de 0</button>
+                        </div>
+
+                        <div class="participants-header">
+                            <h2 style="font-size:14px">Lista de Participantes</h2>
+                        </div>
+                        <div id="breakPeoplePeople" class="people"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+                <div class="card history">
+                    <h2>🤝 Historial de Matches (Premio + Participante)</h2>
+                    <div id="breakHistory" class="history-list"></div>
+                </div>
+
+                <div class="keyboard-shortcuts-card" style="display: block;">
+                    <div class="shortcuts-title">⌨️ Atajos de teclado</div>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item"><kbd>Espacio</kbd><span>Girar ambas / Cerrar</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -980,17 +1019,13 @@ textarea {
 
 <div id="victoryOverlay" class="overlay" onclick="closeOverlayOutside(event)">
     <div id="modalCard" class="victory">
-        <div class="victory-gif-container">
+        <div id="modalGifContainer" class="victory-gif-container">
             <iframe id="modalGif" src="" width="480" height="379" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
         </div>
 
-        <h2 id="modalTitle">¡TENEMOS GANADOR!</h2>
-
+        <h2 id="modalTitle">¡RESULTADO!</h2>
         <div id="winnerName" class="winner-name"></div>
-
-        <button class="btn primary" onclick="closeVictory()">
-            Cerrar resultado
-        </button>
+        <button class="btn primary" onclick="closeVictory()">Cerrar resultado</button>
     </div>
 </div>
 
@@ -1018,8 +1053,11 @@ const state = {
         animFrame: null
     },
     break: {
-        prizes: { items: [], rotation: 0, spinning: false, animFrame: null },
-        people: { items: [], rotation: 0, spinning: false, animFrame: null }
+        prizes: { items: [], active: [], rotation: 0, spinning: false, animFrame: null },
+        people: { items: [], active: [], rotation: 0, spinning: false, animFrame: null },
+        history: [],
+        lastMatch: null,
+        spinning: false
     }
 };
 
@@ -1045,8 +1083,7 @@ function escapeHTML(text){
 
 function changeWheelSize(size) {
     document.documentElement.style.setProperty('--wheel-max-width', size);
-    document.getElementById("firstWheelSize").value = size;
-    document.getElementById("lastWheelSize").value = size;
+    document.querySelectorAll("select[id$='WheelSize']").forEach(s => s.value = size);
 }
 
 function toggleParticipants(mode) {
@@ -1061,7 +1098,20 @@ function toggleParticipants(mode) {
     }
 }
 
-function generateRangeParticipants(minVal, maxVal){
+function toggleBreakParticipants(subMode) {
+    const card = document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}ConfigCard`);
+    const btnShow = document.getElementById(`btnShowBreak${subMode === 'prizes' ? 'Prizes' : 'People'}`);
+    
+    if (card.style.display === "none") {
+        card.style.display = "block";
+        btnShow.style.display = "none";
+    } else {
+        card.style.display = "none";
+        btnShow.style.display = "inline-block";
+    }
+}
+
+function generateRangeParticipants(minVal, maxVal, currentList = []){
     let min = parseInt(minVal);
     let max = parseInt(maxVal);
 
@@ -1080,7 +1130,7 @@ function generateRangeParticipants(minVal, maxVal){
 
     const list = [];
     for (let i = min; i <= max; i++) {
-        const existing = state.participants.find(p => p.id === i);
+        const existing = currentList.find(p => p.id === i);
         list.push({ id: i, text: existing ? existing.text : "" });
     }
 
@@ -1104,7 +1154,7 @@ function autoGenerate(mode){
     const minInput = document.getElementById(mode + "Min").value;
     const maxInput = document.getElementById(mode + "Max").value;
 
-    state.participants = generateRangeParticipants(minInput, maxInput);
+    state.participants = generateRangeParticipants(minInput, maxInput, state.participants);
     
     state.first.active = state.participants.map(p => p.id);
     state.last.active = state.participants.map(p => p.id);
@@ -1129,7 +1179,6 @@ function resetCanvasTransform(m) {
     state[m].spinning = false;
     const canvas = document.getElementById(m === "first" ? "wheelFirst" : "wheelLast");
     if(canvas) {
-        canvas.style.transition = "none";
         canvas.style.transform = "rotate(0deg)";
     }
 }
@@ -1210,10 +1259,17 @@ function syncParticipantTexts(id, text) {
     });
 }
 
+function setupCanvas(canvas) {
+    const size = 900;
+    canvas.width = size;
+    canvas.height = size;
+    return canvas.getContext("2d");
+}
+
 function drawWheel(mode){
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     if(!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = setupCanvas(canvas);
     const size = 900;
     const center = 450;
     const radius = 410;
@@ -1259,8 +1315,8 @@ function drawWheel(mode){
         ctx.textAlign = "right";
         ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
 
-        let fontSize = Math.max(6, Math.min(38, 750 / active.length));
-        ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+        let fontSize = Math.max(8, Math.min(36, 750 / active.length));
+        ctx.font = `900 ${fontSize}px sans-serif`;
         
         const textDistance = active.length > 80 ? radius - 8 : radius - 14;
         ctx.fillText(text, textDistance, fontSize / 3.2);
@@ -1291,42 +1347,37 @@ function updateRouletteUI(mode){
     }
 }
 
-/* Solución del temblor en iOS al rastrear el giro en tiempo real */
 function trackLiveSpin(mode) {
     const modeState = state[mode];
     const statusEl = document.getElementById(mode + "Status");
-    const startTime = performance.now();
-    const duration = 5500;
-    const startRotation = modeState.startRotation;
-    const targetRotation = modeState.rotation;
+    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
 
-    function cubicBezier(t) {
-        return t * t * (3 - 2 * t);
-    }
-
-    function update(now) {
+    function update() {
         if (!modeState.spinning) return;
 
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeProgress = cubicBezier(progress);
-        const currentAngleDegree = (startRotation + (targetRotation - startRotation) * easeProgress) % 360;
+        const style = window.getComputedStyle(canvas);
+        const matrix = new WebKitCSSMatrix(style.transform);
+        
+        let angleDeg = Math.round(Math.atan2(matrix.b, matrix.a) * (180 / Math.PI));
+        if (angleDeg < 0) angleDeg += 360;
 
-        const activeCount = modeState.active.length;
-        if (activeCount > 0) {
-            const sliceAngle = 360 / activeCount;
-            const adjustedDeg = (360 - (currentAngleDegree % 360)) % 360;
-            const currentIndex = Math.floor(adjustedDeg / sliceAngle) % activeCount;
+        const activeList = modeState.active;
+        const count = activeList.length;
+
+        if (count > 0) {
+            const sliceAngle = 360 / count;
+            const currentPointerDegree = (360 - angleDeg) % 360;
+            const currentIndex = Math.floor(currentPointerDegree / sliceAngle) % count;
             
-            const currentId = modeState.active[currentIndex];
+            const currentId = activeList[currentIndex];
             const p = state.participants.find(item => item.id === currentId);
             
-            statusEl.innerHTML = `🎡 Paso por: <strong>Nº ${currentId}</strong> ${p?.text ? '— ' + escapeHTML(p.text) : ''}`;
+            if (statusEl) {
+                statusEl.innerHTML = `🎡 Tocando: <strong>Nº ${currentId}</strong> ${p?.text ? '— ' + escapeHTML(p.text) : ''}`;
+            }
         }
 
-        if (progress < 1) {
-            modeState.animFrame = requestAnimationFrame(update);
-        }
+        modeState.animFrame = requestAnimationFrame(update);
     }
 
     modeState.animFrame = requestAnimationFrame(update);
@@ -1358,7 +1409,6 @@ function spinRoulette(mode){
     const extraSpins = 360 * 7;
     const totalAddedRotation = extraSpins + neededDegree;
 
-    modeState.startRotation = modeState.rotation;
     modeState.rotation += totalAddedRotation;
 
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
@@ -1392,30 +1442,86 @@ function spinRoulette(mode){
     }, 5700);
 }
 
-/* LÓGICA MODO BREAK */
+/* --- MODO BREAK --- */
 
-function updateBreakList(subMode) {
-    const text = document.getElementById(subMode === "prizes" ? "breakPrizesInput" : "breakPeopleInput").value;
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    state.break[subMode].items = lines;
+function autoGenerateBreak(subMode) {
+    if (state.break.spinning) return;
+
+    const minInput = document.getElementById(`break${subMode === "prizes" ? "Prizes" : "People"}Min`).value;
+    const maxInput = document.getElementById(`break${subMode === "prizes" ? "Prizes" : "People"}Max`).value;
+
+    const bState = state.break[subMode];
+    bState.items = generateRangeParticipants(minInput, maxInput, bState.items);
+    bState.active = bState.items.map(p => p.id);
+
+    renderBreakParticipants(subMode);
     drawBreakWheel(subMode);
-    
-    const btn = document.getElementById(subMode === "prizes" ? "breakPrizesSpin" : "breakPeopleSpin");
-    if(btn) btn.disabled = lines.length === 0 || state.break[subMode].spinning;
+    updateBreakUI(subMode);
+}
+
+function resetBreakWheelOnly(subMode) {
+    if (!confirm("¿Estás seguro de reiniciar esta ruleta?")) return;
+
+    const bState = state.break[subMode];
+    bState.active = bState.items.map(p => p.id);
+    bState.rotation = 0;
+
+    const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
+    if(canvas) canvas.style.transform = "rotate(0deg)";
+
+    renderBreakParticipants(subMode);
+    drawBreakWheel(subMode);
+    updateBreakUI(subMode);
+
+    document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Status`).innerHTML = "🔄 Ruleta reiniciada.";
+}
+
+function resetBreakFromZero(subMode) {
+    if (!confirm("¿Estás seguro de reiniciar todo desde 0?")) return;
+
+    document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Min`).value = 1;
+    document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Max`).value = 10;
+
+    autoGenerateBreak(subMode);
+    document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Status`).innerHTML = "⚠️ Reiniciado desde 0.";
+}
+
+function renderBreakParticipants(subMode) {
+    const container = document.getElementById(`break${subMode === "prizes" ? "Prizes" : "People"}People`);
+    if (!container) return;
+    container.innerHTML = "";
+
+    const bState = state.break[subMode];
+    bState.items.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "person";
+        row.innerHTML = `
+            <div class="number">${p.id}</div>
+            <input maxlength="80" value="${escapeHTML(p.text)}" placeholder="${subMode === 'prizes' ? 'Premio' : 'Nombre'}">
+        `;
+
+        const input = row.querySelector("input");
+        input.addEventListener("input", function() {
+            p.text = this.value;
+            drawBreakWheel(subMode);
+        });
+
+        container.appendChild(row);
+    });
 }
 
 function drawBreakWheel(subMode) {
     const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
-    if(!canvas) return;
-    const ctx = canvas.getContext("2d");
+    if (!canvas) return;
+    const ctx = setupCanvas(canvas);
     const size = 900;
     const center = 450;
     const radius = 410;
-    const items = state.break[subMode].items;
+    const active = state.break[subMode].active;
 
     ctx.clearRect(0, 0, size, size);
 
-    if(items.length === 0){
+    if (active.length === 0) {
         ctx.beginPath();
         ctx.arc(center, center, radius, 0, Math.PI * 2);
         ctx.fillStyle = "#e8fbff";
@@ -1426,9 +1532,9 @@ function drawBreakWheel(subMode) {
         return;
     }
 
-    const slice = Math.PI * 2 / items.length;
+    const slice = Math.PI * 2 / active.length;
 
-    items.forEach((itemText, index) => {
+    active.forEach((id, index) => {
         const start = -Math.PI / 2 + index * slice;
         const end = start + slice;
 
@@ -1441,8 +1547,11 @@ function drawBreakWheel(subMode) {
         ctx.fill();
 
         ctx.strokeStyle = "#07527f";
-        ctx.lineWidth = items.length > 80 ? 1 : 3;
+        ctx.lineWidth = active.length > 80 ? 1 : 3;
         ctx.stroke();
+
+        const item = state.break[subMode].items.find(p => p.id === id);
+        let text = item?.text ? `${id} · ${item.text}` : String(id);
 
         ctx.save();
         ctx.translate(center, center);
@@ -1450,10 +1559,10 @@ function drawBreakWheel(subMode) {
         ctx.textAlign = "right";
         ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
 
-        let fontSize = Math.max(10, Math.min(38, 750 / items.length));
-        ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+        let fontSize = Math.max(8, Math.min(36, 750 / active.length));
+        ctx.font = `900 ${fontSize}px sans-serif`;
         
-        ctx.fillText(itemText, radius - 14, fontSize / 3.2);
+        ctx.fillText(text, radius - 14, fontSize / 3.2);
         ctx.restore();
     });
 
@@ -1464,41 +1573,153 @@ function drawBreakWheel(subMode) {
     ctx.stroke();
 }
 
-function spinBreak(subMode) {
+function updateBreakUI(subMode) {
+    const active = state.break[subMode].active.length;
+    const badge = document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Badge`);
+    if (badge) badge.textContent = active + " activos";
+
+    const btnBoth = document.getElementById("breakBothSpin");
+    if (btnBoth) {
+        btnBoth.disabled = state.break.spinning || state.break.prizes.active.length === 0 || state.break.people.active.length === 0;
+    }
+}
+
+function trackBreakLiveSpin(subMode) {
     const bState = state.break[subMode];
-    if (bState.spinning || bState.items.length === 0) return;
-
-    bState.spinning = true;
-    const btn = document.getElementById(subMode === "prizes" ? "breakPrizesSpin" : "breakPeopleSpin");
-    if(btn) btn.disabled = true;
-
-    const index = randomNumber(bState.items.length);
-    const selectedItem = bState.items[index];
-
-    const numSlices = bState.items.length;
-    const sliceAngle = 360 / numSlices;
-    const centerOfSliceDegree = index * sliceAngle + (sliceAngle / 2);
-    const currentModulo = bState.rotation % 360;
-    const neededDegree = (360 - centerOfSliceDegree - currentModulo + 360) % 360;
-    const extraSpins = 360 * 7;
-    const totalAddedRotation = extraSpins + neededDegree;
-
-    bState.rotation += totalAddedRotation;
-
+    const statusEl = document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Status`);
     const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
-    canvas.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
-    canvas.style.transform = `rotate(${bState.rotation}deg)`;
 
-    const statusEl = document.getElementById(subMode === "prizes" ? "breakPrizesStatus" : "breakPeopleStatus");
-    statusEl.innerHTML = "🎡 Girando...";
+    function update() {
+        if (!bState.spinning) return;
+
+        const style = window.getComputedStyle(canvas);
+        const matrix = new WebKitCSSMatrix(style.transform);
+        
+        let angleDeg = Math.round(Math.atan2(matrix.b, matrix.a) * (180 / Math.PI));
+        if (angleDeg < 0) angleDeg += 360;
+
+        const activeList = bState.active;
+        const count = activeList.length;
+
+        if (count > 0) {
+            const sliceAngle = 360 / count;
+            const currentPointerDegree = (360 - angleDeg) % 360;
+            const currentIndex = Math.floor(currentPointerDegree / sliceAngle) % count;
+            
+            const currentId = activeList[currentIndex];
+            const item = bState.items.find(p => p.id === currentId);
+            
+            if (statusEl) {
+                statusEl.innerHTML = `🎡 Tocando: <strong>Nº ${currentId}</strong> ${item?.text ? '— ' + escapeHTML(item.text) : ''}`;
+            }
+        }
+
+        bState.animFrame = requestAnimationFrame(update);
+    }
+
+    bState.animFrame = requestAnimationFrame(update);
+}
+
+function spinBreakSimultaneous() {
+    if (state.break.spinning) return;
+    const prizesActive = state.break.prizes.active;
+    const peopleActive = state.break.people.active;
+
+    if (prizesActive.length === 0 || peopleActive.length === 0) return;
+
+    state.break.spinning = true;
+    state.break.prizes.spinning = true;
+    state.break.people.spinning = true;
+    updateBreakUI('prizes');
+    updateBreakUI('people');
+
+    // Selección Premio
+    const prizeIndex = randomNumber(prizesActive.length);
+    const prizeId = prizesActive[prizeIndex];
+    const prizeObj = state.break.prizes.items.find(p => p.id === prizeId);
+
+    // Selección Participante
+    const peopleIndex = randomNumber(peopleActive.length);
+    const peopleId = peopleActive[peopleIndex];
+    const peopleObj = state.break.people.items.find(p => p.id === peopleId);
+
+    // Giros Ruleta 1
+    const pSlices = prizesActive.length;
+    const pSliceAngle = 360 / pSlices;
+    const pCenterDegree = prizeIndex * pSliceAngle + (pSliceAngle / 2);
+    const pCurrentModulo = state.break.prizes.rotation % 360;
+    const pNeededDegree = (360 - pCenterDegree - pCurrentModulo + 360) % 360;
+    state.break.prizes.rotation += (360 * 7) + pNeededDegree;
+
+    // Giros Ruleta 2
+    const peSlices = peopleActive.length;
+    const peSliceAngle = 360 / peSlices;
+    const peCenterDegree = peopleIndex * peSliceAngle + (peSliceAngle / 2);
+    const peCurrentModulo = state.break.people.rotation % 360;
+    const peNeededDegree = (360 - peCenterDegree - peCurrentModulo + 360) % 360;
+    state.break.people.rotation += (360 * 7) + peNeededDegree;
+
+    const canvasPrizes = document.getElementById("wheelBreakPrizes");
+    const canvasPeople = document.getElementById("wheelBreakPeople");
+
+    canvasPrizes.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
+    canvasPrizes.style.transform = `rotate(${state.break.prizes.rotation}deg)`;
+
+    canvasPeople.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
+    canvasPeople.style.transform = `rotate(${state.break.people.rotation}deg)`;
+
+    trackBreakLiveSpin('prizes');
+    trackBreakLiveSpin('people');
 
     setTimeout(() => {
-        bState.spinning = false;
-        if(btn) btn.disabled = false;
-        statusEl.innerHTML = `Seleccionado: <strong>${escapeHTML(selectedItem)}</strong>`;
+        state.break.spinning = false;
+        state.break.prizes.spinning = false;
+        state.break.people.spinning = false;
 
-        showWinner({ id: subMode === "prizes" ? "Premio" : "Participante", text: selectedItem });
+        if (state.break.prizes.animFrame) cancelAnimationFrame(state.break.prizes.animFrame);
+        if (state.break.people.animFrame) cancelAnimationFrame(state.break.people.animFrame);
+
+        document.getElementById("breakPrizesStatus").innerHTML = `Tocó: <strong>Nº ${prizeId}</strong> — ${escapeHTML(prizeObj.text || "Sin texto")}`;
+        document.getElementById("breakPeopleStatus").innerHTML = `Tocó: <strong>Nº ${peopleId}</strong> — ${escapeHTML(peopleObj.text || "Sin texto")}`;
+
+        state.break.lastMatch = { prize: prizeObj, person: peopleObj };
+
+        showBreakMatch(prizeObj, peopleObj);
+        updateBreakUI('prizes');
+        updateBreakUI('people');
     }, 5700);
+}
+
+function clearBreakList(subMode) {
+    state.break[subMode].items.forEach(p => p.text = "");
+    renderBreakParticipants(subMode);
+    drawBreakWheel(subMode);
+}
+
+function restoreBreakNumbers(subMode) {
+    state.break[subMode].items.forEach(p => p.text = String(p.id));
+    renderBreakParticipants(subMode);
+    drawBreakWheel(subMode);
+}
+
+function showBreakMatch(prize, person) {
+    const modalCard = document.getElementById("modalCard");
+    const modalTitle = document.getElementById("modalTitle");
+    const winnerName = document.getElementById("winnerName");
+    const gifContainer = document.getElementById("modalGifContainer");
+
+    gifContainer.style.display = "none"; // Ocultar GIF en Modo Break
+    modalCard.classList.remove("eliminated-modal");
+    winnerName.classList.remove("eliminated-box");
+
+    modalTitle.innerHTML = "¡TOCÓ!";
+    winnerName.innerHTML = `
+        <div style="margin: 8px 0; font-size: 16px;">🎁 Premio: <strong>Nº ${prize.id} ${escapeHTML(prize.text ? '— ' + prize.text : '')}</strong></div>
+        <div style="font-size: 20px; margin: 6px 0;">🤝</div>
+        <div style="margin: 8px 0; font-size: 16px;">👥 Participante: <strong>Nº ${person.id} ${escapeHTML(person.text ? '— ' + person.text : '')}</strong></div>
+    `;
+
+    document.getElementById("victoryOverlay").classList.add("show");
 }
 
 function renderHistory(){
@@ -1518,10 +1739,30 @@ function renderHistory(){
         const row = document.createElement("div");
         row.className = "history-item";
         row.innerHTML = `
-            <span>
-                <strong>Nº ${id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}
-            </span>
+            <span><strong>Nº ${id}</strong> — ${escapeHTML(participant?.text || "Sin texto")}</span>
             <b>❌</b>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function renderBreakHistory() {
+    const container = document.getElementById("breakHistory");
+    if (!container) return;
+
+    if (state.break.history.length === 0) {
+        container.innerHTML = `<div style="padding:4px; color:#678b99; font-size:10px;">Sin matches registrados.</div>`;
+        return;
+    }
+
+    container.innerHTML = "";
+
+    [...state.break.history].reverse().forEach(m => {
+        const row = document.createElement("div");
+        row.className = "history-item match";
+        row.innerHTML = `
+            <span>🎁 <strong>Nº ${m.prize.id} ${escapeHTML(m.prize.text)}</strong> 🤝 👥 <strong>Nº ${m.person.id} ${escapeHTML(m.person.text)}</strong></span>
+            <b>✅</b>
         `;
         container.appendChild(row);
     });
@@ -1567,17 +1808,18 @@ function showWinner(participant){
     const modalTitle = document.getElementById("modalTitle");
     const winnerName = document.getElementById("winnerName");
     const modalGif = document.getElementById("modalGif");
+    const gifContainer = document.getElementById("modalGifContainer");
 
+    gifContainer.style.display = "block";
     modalGif.src = "https://giphy.com/embed/OdOArbU8HKuWtuoBsf";
 
     modalCard.classList.remove("eliminated-modal");
     winnerName.classList.remove("eliminated-box");
 
     modalTitle.innerHTML = "¡TENEMOS GANADOR!";
-    winnerName.innerHTML = `${participant.id ? participant.id + '<br>' : ''}<small style="font-size:16px; font-weight:bold; color:#07527f;">${escapeHTML(participant.text || "Sin texto")}</small>`;
+    winnerName.innerHTML = `${participant.id ? 'Nº ' + participant.id + '<br>' : ''}<small style="font-size:16px; font-weight:bold; color:#07527f;">${escapeHTML(participant.text || "Sin texto")}</small>`;
     
     document.getElementById("victoryOverlay").classList.add("show");
-    createConfetti();
 }
 
 function showEliminated(participant){
@@ -1587,7 +1829,9 @@ function showEliminated(participant){
     const modalTitle = document.getElementById("modalTitle");
     const winnerName = document.getElementById("winnerName");
     const modalGif = document.getElementById("modalGif");
+    const gifContainer = document.getElementById("modalGifContainer");
 
+    gifContainer.style.display = "block";
     modalGif.src = "https://giphy.com/embed/hMDkLT1MkXJISMGCAO";
 
     modalCard.classList.add("eliminated-modal");
@@ -1606,13 +1850,30 @@ function closeVictory(){
     overlay.classList.remove("show");
     modalGif.src = "";
 
+    if (getActiveMode() === "break" && state.break.lastMatch) {
+        const match = state.break.lastMatch;
+        state.break.history.push(match);
+
+        state.break.prizes.active = state.break.prizes.active.filter(id => id !== match.prize.id);
+        state.break.people.active = state.break.people.active.filter(id => id !== match.person.id);
+
+        state.break.lastMatch = null;
+
+        renderBreakParticipants('prizes');
+        renderBreakParticipants('people');
+        drawBreakWheel('prizes');
+        drawBreakWheel('people');
+        updateBreakUI('prizes');
+        updateBreakUI('people');
+        renderBreakHistory();
+        return;
+    }
+
     if(state.last.active.length === 1 && state.last.eliminated.length > 0 && !state.last.winnerShown){
         state.last.winnerShown = true;
         const winner = state.participants.find(p => p.id === state.last.active[0]);
         if(winner) {
-            setTimeout(() => {
-                showWinner(winner);
-            }, 200);
+            setTimeout(() => { showWinner(winner); }, 200);
         }
     }
 }
@@ -1621,25 +1882,6 @@ function closeOverlayOutside(event) {
     if (event.target.id === "victoryOverlay") {
         closeVictory();
     }
-}
-
-function createConfetti(){
-    const container = document.getElementById("confetti");
-    if(!container) return;
-    container.innerHTML = "";
-    const colors = ["#20c4df", "#ffffff", "#07527f", "#ffd54d"];
-
-    for(let i = 0; i < 120; i++){
-        const piece = document.createElement("i");
-        piece.className = "confetti-piece";
-        piece.style.left = Math.random() * 100 + "%";
-        piece.style.background = colors[i % colors.length];
-        piece.style.setProperty("--move", (Math.random() * 100 - 50) + "vw");
-        piece.style.animationDelay = Math.random() * .5 + "s";
-        container.appendChild(piece);
-    }
-
-    setTimeout(() => { container.innerHTML = ""; }, 3500);
 }
 
 document.querySelectorAll(".tab").forEach(button => {
@@ -1653,9 +1895,10 @@ document.querySelectorAll(".tab").forEach(button => {
 
         const headerTitle = document.getElementById("mainHeaderTitle");
         if(targetMode === "break") {
-            headerTitle.textContent = "La ruleta de La Comu Argentina · BETA";
-            updateBreakList('prizes');
-            updateBreakList('people');
+            headerTitle.textContent = "La ruleta de La Comu Argentina · Break";
+            autoGenerateBreak('prizes');
+            autoGenerateBreak('people');
+            renderBreakHistory();
         } else {
             headerTitle.textContent = "La ruleta de La Comu Argentina";
             drawWheel(targetMode);
@@ -1676,7 +1919,9 @@ document.addEventListener("keydown", (event) => {
         event.preventDefault();
         if (isModalOpen) {
             closeVictory();
-        } else if (activeMode !== "break") {
+        } else if (activeMode === "break") {
+            spinBreakSimultaneous();
+        } else {
             spinRoulette(activeMode);
         }
     }
@@ -1697,6 +1942,7 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+// Inicialización
 autoGenerate("first");
 </script>
 
