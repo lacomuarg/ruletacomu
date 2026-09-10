@@ -92,7 +92,7 @@ header {
 .tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
@@ -116,6 +116,23 @@ header {
   border-color: transparent;
   background: linear-gradient(135deg, var(--celeste), #0874a1);
   box-shadow: 0 4px 12px rgba(8, 116, 161, 0.25);
+}
+
+.live-clock-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #b9e9f1;
+  border-radius: 12px;
+  padding: 6px 12px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--azul-oscuro);
+  box-shadow: 0 2px 8px rgba(7, 82, 127, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
 }
 
 .mode {
@@ -761,6 +778,10 @@ canvas {
         <button class="tab" data-mode="break">🔥 Modo Break</button>
     </div>
 
+    <div class="live-clock-card">
+        📅 <span id="liveClockDate">--/--/----</span> | 🕒 <span id="liveClockTime">--:--:--</span> (ARG)
+    </div>
+
     <section id="first" class="mode active">
         <div class="layout-3col" id="layoutFirst">
             
@@ -1177,6 +1198,23 @@ const state = {
     }
 };
 
+function updateLiveClock() {
+    const optionsDate = { timeZone: "America/Argentina/Buenos_Aires", day: "2-digit", month: "2-digit", year: "numeric" };
+    const optionsTime = { timeZone: "America/Argentina/Buenos_Aires", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
+    
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("es-AR", optionsDate);
+    const timeStr = now.toLocaleTimeString("es-AR", optionsTime);
+
+    const elDate = document.getElementById("liveClockDate");
+    const elTime = document.getElementById("liveClockTime");
+
+    if (elDate) elDate.textContent = dateStr;
+    if (elTime) elTime.textContent = timeStr;
+}
+setInterval(updateLiveClock, 1000);
+updateLiveClock();
+
 function getActiveMode() {
     return document.querySelector(".tab.active").dataset.mode;
 }
@@ -1524,6 +1562,14 @@ function easeOutCubic(t) {
     return 1 - Math.pow(1 - t, 3);
 }
 
+function getCurrentSegmentIndex(rotationDeg, activeCount) {
+    if (activeCount === 0) return 0;
+    const normalizedRotation = ((rotationDeg % 360) + 360) % 360;
+    const sliceAngle = 360 / activeCount;
+    const index = Math.floor((360 - normalizedRotation) / sliceAngle) % activeCount;
+    return index;
+}
+
 function trackLiveSpin(mode, startRotation, totalAddedRotation, duration) {
     const modeState = state[mode];
     const statusEl = document.getElementById(mode + "Status");
@@ -1536,17 +1582,11 @@ function trackLiveSpin(mode, startRotation, totalAddedRotation, duration) {
         const progress = Math.min(Math.max(elapsed, 0), 1);
         const currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
 
-        let angleDeg = Math.round(currentRotation % 360);
-        if (angleDeg < 0) angleDeg += 360;
-
         const activeList = modeState.active;
         const count = activeList.length;
 
         if (count > 0) {
-            const sliceAngle = 360 / count;
-            const currentPointerDegree = (360 - angleDeg) % 360;
-            const currentIndex = Math.floor(currentPointerDegree / sliceAngle) % count;
-            
+            const currentIndex = getCurrentSegmentIndex(currentRotation, count);
             const currentId = activeList[currentIndex];
             const p = state.participants.find(item => item.id === currentId);
             
@@ -1827,17 +1867,11 @@ function trackBreakLiveSpin(subMode, startRotation, totalAddedRotation, duration
         const progress = Math.min(Math.max(elapsed, 0), 1);
         const currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
 
-        let angleDeg = Math.round(currentRotation % 360);
-        if (angleDeg < 0) angleDeg += 360;
-
         const activeList = bState.active;
         const count = activeList.length;
 
         if (count > 0) {
-            const sliceAngle = 360 / count;
-            const currentPointerDegree = (360 - angleDeg) % 360;
-            const currentIndex = Math.floor(currentPointerDegree / sliceAngle) % count;
-            
+            const currentIndex = getCurrentSegmentIndex(currentRotation, count);
             const currentId = activeList[currentIndex];
             const item = bState.items.find(p => p.id === currentId);
             
