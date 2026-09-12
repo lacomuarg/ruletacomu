@@ -229,8 +229,49 @@ input, select, textarea {
   border: 2px solid #d7eef3;
   border-radius: 8px;
   outline: none;
-  font-size: 14px;
+  font-size: 13px;
   background: white;
+  font-family: inherit;
+}
+
+textarea {
+  resize: none !important;
+  height: 120px;
+}
+
+.mode-switch-container {
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eafaff;
+  border: 1px solid #b9e9f1;
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+}
+
+.mode-switch-title {
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--azul);
+}
+
+.mode-switch-select {
+  width: auto;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.input-group-range, .input-group-list {
+  grid-column: 1 / span 2;
+}
+
+.input-group-range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
 }
 
 .actions {
@@ -831,14 +872,31 @@ canvas {
             <div class="card card-participants order-config">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
-                    <div>
-                        <label>Desde Nº</label>
-                        <input id="firstMin" type="number" value="1" oninput="autoGenerate('first')">
+                    
+                    <div class="mode-switch-container">
+                        <span class="mode-switch-title">Modo de Carga:</span>
+                        <select id="firstInputMode" class="mode-switch-select" onchange="toggleInputMode('first', this.value)">
+                            <option value="range">🔢 Rango numérico</option>
+                            <option value="paste">📋 Pegar lista</option>
+                        </select>
                     </div>
-                    <div>
-                        <label>Hasta Nº</label>
-                        <input id="firstMax" type="number" value="20" oninput="autoGenerate('first')">
+
+                    <div id="firstGroupRange" class="input-group-range">
+                        <div>
+                            <label>Desde Nº</label>
+                            <input id="firstMin" type="number" value="1" oninput="autoGenerate('first')">
+                        </div>
+                        <div>
+                            <label>Hasta Nº</label>
+                            <input id="firstMax" type="number" value="20" oninput="autoGenerate('first')">
+                        </div>
                     </div>
+
+                    <div id="firstGroupList" class="input-group-list" style="display: none;">
+                        <label>📋 Pegar/escribir lista (en vivo):</label>
+                        <textarea id="firstPasteArea" placeholder="Ejemplo:&#10;Enzo&#10;Loza&#10;Fede&#10;Franco" oninput="liveUpdateFromPaste('first')"></textarea>
+                    </div>
+
                     <div>
                         <label>Tamaño Ruleta</label>
                         <select id="firstWheelSize" onchange="changeWheelSize(this.value)">
@@ -945,14 +1003,31 @@ canvas {
             <div class="card card-participants order-config">
                 <h2>⚙️ Configuración</h2>
                 <div class="controls">
-                    <div>
-                        <label>Desde Nº</label>
-                        <input id="lastMin" type="number" value="1" oninput="autoGenerate('last')">
+
+                    <div class="mode-switch-container">
+                        <span class="mode-switch-title">Modo de Carga:</span>
+                        <select id="lastInputMode" class="mode-switch-select" onchange="toggleInputMode('last', this.value)">
+                            <option value="range">🔢 Rango numérico</option>
+                            <option value="paste">📋 Pegar lista</option>
+                        </select>
                     </div>
-                    <div>
-                        <label>Hasta Nº</label>
-                        <input id="lastMax" type="number" value="20" oninput="autoGenerate('last')">
+
+                    <div id="lastGroupRange" class="input-group-range">
+                        <div>
+                            <label>Desde Nº</label>
+                            <input id="lastMin" type="number" value="1" oninput="autoGenerate('last')">
+                        </div>
+                        <div>
+                            <label>Hasta Nº</label>
+                            <input id="lastMax" type="number" value="20" oninput="autoGenerate('last')">
+                        </div>
                     </div>
+
+                    <div id="lastGroupList" class="input-group-list" style="display: none;">
+                        <label>📋 Pegar/escribir lista (en vivo):</label>
+                        <textarea id="lastPasteArea" placeholder="Ejemplo:&#10;Enzo&#10;Loza&#10;Fede&#10;Franco" oninput="liveUpdateFromPaste('last')"></textarea>
+                    </div>
+
                     <div>
                         <label>Tamaño Ruleta</label>
                         <select id="lastWheelSize" onchange="changeWheelSize(this.value)">
@@ -1027,14 +1102,31 @@ canvas {
                     <div id="breakPrizesConfigCard" class="card card-participants" style="margin-top: 12px; box-shadow:none; border: 1px solid #d7eef3;">
                         <h2>⚙️ Configuración Premios</h2>
                         <div class="controls">
-                            <div>
-                                <label>Desde Nº</label>
-                                <input id="breakPrizesMin" type="number" value="1" oninput="autoGenerateBreak('prizes')">
+
+                            <div class="mode-switch-container">
+                                <span class="mode-switch-title">Modo de Carga:</span>
+                                <select id="breakPrizesInputMode" class="mode-switch-select" onchange="toggleBreakInputMode('prizes', this.value)">
+                                    <option value="range">🔢 Rango numérico</option>
+                                    <option value="paste">📋 Pegar lista</option>
+                                </select>
                             </div>
-                            <div>
-                                <label>Hasta Nº</label>
-                                <input id="breakPrizesMax" type="number" value="10" oninput="autoGenerateBreak('prizes')">
+
+                            <div id="breakPrizesGroupRange" class="input-group-range">
+                                <div>
+                                    <label>Desde Nº</label>
+                                    <input id="breakPrizesMin" type="number" value="1" oninput="autoGenerateBreak('prizes')">
+                                </div>
+                                <div>
+                                    <label>Hasta Nº</label>
+                                    <input id="breakPrizesMax" type="number" value="10" oninput="autoGenerateBreak('prizes')">
+                                </div>
                             </div>
+
+                            <div id="breakPrizesGroupList" class="input-group-list" style="display: none;">
+                                <label>📋 Pegar/escribir premios (en vivo):</label>
+                                <textarea id="breakPrizesPasteArea" placeholder="Ejemplo:&#10;Camiseta&#10;Gorra&#10;Pelota" oninput="liveUpdateBreakFromPaste('prizes')"></textarea>
+                            </div>
+
                             <div>
                                 <label>Tamaño</label>
                                 <select id="breakPrizesWheelSize" onchange="changeWheelSize(this.value)">
@@ -1085,14 +1177,31 @@ canvas {
                     <div id="breakPeopleConfigCard" class="card card-participants" style="margin-top: 12px; box-shadow:none; border: 1px solid #d7eef3;">
                         <h2>⚙️ Configuración Participantes</h2>
                         <div class="controls">
-                            <div>
-                                <label>Desde Nº</label>
-                                <input id="breakPeopleMin" type="number" value="1" oninput="autoGenerateBreak('people')">
+
+                            <div class="mode-switch-container">
+                                <span class="mode-switch-title">Modo de Carga:</span>
+                                <select id="breakPeopleInputMode" class="mode-switch-select" onchange="toggleBreakInputMode('people', this.value)">
+                                    <option value="range">🔢 Rango numérico</option>
+                                    <option value="paste">📋 Pegar lista</option>
+                                </select>
                             </div>
-                            <div>
-                                <label>Hasta Nº</label>
-                                <input id="breakPeopleMax" type="number" value="10" oninput="autoGenerateBreak('people')">
+
+                            <div id="breakPeopleGroupRange" class="input-group-range">
+                                <div>
+                                    <label>Desde Nº</label>
+                                    <input id="breakPeopleMin" type="number" value="1" oninput="autoGenerateBreak('people')">
+                                </div>
+                                <div>
+                                    <label>Hasta Nº</label>
+                                    <input id="breakPeopleMax" type="number" value="10" oninput="autoGenerateBreak('people')">
+                                </div>
                             </div>
+
+                            <div id="breakPeopleGroupList" class="input-group-list" style="display: none;">
+                                <label>📋 Pegar/escribir participantes (en vivo):</label>
+                                <textarea id="breakPeoplePasteArea" placeholder="Ejemplo:&#10;Enzo&#10;Loza&#10;Fede" oninput="liveUpdateBreakFromPaste('people')"></textarea>
+                            </div>
+
                             <div>
                                 <label>Tamaño</label>
                                 <select id="breakPeopleWheelSize" onchange="changeWheelSize(this.value)">
@@ -1131,6 +1240,9 @@ canvas {
                 <div class="card history">
                     <h2>🤝 Historial de Matches (Premio + Participante)</h2>
                     <div id="breakHistory" class="history-list"></div>
+                    <div class="actions" style="margin-top:8px;">
+                        <button class="btn soft" style="font-size:11px; padding:6px; width:100%;" onclick="undoBreakMatch()">↩️ Deshacer último match</button>
+                    </div>
                 </div>
 
                 <div class="keyboard-shortcuts-card">
@@ -1138,6 +1250,7 @@ canvas {
                     <div class="shortcuts-grid">
                         <div class="shortcut-item"><kbd>Espacio</kbd><span>Girar ambas / Cerrar</span></div>
                         <div class="shortcut-item"><kbd>R</kbd><span>Reiniciar ambas ruletas</span></div>
+                        <div class="shortcut-item"><kbd>V</kbd><span>Deshacer último match</span></div>
                         <div class="shortcut-item"><kbd>O</kbd><span>Ocultar / Mostrar listas</span></div>
                     </div>
                 </div>
@@ -1218,6 +1331,113 @@ function updateLiveClock() {
 }
 setInterval(updateLiveClock, 1000);
 updateLiveClock();
+
+function toggleInputMode(mode, val) {
+    const groupRange = document.getElementById(mode + "GroupRange");
+    const groupList = document.getElementById(mode + "GroupList");
+    const otherMode = mode === "first" ? "last" : "first";
+    
+    document.getElementById(otherMode + "InputMode").value = val;
+
+    ["first", "last"].forEach(m => {
+        const rangeEl = document.getElementById(m + "GroupRange");
+        const listEl = document.getElementById(m + "GroupList");
+        if(val === "paste") {
+            rangeEl.style.display = "none";
+            listEl.style.display = "block";
+            liveUpdateFromPaste(m);
+        } else {
+            rangeEl.style.display = "grid";
+            listEl.style.display = "none";
+            autoGenerate(m);
+        }
+    });
+}
+
+function toggleBreakInputMode(subMode, val) {
+    const prefix = subMode === "prizes" ? "breakPrizes" : "breakPeople";
+    const rangeEl = document.getElementById(prefix + "GroupRange");
+    const listEl = document.getElementById(prefix + "GroupList");
+
+    if(val === "paste") {
+        rangeEl.style.display = "none";
+        listEl.style.display = "block";
+        liveUpdateBreakFromPaste(subMode);
+    } else {
+        rangeEl.style.display = "grid";
+        listEl.style.display = "none";
+        autoGenerateBreak(subMode);
+    }
+}
+
+function parsePastedText(rawText) {
+    return rawText
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+}
+
+function liveUpdateFromPaste(mode) {
+    if(state.first.spinning || state.last.spinning) return;
+
+    const textarea = document.getElementById(mode + "PasteArea");
+    const names = parsePastedText(textarea ? textarea.value : "");
+
+    const otherMode = mode === "first" ? "last" : "first";
+    const otherTextarea = document.getElementById(otherMode + "PasteArea");
+    if (otherTextarea && textarea && otherTextarea.value !== textarea.value) {
+        otherTextarea.value = textarea.value;
+    }
+
+    document.getElementById("firstMin").value = 1;
+    document.getElementById("firstMax").value = names.length;
+    document.getElementById("lastMin").value = 1;
+    document.getElementById("lastMax").value = names.length;
+
+    state.participants = names.map((name, index) => ({
+        id: index + 1,
+        text: name
+    }));
+
+    state.first.active = state.participants.map(p => p.id);
+    state.first.results = [];
+    state.first.currentTierStep = 1;
+
+    state.last.active = state.participants.map(p => p.id);
+    state.last.eliminated = [];
+    state.last.winnerShown = false;
+
+    renderParticipants("first");
+    renderParticipants("last");
+    drawWheel("first");
+    drawWheel("last");
+    updateRouletteUI("first");
+    updateRouletteUI("last");
+    renderHistory();
+    renderFirstHistory();
+}
+
+function liveUpdateBreakFromPaste(subMode) {
+    if (state.break.spinning) return;
+
+    const elementId = subMode === "prizes" ? "breakPrizesPasteArea" : "breakPeoplePasteArea";
+    const textarea = document.getElementById(elementId);
+    const items = parsePastedText(textarea ? textarea.value : "");
+
+    const prefix = subMode === "prizes" ? "breakPrizes" : "breakPeople";
+    document.getElementById(prefix + "Min").value = 1;
+    document.getElementById(prefix + "Max").value = items.length;
+
+    state.break[subMode].items = items.map((text, index) => ({
+        id: index + 1,
+        text: text
+    }));
+    state.break[subMode].active = state.break[subMode].items.map(p => p.id);
+
+    renderBreakParticipants(subMode);
+    drawBreakWheel(subMode);
+    updateBreakUI(subMode);
+}
 
 function getActiveMode() {
     return document.querySelector(".tab.active").dataset.mode;
@@ -1406,6 +1626,9 @@ function resetWheelFromZero(mode) {
     document.getElementById("lastMin").value = 1;
     document.getElementById("lastMax").value = 20;
     
+    document.getElementById("firstPasteArea").value = "";
+    document.getElementById("lastPasteArea").value = "";
+
     state[mode].rotation = 0;
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     if(canvas) {
@@ -1568,23 +1791,46 @@ function easeOutCubic(t) {
 
 function getCurrentSegmentIndex(rotationDeg, activeCount) {
     if (activeCount === 0) return 0;
-    const normalizedRotation = ((rotationDeg % 360) + 360) % 360;
     const sliceAngle = 360 / activeCount;
-    const index = Math.floor((360 - normalizedRotation) / sliceAngle) % activeCount;
+    const currentRot = rotationDeg % 360;
+    const angleUnderPointer = (360 - currentRot) % 360;
+    const index = Math.floor(angleUnderPointer / sliceAngle) % activeCount;
     return index;
 }
 
 function trackLiveSpin(mode, startRotation, totalAddedRotation, duration) {
     const modeState = state[mode];
     const statusEl = document.getElementById(mode + "Status");
+    const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
     const startTime = performance.now();
 
     function update(now) {
         if (!modeState.spinning) return;
 
-        const elapsed = (now - startTime) / duration;
-        const progress = Math.min(Math.max(elapsed, 0), 1);
-        const currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
+        let currentRotation = startRotation;
+        if (canvas) {
+            const transformStr = window.getComputedStyle(canvas).getPropertyValue('transform') || 
+                               window.getComputedStyle(canvas).getPropertyValue('-webkit-transform');
+            
+            if (transformStr && transformStr !== 'none') {
+                const values = transformStr.split('(')[1].split(')')[0].split(',');
+                const a = parseFloat(values[0]);
+                const b = parseFloat(values[1]);
+                let rad = Math.atan2(b, a);
+                if (rad < 0) rad += (Math.PI * 2);
+                const currentDegreeModulo = rad * (180 / Math.PI);
+                
+                const elapsed = (now - startTime) / duration;
+                const progress = Math.min(Math.max(elapsed, 0), 1);
+                const estimatedRot = startRotation + totalAddedRotation * easeOutCubic(progress);
+                
+                currentRotation = Math.floor(estimatedRot / 360) * 360 + currentDegreeModulo;
+            } else {
+                const elapsed = (now - startTime) / duration;
+                const progress = Math.min(Math.max(elapsed, 0), 1);
+                currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
+            }
+        }
 
         const activeList = modeState.active;
         const count = activeList.length;
@@ -1599,7 +1845,7 @@ function trackLiveSpin(mode, startRotation, totalAddedRotation, duration) {
             }
         }
 
-        if (progress < 1) {
+        if ((now - startTime) < duration) {
             modeState.animFrame = requestAnimationFrame(update);
         }
     }
@@ -1625,41 +1871,44 @@ function spinRoulette(mode){
     modeState.spinning = true;
     updateRouletteUI(mode);
 
-    // Selección de índice (manual si se ingresó comando 'E', o aleatoria)
     let index;
     if (mode === "last" && state.forcedNextEliminated !== null && modeState.active.includes(state.forcedNextEliminated)) {
         index = modeState.active.indexOf(state.forcedNextEliminated);
-        state.forcedNextEliminated = null; // Se limpia el comando usado
+        state.forcedNextEliminated = null;
     } else {
         index = randomNumber(modeState.active.length);
     }
 
     const id = modeState.active[index];
     const participant = state.participants.find(p => p.id === id);
-    
+
     const numSlices = modeState.active.length;
     const sliceAngle = 360 / numSlices;
 
-    // Se genera un desfase estocástico natural dentro del casillero (-35% a +35%)
-    const randomOffsetFactor = (Math.random() * 0.7) - 0.35; 
-    const randomOffsetInSlice = (sliceAngle * randomOffsetFactor);
+    // Caída en cualquier lugar del recuadro (del 5% al 95% de la porción)
+    const randomPercent = 0.05 + (Math.random() * 0.90);
+    const targetAngleDegree = index * sliceAngle + (sliceAngle * randomPercent);
 
-    const targetAngleDegree = index * sliceAngle + (sliceAngle / 2) + randomOffsetInSlice;
     const currentModulo = modeState.rotation % 360;
     const neededDegree = (360 - targetAngleDegree - currentModulo + 360) % 360;
-    const extraSpins = 360 * 7;
-    const totalAddedRotation = extraSpins + neededDegree;
+    
+    // Vueltas aleatorias para mayor volatilidad (entre 6 y 12 vueltas)
+    const randomSpins = 360 * (Math.floor(Math.random() * 7) + 6);
+    const totalAddedRotation = randomSpins + neededDegree;
 
     const startRotation = modeState.rotation;
     modeState.rotation += totalAddedRotation;
 
+    // Duración épica con ligera variación aleatoria (entre 5.2s y 6.2s)
+    const spinDuration = 5200 + Math.floor(Math.random() * 1000);
+
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
-    canvas.style.transition = "transform 5.5s cubic-bezier(.08,.82,.13,1)";
-    canvas.style.webkitTransition = "-webkit-transform 5.5s cubic-bezier(.08,.82,.13,1)";
+    canvas.style.transition = `transform ${spinDuration / 1000}s cubic-bezier(.08,.82,.13,1)`;
+    canvas.style.webkitTransition = `-webkit-transform ${spinDuration / 1000}s cubic-bezier(.08,.82,.13,1)`;
     canvas.style.transform = `rotate(${modeState.rotation}deg)`;
     canvas.style.webkitTransform = `rotate(${modeState.rotation}deg)`;
 
-    trackLiveSpin(mode, startRotation, totalAddedRotation, 5500);
+    trackLiveSpin(mode, startRotation, totalAddedRotation, spinDuration);
 
     setTimeout(() => {
         modeState.spinning = false;
@@ -1689,7 +1938,6 @@ function spinRoulette(mode){
             return;
         }
 
-        // Modo LAST
         const currentActiveCount = modeState.active.length;
         let tierRank = null;
 
@@ -1713,7 +1961,7 @@ function spinRoulette(mode){
         updateRouletteUI(mode);
         renderHistory();
 
-    }, 5700);
+    }, spinDuration + 200);
 }
 
 /* --- MODO BREAK --- */
@@ -1757,8 +2005,11 @@ function resetBreakWheelOnly(subMode) {
 function resetBreakFromZero(subMode) {
     if (!confirm("¿Estás seguro de reiniciar todo desde 0?")) return;
 
-    document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Min`).value = 1;
-    document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Max`).value = 10;
+    const prefix = subMode === 'prizes' ? 'breakPrizes' : 'breakPeople';
+    document.getElementById(prefix + "Min").value = 1;
+    document.getElementById(prefix + "Max").value = 10;
+    const textEl = document.getElementById(prefix + "PasteArea");
+    if(textEl) textEl.value = "";
 
     const bState = state.break[subMode];
     bState.rotation = 0;
@@ -1770,7 +2021,12 @@ function resetBreakFromZero(subMode) {
         canvas.style.webkitTransform = "rotate(0deg)";
     }
 
-    autoGenerateBreak(subMode);
+    if(document.getElementById(prefix + "InputMode").value === "paste"){
+        liveUpdateBreakFromPaste(subMode);
+    } else {
+        autoGenerateBreak(subMode);
+    }
+    
     document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Status`).innerHTML = "⚠️ Reiniciado desde 0.";
 }
 
@@ -1780,12 +2036,16 @@ function renderBreakParticipants(subMode) {
     container.innerHTML = "";
 
     const bState = state.break[subMode];
+    const activeIds = bState.active;
+
     bState.items.forEach(p => {
+        const isEliminated = !activeIds.includes(p.id);
         const row = document.createElement("div");
-        row.className = "person";
+        row.className = `person ${isEliminated ? 'eliminated' : ''}`;
         row.innerHTML = `
             <div class="number">${p.id}</div>
-            <input maxlength="80" value="${escapeHTML(p.text)}" placeholder="${subMode === 'prizes' ? 'Premio' : 'Nombre'}">
+            <input maxlength="80" value="${escapeHTML(p.text)}" placeholder="${subMode === 'prizes' ? 'Premio' : 'Nombre'}" ${isEliminated ? 'disabled' : ''}>
+            ${isEliminated ? '<span class="cross-mark">❌</span>' : ''}
         `;
 
         const input = row.querySelector("input");
@@ -1875,14 +2135,36 @@ function updateBreakUI(subMode) {
 function trackBreakLiveSpin(subMode, startRotation, totalAddedRotation, duration) {
     const bState = state.break[subMode];
     const statusEl = document.getElementById(`break${subMode === 'prizes' ? 'Prizes' : 'People'}Status`);
+    const canvas = document.getElementById(subMode === "prizes" ? "wheelBreakPrizes" : "wheelBreakPeople");
     const startTime = performance.now();
 
     function update(now) {
         if (!bState.spinning) return;
 
-        const elapsed = (now - startTime) / duration;
-        const progress = Math.min(Math.max(elapsed, 0), 1);
-        const currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
+        let currentRotation = startRotation;
+        if (canvas) {
+            const transformStr = window.getComputedStyle(canvas).getPropertyValue('transform') || 
+                               window.getComputedStyle(canvas).getPropertyValue('-webkit-transform');
+            
+            if (transformStr && transformStr !== 'none') {
+                const values = transformStr.split('(')[1].split(')')[0].split(',');
+                const a = parseFloat(values[0]);
+                const b = parseFloat(values[1]);
+                let rad = Math.atan2(b, a);
+                if (rad < 0) rad += (Math.PI * 2);
+                const currentDegreeModulo = rad * (180 / Math.PI);
+                
+                const elapsed = (now - startTime) / duration;
+                const progress = Math.min(Math.max(elapsed, 0), 1);
+                const estimatedRot = startRotation + totalAddedRotation * easeOutCubic(progress);
+                
+                currentRotation = Math.floor(estimatedRot / 360) * 360 + currentDegreeModulo;
+            } else {
+                const elapsed = (now - startTime) / duration;
+                const progress = Math.min(Math.max(elapsed, 0), 1);
+                currentRotation = startRotation + totalAddedRotation * easeOutCubic(progress);
+            }
+        }
 
         const activeList = bState.active;
         const count = activeList.length;
@@ -1897,7 +2179,7 @@ function trackBreakLiveSpin(subMode, startRotation, totalAddedRotation, duration
             }
         }
 
-        if (progress < 1) {
+        if ((now - startTime) < duration) {
             bState.animFrame = requestAnimationFrame(update);
         }
     }
@@ -1918,35 +2200,35 @@ function spinBreakSimultaneous() {
     updateBreakUI('prizes');
     updateBreakUI('people');
 
-    // Selección Premio
     const prizeIndex = randomNumber(prizesActive.length);
     const prizeId = prizesActive[prizeIndex];
     const prizeObj = state.break.prizes.items.find(p => p.id === prizeId);
 
-    // Selección Participante
     const peopleIndex = randomNumber(peopleActive.length);
     const peopleId = peopleActive[peopleIndex];
     const peopleObj = state.break.people.items.find(p => p.id === peopleId);
 
-    // Giros Ruleta 1 con desvío aleatorio natural
-    const pSlices = prizesActive.length;
+   const pSlices = prizesActive.length;
     const pSliceAngle = 360 / pSlices;
-    const pRandomOffset = (pSliceAngle * ((Math.random() * 0.7) - 0.35));
-    const pCenterDegree = prizeIndex * pSliceAngle + (pSliceAngle / 2) + pRandomOffset;
+    // Caída aleatoria en cualquier parte de la porción (5% al 95%)
+    const pRandomPercent = 0.05 + (Math.random() * 0.90);
+    const pCenterDegree = prizeIndex * pSliceAngle + (pSliceAngle * pRandomPercent);
     const pCurrentModulo = state.break.prizes.rotation % 360;
     const pNeededDegree = (360 - pCenterDegree - pCurrentModulo + 360) % 360;
-    const pTotalAdded = (360 * 7) + pNeededDegree;
+    const pSpins = 360 * (Math.floor(Math.random() * 6) + 6); // Vueltas aleatorias
+    const pTotalAdded = pSpins + pNeededDegree;
     const pStartRot = state.break.prizes.rotation;
     state.break.prizes.rotation += pTotalAdded;
 
-    // Giros Ruleta 2 con desvío aleatorio natural
     const peSlices = peopleActive.length;
     const peSliceAngle = 360 / peSlices;
-    const peRandomOffset = (peSliceAngle * ((Math.random() * 0.7) - 0.35));
-    const peCenterDegree = peopleIndex * peSliceAngle + (peSliceAngle / 2) + peRandomOffset;
+    // Caída aleatoria en cualquier parte de la porción (5% al 95%)
+    const peRandomPercent = 0.05 + (Math.random() * 0.90);
+    const peCenterDegree = peopleIndex * peSliceAngle + (peSliceAngle * peRandomPercent);
     const peCurrentModulo = state.break.people.rotation % 360;
     const peNeededDegree = (360 - peCenterDegree - peCurrentModulo + 360) % 360;
-    const peTotalAdded = (360 * 7) + peNeededDegree;
+    const peSpins = 360 * (Math.floor(Math.random() * 6) + 6); // Vueltas aleatorias
+    const peTotalAdded = peSpins + peNeededDegree;
     const peStartRot = state.break.people.rotation;
     state.break.people.rotation += peTotalAdded;
 
@@ -1987,6 +2269,9 @@ function spinBreakSimultaneous() {
 
 function clearBreakList(subMode) {
     state.break[subMode].items.forEach(p => p.text = "");
+    const prefix = subMode === "prizes" ? "breakPrizes" : "breakPeople";
+    const textarea = document.getElementById(prefix + "PasteArea");
+    if(textarea) textarea.value = "";
     renderBreakParticipants(subMode);
     drawBreakWheel(subMode);
 }
@@ -2132,8 +2417,37 @@ function undoLast(){
     document.getElementById("lastStatus").innerHTML = `↩️ Nº ${removed.id} volvió a participar.`;
 }
 
+function undoBreakMatch() {
+    if (state.break.spinning || state.break.history.length === 0) return;
+
+    const lastMatch = state.break.history.pop();
+    
+    if (!state.break.prizes.active.includes(lastMatch.prize.id)) {
+        state.break.prizes.active.push(lastMatch.prize.id);
+        state.break.prizes.active.sort((a, b) => a - b);
+    }
+    
+    if (!state.break.people.active.includes(lastMatch.person.id)) {
+        state.break.people.active.push(lastMatch.person.id);
+        state.break.people.active.sort((a, b) => a - b);
+    }
+
+    renderBreakParticipants('prizes');
+    renderBreakParticipants('people');
+    drawBreakWheel('prizes');
+    drawBreakWheel('people');
+    updateBreakUI('prizes');
+    updateBreakUI('people');
+    renderBreakHistory();
+
+    document.getElementById("breakPrizesStatus").innerHTML = `↩️ Deshecho: Nº ${lastMatch.prize.id}`;
+    document.getElementById("breakPeopleStatus").innerHTML = `↩️ Deshecho: Nº ${lastMatch.person.id}`;
+}
+
 function clearNames(mode){
     state.participants.forEach(p => p.text = "");
+    const textarea = document.getElementById(mode + "PasteArea");
+    if(textarea) textarea.value = "";
     renderParticipants("first");
     renderParticipants("last");
     drawWheel("first");
@@ -2275,8 +2589,19 @@ document.querySelectorAll(".tab").forEach(button => {
         const headerTitle = document.getElementById("mainHeaderTitle");
         if(targetMode === "break") {
             headerTitle.textContent = "La ruleta de La Comu Argentina · Break";
-            autoGenerateBreak('prizes');
-            autoGenerateBreak('people');
+            
+            if(document.getElementById("breakPrizesInputMode").value === "paste") {
+                liveUpdateBreakFromPaste('prizes');
+            } else {
+                autoGenerateBreak('prizes');
+            }
+
+            if(document.getElementById("breakPeopleInputMode").value === "paste") {
+                liveUpdateBreakFromPaste('people');
+            } else {
+                autoGenerateBreak('people');
+            }
+
             renderBreakHistory();
         } else {
             headerTitle.textContent = "La ruleta de La Comu Argentina";
@@ -2294,7 +2619,6 @@ document.addEventListener("keydown", (event) => {
     const overlay = document.getElementById("victoryOverlay");
     const isModalOpen = overlay.classList.contains("show");
 
-    // Comando Secreto: Presionar 'E' + número deseado (Modo Último Número en Pie)
     if (event.code === "KeyE") {
         state.secretBuffer = "";
         if (state.secretTimer) clearTimeout(state.secretTimer);
@@ -2334,9 +2658,13 @@ document.addEventListener("keydown", (event) => {
         }
     }
 
-    if (event.code === "KeyV" && activeMode === "last") {
+    if (event.code === "KeyV") {
         event.preventDefault();
-        undoLast();
+        if (activeMode === "last") {
+            undoLast();
+        } else if (activeMode === "break") {
+            undoBreakMatch();
+        }
     }
 
     if (event.code === "KeyO") {
