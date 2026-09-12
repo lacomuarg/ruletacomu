@@ -7,6 +7,19 @@
 
 <style>
 :root {
+  /* Tema base por defecto (Selección Argentina / Celeste) */
+  --theme-bg-gradient: radial-gradient(circle at 10% 0%, #b7f3fa 0%, transparent 30%), linear-gradient(135deg, #ffffff, #e8fbff, #ffffff);
+  --theme-header-border: #20c4df;
+  --theme-title-color: #063653;
+  --theme-subtitle-color: #43839b;
+  --theme-tab-active-bg: linear-gradient(135deg, #20c4df, #0874a1);
+  --theme-btn-primary-bg: linear-gradient(135deg, #18c1de, #08719d);
+  --theme-wheel-stroke: #07527f;
+  --theme-wheel-slice-even: #20c4df;
+  --theme-wheel-slice-odd: #ffffff;
+  --theme-wheel-text-even: #ffffff;
+  --theme-wheel-text-odd: #07527f;
+  
   --celeste: #20c4df;
   --celeste-claro: #dffaff;
   --celeste-medio: #91e8f3;
@@ -20,6 +33,51 @@
   --wheel-max-width: 440px;
 }
 
+/* Modo River Plate (Blanco y Rojo) */
+[data-theme="river"] {
+  --theme-bg-gradient: radial-gradient(circle at 10% 0%, #ffe5e5 0%, transparent 30%), linear-gradient(135deg, #ffffff, #fff0f0, #ffffff);
+  --theme-header-border: #eb1c24;
+  --theme-title-color: #111111;
+  --theme-subtitle-color: #b31010;
+  --theme-tab-active-bg: linear-gradient(135deg, #eb1c24, #990000);
+  --theme-btn-primary-bg: linear-gradient(135deg, #eb1c24, #b31010);
+  --theme-wheel-stroke: #eb1c24;
+  --theme-wheel-slice-even: #eb1c24;
+  --theme-wheel-slice-odd: #ffffff;
+  --theme-wheel-text-even: #ffffff;
+  --theme-wheel-text-odd: #eb1c24;
+}
+
+/* Modo Boca Juniors (Azul y Amarillo) */
+[data-theme="boca"] {
+  --theme-bg-gradient: radial-gradient(circle at 10% 0%, #fff3b3 0%, transparent 30%), linear-gradient(135deg, #ffffff, #fffde6, #ffffff);
+  --theme-header-border: #ffcc00;
+  --theme-title-color: #002b66;
+  --theme-subtitle-color: #001a40;
+  --theme-tab-active-bg: linear-gradient(135deg, #002b66, #001a40);
+  --theme-btn-primary-bg: linear-gradient(135deg, #002b66, #ffcc00);
+  --theme-wheel-stroke: #002b66;
+  --theme-wheel-slice-even: #002b66;
+  --theme-wheel-slice-odd: #ffcc00;
+  --theme-wheel-text-even: #ffcc00;
+  --theme-wheel-text-odd: #002b66;
+}
+
+/* Modo San Lorenzo (Azul, Rojo y Blanco) */
+[data-theme="san-lorenzo"] {
+  --theme-bg-gradient: radial-gradient(circle at 10% 0%, #ffd6d6 0%, transparent 30%), linear-gradient(135deg, #ffffff, #e6f0ff, #ffffff);
+  --theme-header-border: #c41230;
+  --theme-title-color: #00205b;
+  --theme-subtitle-color: #c41230;
+  --theme-tab-active-bg: linear-gradient(135deg, #00205b, #c41230);
+  --theme-btn-primary-bg: linear-gradient(135deg, #c41230, #00205b);
+  --theme-wheel-stroke: #00205b;
+  --theme-wheel-slice-even: #c41230;
+  --theme-wheel-slice-odd: #00205b;
+  --theme-wheel-text-even: #ffffff;
+  --theme-wheel-text-odd: #ffffff;
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -29,16 +87,15 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--azul-oscuro);
-  background: radial-gradient(circle at 10% 0%, #b7f3fa 0%, transparent 30%),
-              linear-gradient(135deg, #ffffff, #e8fbff, #ffffff);
+  color: var(--theme-title-color);
+  background: var(--theme-bg-gradient);
   min-height: 100vh;
   touch-action: manipulation;
 }
 
 header {
   background: rgba(255, 255, 255, 0.95);
-  border-bottom: 4px solid var(--celeste);
+  border-bottom: 4px solid var(--theme-header-border);
   padding: 8px 16px;
   display: flex;
   justify-content: space-between;
@@ -64,15 +121,36 @@ header {
 .title {
   font-size: clamp(14px, 3vw, 24px);
   font-weight: 900;
-  color: var(--azul-oscuro);
+  color: var(--theme-title-color);
   line-height: 1.2;
 }
 
 .subtitle {
   margin-top: 2px;
-  color: #43839b;
+  color: var(--theme-subtitle-color);
   font-weight: bold;
   font-size: clamp(10px, 2vw, 13px);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.theme-selector select {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: 1.5px solid var(--theme-header-border);
+  cursor: pointer;
 }
 
 .flag {
@@ -114,7 +192,7 @@ header {
 .tab.active {
   color: white;
   border-color: transparent;
-  background: linear-gradient(135deg, var(--celeste), #0874a1);
+  background: var(--theme-tab-active-bg);
   box-shadow: 0 4px 12px rgba(8, 116, 161, 0.25);
 }
 
@@ -127,7 +205,7 @@ header {
   text-align: center;
   font-size: 13px;
   font-weight: 800;
-  color: var(--azul-oscuro);
+  color: var(--theme-title-color);
   box-shadow: 0 2px 8px rgba(7, 82, 127, 0.05);
   display: flex;
   justify-content: center;
@@ -169,7 +247,7 @@ header {
   margin-top: 0;
   margin-bottom: 8px;
   font-size: 16px;
-  color: var(--azul-oscuro);
+  color: var(--theme-title-color);
 }
 
 .controls {
@@ -315,7 +393,7 @@ textarea {
 }
 
 .primary {
-  background: linear-gradient(135deg, #18c1de, #08719d);
+  background: var(--theme-btn-primary-bg);
   color: white;
   box-shadow: 0 4px 10px rgba(8, 113, 157, 0.25);
 }
@@ -455,7 +533,7 @@ canvas {
   height: 0;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
-  border-top: 24px solid var(--azul-oscuro);
+  border-top: 24px solid var(--theme-title-color);
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
   pointer-events: none;
 }
@@ -471,7 +549,7 @@ canvas {
   height: 44px;
   border-radius: 50%;
   background: white;
-  border: 4px solid var(--azul);
+  border: 4px solid var(--theme-wheel-stroke);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
@@ -481,7 +559,7 @@ canvas {
   position: absolute;
   inset: 6px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--celeste), white);
+  background: linear-gradient(135deg, var(--theme-header-border), white);
 }
 
 .status {
@@ -520,7 +598,7 @@ canvas {
   font-size: 15px;
   margin-top: 0;
   margin-bottom: 8px;
-  color: var(--azul-oscuro);
+  color: var(--theme-title-color);
 }
 
 .history-list {
@@ -630,7 +708,7 @@ canvas {
 .winner-name {
   font-size: 18px;
   font-weight: 900;
-  color: var(--azul-oscuro);
+  color: var(--theme-title-color);
   margin: 8px 0 12px 0;
   padding: 12px;
   background: #e8fbff;
@@ -672,7 +750,7 @@ canvas {
   display: none;
   background: #ffffff;
   border: 1px solid #bce9f1;
-  border-left: 4px solid var(--celeste);
+  border-left: 4px solid var(--theme-header-border);
   border-radius: 16px;
   padding: 12px;
   box-shadow: 0 10px 30px rgba(7, 82, 127, 0.08);
@@ -681,7 +759,7 @@ canvas {
 .shortcuts-title {
   font-size: 13px;
   font-weight: 900;
-  color: var(--azul-oscuro);
+  color: var(--theme-title-color);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -709,7 +787,7 @@ canvas {
   border-bottom-width: 2px;
   border-radius: 6px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  color: var(--azul-oscuro);
+  color: var(--theme-title-color);
   font-family: inherit;
   font-size: 11px;
   font-weight: 900;
@@ -718,19 +796,58 @@ canvas {
   text-align: center;
 }
 
-.credit {
-  position: static;
+/* Apartado de Créditos en el Pie de Página */
+footer.footer-credits {
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 2px solid var(--theme-header-border);
+  margin-top: 30px;
+  padding: 24px 16px;
   text-align: center;
-  margin: 10px 0 15px;
-  font-size: 10px;
-  font-weight: 900;
-  color: #54798b;
+  box-shadow: 0 -5px 25px rgba(0, 70, 100, 0.05);
 }
 
-.credit a {
+.footer-credits-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--theme-title-color);
+}
+
+.footer-credits p {
+  margin: 0;
+}
+
+.footer-credits a {
   color: var(--azul);
+  font-weight: bold;
   text-decoration: underline;
-  cursor: pointer;
+}
+
+.footer-credits .btn-donate {
+  display: inline-block;
+  background: linear-gradient(135deg, #009ee3, #007eba);
+  color: white !important;
+  text-decoration: none !important;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 900;
+  font-size: 12px;
+  margin-left: 6px;
+  box-shadow: 0 3px 8px rgba(0, 158, 227, 0.3);
+  transition: transform 0.1s;
+}
+
+.footer-credits .btn-donate:active {
+  transform: scale(0.95);
+}
+
+.footer-copyright {
+  font-size: 11px;
+  color: #678b99;
+  margin-top: 8px !important;
 }
 
 @media (orientation: landscape) and (max-width: 949px) {
@@ -783,17 +900,6 @@ canvas {
     height: 60px;
     border-width: 6px;
   }
-  
-  .credit {
-    position: fixed;
-    right: 12px;
-    bottom: 9px;
-    margin: 0;
-    background: white;
-    border: 1px solid #b9e9f1;
-    border-radius: 50px;
-    padding: 6px 12px;
-  }
 }
 </style>
 </head>
@@ -808,7 +914,17 @@ canvas {
             <div class="subtitle">Sorteos · Eliminaciones</div>
         </div>
     </div>
-    <div class="flag">🇦🇷</div>
+    <div class="header-right">
+        <div class="theme-selector">
+            <select id="themeSelect" onchange="applyTheme(this.value)">
+                <option value="default">🇦🇷 Selección Arg</option>
+                <option value="river">⚪🔴⚪ Modo River</option>
+                <option value="boca">💙💛💙 Modo Boca</option>
+                <option value="san-lorenzo">🔴🔵⚪ Modo San Lorenzo</option>
+            </select>
+        </div>
+        <div class="flag">🇦🇷</div>
+    </div>
 </header>
 
 <main class="container">
@@ -1275,9 +1391,14 @@ canvas {
 
 <div id="confetti" class="confetti"></div>
 
-<div class="credit">
-  Creado por <a href="https://www.instagram.com/enzojimenez_g/" target="_blank" rel="noopener noreferrer">Enzo Francesco Jimenez</a>
-</div>
+<footer class="footer-credits">
+    <div class="footer-credits-container">
+        <p>Creado por <a href="https://www.instagram.com/enzojimenez_g/" target="_blank" rel="noopener noreferrer">Enzo Francesco Jimenez</a></p>
+        <p>Si deseas colaborar: <a href="https://link.mercadopago.com.ar/gutienzo" target="_blank" rel="noopener noreferrer" class="btn-donate">💙 Donar</a></p>
+        <p>Página para La Comu Argentina y El Anfi</p>
+        <p class="footer-copyright">Todos los derechos reservados por Enzo Francesco Jimenez</p>
+    </div>
+</footer>
 
 <script>
 const state = {
@@ -1314,6 +1435,23 @@ const state = {
         spinning: false
     }
 };
+
+function applyTheme(themeName) {
+    if (themeName === 'default') {
+        document.documentElement.removeAttribute('data-theme');
+    } else {
+        document.documentElement.setAttribute('data-theme', themeName);
+    }
+    
+    const activeMode = getActiveMode();
+    if (activeMode === 'break') {
+        drawBreakWheel('prizes');
+        drawBreakWheel('people');
+    } else {
+        drawWheel('first');
+        drawWheel('last');
+    }
+}
 
 function updateLiveClock() {
     const optionsDate = { timeZone: "America/Argentina/Buenos_Aires", day: "2-digit", month: "2-digit", year: "numeric" };
@@ -1708,12 +1846,19 @@ function drawWheel(mode){
 
     ctx.clearRect(0, 0, size, size);
 
+    const computed = getComputedStyle(document.documentElement);
+    const colorSliceEven = computed.getPropertyValue('--theme-wheel-slice-even').trim();
+    const colorSliceOdd = computed.getPropertyValue('--theme-wheel-slice-odd').trim();
+    const colorTextEven = computed.getPropertyValue('--theme-wheel-text-even').trim();
+    const colorTextOdd = computed.getPropertyValue('--theme-wheel-text-odd').trim();
+    const colorStroke = computed.getPropertyValue('--theme-wheel-stroke').trim();
+
     if(active.length === 0){
         ctx.beginPath();
         ctx.arc(center, center, radius, 0, Math.PI * 2);
         ctx.fillStyle = "#e8fbff";
         ctx.fill();
-        ctx.strokeStyle = "#07527f";
+        ctx.strokeStyle = colorStroke;
         ctx.lineWidth = 10;
         ctx.stroke();
         return;
@@ -1730,10 +1875,10 @@ function drawWheel(mode){
         ctx.arc(center, center, radius, start, end);
         ctx.closePath();
 
-        ctx.fillStyle = (index % 2 === 0) ? "#20c4df" : "#ffffff";
+        ctx.fillStyle = (index % 2 === 0) ? colorSliceEven : colorSliceOdd;
         ctx.fill();
 
-        ctx.strokeStyle = "#07527f";
+        ctx.strokeStyle = colorStroke;
         ctx.lineWidth = active.length > 80 ? 1 : 3;
         ctx.stroke();
 
@@ -1744,7 +1889,7 @@ function drawWheel(mode){
         ctx.translate(center, center);
         ctx.rotate(start + slice / 2);
         ctx.textAlign = "right";
-        ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
+        ctx.fillStyle = (index % 2 === 0) ? colorTextEven : colorTextOdd;
 
         let fontSize = Math.max(8, Math.min(36, 750 / active.length));
         ctx.font = `900 ${fontSize}px sans-serif`;
@@ -1756,7 +1901,7 @@ function drawWheel(mode){
 
     ctx.beginPath();
     ctx.arc(center, center, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = "#063653";
+    ctx.strokeStyle = colorStroke;
     ctx.lineWidth = 9;
     ctx.stroke();
 }
@@ -1885,21 +2030,18 @@ function spinRoulette(mode){
     const numSlices = modeState.active.length;
     const sliceAngle = 360 / numSlices;
 
-    // Caída en cualquier lugar del recuadro (del 5% al 95% de la porción)
     const randomPercent = 0.05 + (Math.random() * 0.90);
     const targetAngleDegree = index * sliceAngle + (sliceAngle * randomPercent);
 
     const currentModulo = modeState.rotation % 360;
     const neededDegree = (360 - targetAngleDegree - currentModulo + 360) % 360;
     
-    // Vueltas aleatorias para mayor volatilidad (entre 6 y 12 vueltas)
     const randomSpins = 360 * (Math.floor(Math.random() * 7) + 6);
     const totalAddedRotation = randomSpins + neededDegree;
 
     const startRotation = modeState.rotation;
     modeState.rotation += totalAddedRotation;
 
-    // Duración épica con ligera variación aleatoria (entre 5.2s y 6.2s)
     const spinDuration = 5200 + Math.floor(Math.random() * 1000);
 
     const canvas = document.getElementById(mode === "first" ? "wheelFirst" : "wheelLast");
@@ -2069,12 +2211,19 @@ function drawBreakWheel(subMode) {
 
     ctx.clearRect(0, 0, size, size);
 
+    const computed = getComputedStyle(document.documentElement);
+    const colorSliceEven = computed.getPropertyValue('--theme-wheel-slice-even').trim();
+    const colorSliceOdd = computed.getPropertyValue('--theme-wheel-slice-odd').trim();
+    const colorTextEven = computed.getPropertyValue('--theme-wheel-text-even').trim();
+    const colorTextOdd = computed.getPropertyValue('--theme-wheel-text-odd').trim();
+    const colorStroke = computed.getPropertyValue('--theme-wheel-stroke').trim();
+
     if (active.length === 0) {
         ctx.beginPath();
         ctx.arc(center, center, radius, 0, Math.PI * 2);
         ctx.fillStyle = "#e8fbff";
         ctx.fill();
-        ctx.strokeStyle = "#07527f";
+        ctx.strokeStyle = colorStroke;
         ctx.lineWidth = 10;
         ctx.stroke();
         return;
@@ -2091,10 +2240,10 @@ function drawBreakWheel(subMode) {
         ctx.arc(center, center, radius, start, end);
         ctx.closePath();
 
-        ctx.fillStyle = (index % 2 === 0) ? "#20c4df" : "#ffffff";
+        ctx.fillStyle = (index % 2 === 0) ? colorSliceEven : colorSliceOdd;
         ctx.fill();
 
-        ctx.strokeStyle = "#07527f";
+        ctx.strokeStyle = colorStroke;
         ctx.lineWidth = active.length > 80 ? 1 : 3;
         ctx.stroke();
 
@@ -2105,7 +2254,7 @@ function drawBreakWheel(subMode) {
         ctx.translate(center, center);
         ctx.rotate(start + slice / 2);
         ctx.textAlign = "right";
-        ctx.fillStyle = (index % 2 === 0) ? "#ffffff" : "#07527f";
+        ctx.fillStyle = (index % 2 === 0) ? colorTextEven : colorTextOdd;
 
         let fontSize = Math.max(8, Math.min(36, 750 / active.length));
         ctx.font = `900 ${fontSize}px sans-serif`;
@@ -2116,7 +2265,7 @@ function drawBreakWheel(subMode) {
 
     ctx.beginPath();
     ctx.arc(center, center, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = "#063653";
+    ctx.strokeStyle = colorStroke;
     ctx.lineWidth = 9;
     ctx.stroke();
 }
@@ -2208,26 +2357,24 @@ function spinBreakSimultaneous() {
     const peopleId = peopleActive[peopleIndex];
     const peopleObj = state.break.people.items.find(p => p.id === peopleId);
 
-   const pSlices = prizesActive.length;
+    const pSlices = prizesActive.length;
     const pSliceAngle = 360 / pSlices;
-    // Caída aleatoria en cualquier parte de la porción (5% al 95%)
     const pRandomPercent = 0.05 + (Math.random() * 0.90);
     const pCenterDegree = prizeIndex * pSliceAngle + (pSliceAngle * pRandomPercent);
     const pCurrentModulo = state.break.prizes.rotation % 360;
     const pNeededDegree = (360 - pCenterDegree - pCurrentModulo + 360) % 360;
-    const pSpins = 360 * (Math.floor(Math.random() * 6) + 6); // Vueltas aleatorias
+    const pSpins = 360 * (Math.floor(Math.random() * 6) + 6);
     const pTotalAdded = pSpins + pNeededDegree;
     const pStartRot = state.break.prizes.rotation;
     state.break.prizes.rotation += pTotalAdded;
 
     const peSlices = peopleActive.length;
     const peSliceAngle = 360 / peSlices;
-    // Caída aleatoria en cualquier parte de la porción (5% al 95%)
     const peRandomPercent = 0.05 + (Math.random() * 0.90);
     const peCenterDegree = peopleIndex * peSliceAngle + (peSliceAngle * peRandomPercent);
     const peCurrentModulo = state.break.people.rotation % 360;
     const peNeededDegree = (360 - peCenterDegree - peCurrentModulo + 360) % 360;
-    const peSpins = 360 * (Math.floor(Math.random() * 6) + 6); // Vueltas aleatorias
+    const peSpins = 360 * (Math.floor(Math.random() * 6) + 6);
     const peTotalAdded = peSpins + peNeededDegree;
     const peStartRot = state.break.people.rotation;
     state.break.people.rotation += peTotalAdded;
