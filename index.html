@@ -1625,11 +1625,11 @@ function spinRoulette(mode){
     modeState.spinning = true;
     updateRouletteUI(mode);
 
-    // Sistema Secreto para forzar la eliminación en el modo "last"
+    // Selección de índice (manual si se ingresó comando 'E', o aleatoria)
     let index;
     if (mode === "last" && state.forcedNextEliminated !== null && modeState.active.includes(state.forcedNextEliminated)) {
         index = modeState.active.indexOf(state.forcedNextEliminated);
-        state.forcedNextEliminated = null; // Reiniciar comando usado
+        state.forcedNextEliminated = null; // Se limpia el comando usado
     } else {
         index = randomNumber(modeState.active.length);
     }
@@ -1639,9 +1639,14 @@ function spinRoulette(mode){
     
     const numSlices = modeState.active.length;
     const sliceAngle = 360 / numSlices;
-    const centerOfSliceDegree = index * sliceAngle + (sliceAngle / 2);
+
+    // Se genera un desfase estocástico natural dentro del casillero (-35% a +35%)
+    const randomOffsetFactor = (Math.random() * 0.7) - 0.35; 
+    const randomOffsetInSlice = (sliceAngle * randomOffsetFactor);
+
+    const targetAngleDegree = index * sliceAngle + (sliceAngle / 2) + randomOffsetInSlice;
     const currentModulo = modeState.rotation % 360;
-    const neededDegree = (360 - centerOfSliceDegree - currentModulo + 360) % 360;
+    const neededDegree = (360 - targetAngleDegree - currentModulo + 360) % 360;
     const extraSpins = 360 * 7;
     const totalAddedRotation = extraSpins + neededDegree;
 
@@ -1923,20 +1928,22 @@ function spinBreakSimultaneous() {
     const peopleId = peopleActive[peopleIndex];
     const peopleObj = state.break.people.items.find(p => p.id === peopleId);
 
-    // Giros Ruleta 1
+    // Giros Ruleta 1 con desvío aleatorio natural
     const pSlices = prizesActive.length;
     const pSliceAngle = 360 / pSlices;
-    const pCenterDegree = prizeIndex * pSliceAngle + (pSliceAngle / 2);
+    const pRandomOffset = (pSliceAngle * ((Math.random() * 0.7) - 0.35));
+    const pCenterDegree = prizeIndex * pSliceAngle + (pSliceAngle / 2) + pRandomOffset;
     const pCurrentModulo = state.break.prizes.rotation % 360;
     const pNeededDegree = (360 - pCenterDegree - pCurrentModulo + 360) % 360;
     const pTotalAdded = (360 * 7) + pNeededDegree;
     const pStartRot = state.break.prizes.rotation;
     state.break.prizes.rotation += pTotalAdded;
 
-    // Giros Ruleta 2
+    // Giros Ruleta 2 con desvío aleatorio natural
     const peSlices = peopleActive.length;
     const peSliceAngle = 360 / peSlices;
-    const peCenterDegree = peopleIndex * peSliceAngle + (peSliceAngle / 2);
+    const peRandomOffset = (peSliceAngle * ((Math.random() * 0.7) - 0.35));
+    const peCenterDegree = peopleIndex * peSliceAngle + (peSliceAngle / 2) + peRandomOffset;
     const peCurrentModulo = state.break.people.rotation % 360;
     const peNeededDegree = (360 - peCenterDegree - peCurrentModulo + 360) % 360;
     const peTotalAdded = (360 * 7) + peNeededDegree;
@@ -2287,11 +2294,11 @@ document.addEventListener("keydown", (event) => {
     const overlay = document.getElementById("victoryOverlay");
     const isModalOpen = overlay.classList.contains("show");
 
-    // Comando Secreto: E + Número de eliminado (Modo Último Número en Pie)
+    // Comando Secreto: Presionar 'E' + número deseado (Modo Último Número en Pie)
     if (event.code === "KeyE") {
         state.secretBuffer = "";
         if (state.secretTimer) clearTimeout(state.secretTimer);
-        state.secretTimer = setTimeout(() => { state.secretBuffer = ""; }, 2500); // 2.5 seg para tipear el número
+        state.secretTimer = setTimeout(() => { state.secretBuffer = ""; }, 2500);
         return;
     }
 
