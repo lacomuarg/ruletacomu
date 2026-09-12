@@ -778,6 +778,7 @@ canvas {
         <button class="tab" data-mode="break">🔥 Modo Break</button>
     </div>
 
+    <!-- Fecha y Hora en vivo Argentina -->
     <div class="live-clock-card">
         📅 <span id="liveClockDate">--/--/----</span> | 🕒 <span id="liveClockTime">--:--:--</span> (ARG)
     </div>
@@ -1168,20 +1169,23 @@ canvas {
 <script>
 const state = {
     participants: [],
+    forcedNextEliminated: null,
+    secretBuffer: "",
+    secretTimer: null,
     first: {
         active: [],
-        results: [], // { id, tierRank }
+        results: [],
         rotation: 0,
         spinning: false,
         animFrame: null,
         tierEnabled: false,
         maxTiers: 3,
-        tierOrder: 'asc', // 'asc' | 'desc'
+        tierOrder: 'asc',
         currentTierStep: 1
     },
     last: {
         active: [],
-        eliminated: [], // { id, tierRank }
+        eliminated: [],
         rotation: 0,
         spinning: false,
         winnerShown: false,
@@ -1621,7 +1625,15 @@ function spinRoulette(mode){
     modeState.spinning = true;
     updateRouletteUI(mode);
 
-    const index = randomNumber(modeState.active.length);
+    // Sistema Secreto para forzar la eliminación en el modo "last"
+    let index;
+    if (mode === "last" && state.forcedNextEliminated !== null && modeState.active.includes(state.forcedNextEliminated)) {
+        index = modeState.active.indexOf(state.forcedNextEliminated);
+        state.forcedNextEliminated = null; // Reiniciar comando usado
+    } else {
+        index = randomNumber(modeState.active.length);
+    }
+
     const id = modeState.active[index];
     const participant = state.participants.find(p => p.id === id);
     
@@ -2274,6 +2286,25 @@ document.addEventListener("keydown", (event) => {
     const activeMode = getActiveMode();
     const overlay = document.getElementById("victoryOverlay");
     const isModalOpen = overlay.classList.contains("show");
+
+    // Comando Secreto: E + Número de eliminado (Modo Último Número en Pie)
+    if (event.code === "KeyE") {
+        state.secretBuffer = "";
+        if (state.secretTimer) clearTimeout(state.secretTimer);
+        state.secretTimer = setTimeout(() => { state.secretBuffer = ""; }, 2500); // 2.5 seg para tipear el número
+        return;
+    }
+
+    if (state.secretTimer && /^[0-9]$/.test(event.key)) {
+        state.secretBuffer += event.key;
+        let parsedId = parseInt(state.secretBuffer);
+        if (!isNaN(parsedId)) {
+            state.forcedNextEliminated = parsedId;
+        }
+        clearTimeout(state.secretTimer);
+        state.secretTimer = setTimeout(() => { state.secretBuffer = ""; }, 2500);
+        return;
+    }
 
     if (event.code === "Space") {
         event.preventDefault();
