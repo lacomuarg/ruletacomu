@@ -78,6 +78,21 @@
   --theme-wheel-text-odd: #ffffff;
 }
 
+/* Modo TCG (Blanco y Negro) */
+[data-theme="tcg"] {
+  --theme-bg-gradient: radial-gradient(circle at 10% 0%, #e6e6e6 0%, transparent 30%), linear-gradient(135deg, #ffffff, #f0f0f0, #ffffff);
+  --theme-header-border: #000000;
+  --theme-title-color: #000000;
+  --theme-subtitle-color: #444444;
+  --theme-tab-active-bg: linear-gradient(135deg, #000000, #333333);
+  --theme-btn-primary-bg: linear-gradient(135deg, #000000, #3a3a3a);
+  --theme-wheel-stroke: #000000;
+  --theme-wheel-slice-even: #000000;
+  --theme-wheel-slice-odd: #ffffff;
+  --theme-wheel-text-even: #ffffff;
+  --theme-wheel-text-odd: #000000;
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -920,6 +935,7 @@ footer.footer-credits {
                 <option value="river">⚪🔴⚪ Modo River</option>
                 <option value="boca">💙💛💙 Modo Boca</option>
                 <option value="san-lorenzo">🔴🔵⚪ Modo San Lorenzo</option>
+                <option value="tcg">⚫⚪ Modo TCG</option>
             </select>
         </div>
         <div class="flag">🇦🇷</div>
@@ -1506,7 +1522,17 @@ function applyTheme(themeName) {
     } else {
         document.documentElement.setAttribute('data-theme', themeName);
     }
-    
+
+    // Logo según el tema (TCG usa gordo.jpeg, el resto el logo original)
+    const logoImg = document.querySelector('.logo-title img');
+    if (logoImg) {
+        if (!logoImg.dataset.defaultSrc) {
+            logoImg.dataset.defaultSrc = logoImg.getAttribute('src');
+        }
+        logoImg.style.display = '';
+        logoImg.src = themeName === 'tcg' ? 'gordo.jpeg' : logoImg.dataset.defaultSrc;
+    }
+
     const activeMode = getActiveMode();
     if (activeMode === 'break') {
         drawBreakWheel('prizes');
