@@ -93,6 +93,77 @@
   --theme-wheel-text-odd: #000000;
 }
 
+/* Modo Buda (Celeste cielo, Dorado sol, Rojo y Blanco) */
+[data-theme="buda"] {
+  --theme-bg-gradient:
+    radial-gradient(circle at 50% -5%, rgba(255, 214, 102, 0.95) 0%, rgba(255, 190, 60, 0.35) 22%, transparent 45%),
+    repeating-conic-gradient(from 0deg at 50% -8%, rgba(255, 176, 32, 0.28) 0deg 5deg, transparent 5deg 12deg),
+    linear-gradient(180deg, #7fc0ee 0%, #bfe0f7 55%, #ffffff 100%);
+  --theme-header-border: #f5a623;
+  --theme-title-color: #2b1a0a;
+  --theme-subtitle-color: #d62839;
+  --theme-tab-active-bg: linear-gradient(135deg, #d62839, #f5a623);
+  --theme-btn-primary-bg: linear-gradient(135deg, #d62839, #f5a623);
+  --theme-wheel-stroke: #1a1a1a;
+  --theme-wheel-slice-even: #f6a821;
+  --theme-wheel-slice-odd: #d62839;
+  --theme-wheel-text-even: #2a1400;
+  --theme-wheel-text-odd: #ffffff;
+}
+
+html[data-theme="buda"],
+[data-theme="buda"] body { background-attachment: fixed; }
+
+[data-theme="buda"] header {
+  background: linear-gradient(180deg, #ffffff 0%, #dff1fc 100%);
+  border-bottom: 5px solid #f5a623;
+}
+[data-theme="buda"] .title { text-shadow: 1px 1px 0 #ffd54d; }
+[data-theme="buda"] .title::before { content: "👑 "; }
+[data-theme="buda"] .logo-title img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #f5a623;
+  background: #bfe0f7;
+}
+[data-theme="buda"] .flag { background: #dff1fc; border: 2px solid #f5a623; }
+[data-theme="buda"] .tab { border-color: #f5c14b; color: #7a1020; }
+[data-theme="buda"] .tab.active { color: #ffffff; border-color: transparent; }
+[data-theme="buda"] .card,
+[data-theme="buda"] .history,
+[data-theme="buda"] .live-clock-card,
+[data-theme="buda"] .keyboard-shortcuts-card {
+  border-color: #f5c14b;
+  box-shadow: 0 10px 30px rgba(214, 120, 20, 0.18);
+}
+[data-theme="buda"] .live-clock-card { color: #7a1020; }
+[data-theme="buda"] .pointer { border-top-color: #d62839; }
+[data-theme="buda"] .wheel-center { border-color: #1a1a1a; }
+[data-theme="buda"] .wheel-center::after { background: linear-gradient(135deg, #f5a623, #ffffff); }
+[data-theme="buda"] canvas { box-shadow: 0 8px 20px rgba(245, 166, 35, 0.55); }
+[data-theme="buda"] .status,
+[data-theme="buda"] .badge,
+[data-theme="buda"] .mode-switch-container {
+  background: #fff4d6;
+  border-color: #f5c14b;
+  color: #7a1020;
+}
+[data-theme="buda"] .soft {
+  background: #fff4d6;
+  color: #7a1020;
+  border: 1px solid #f5c14b;
+}
+[data-theme="buda"] .number {
+  background: linear-gradient(135deg, #ffe7a8, #ffffff);
+  border-color: #f5c14b;
+  color: #7a1020;
+}
+[data-theme="buda"] .victory { border-color: #f5a623; }
+[data-theme="buda"] .victory h2 { color: #d62839; }
+[data-theme="buda"] .winner-name { background: #fff4d6; border-color: #f5a623; }
+[data-theme="buda"] footer.footer-credits { border-top: 4px solid #f5a623; }
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -936,6 +1007,7 @@ footer.footer-credits {
                 <option value="boca">💙💛💙 Modo Boca</option>
                 <option value="san-lorenzo">🔴🔵⚪ Modo San Lorenzo</option>
                 <option value="tcg">⚫⚪ Modo TCG</option>
+                <option value="buda">🧘 Modo Buda</option>
             </select>
         </div>
         <div class="flag">🇦🇷</div>
@@ -1523,14 +1595,20 @@ function applyTheme(themeName) {
         document.documentElement.setAttribute('data-theme', themeName);
     }
 
-    // Logo según el tema (TCG usa gordo.jpeg, el resto el logo original)
+    // Logo según el tema (TCG usa gordo.jpeg, Buda usa buda.png, el resto el logo original)
     const logoImg = document.querySelector('.logo-title img');
     if (logoImg) {
         if (!logoImg.dataset.defaultSrc) {
             logoImg.dataset.defaultSrc = logoImg.getAttribute('src');
         }
         logoImg.style.display = '';
-        logoImg.src = themeName === 'tcg' ? 'gordo.jpeg' : logoImg.dataset.defaultSrc;
+        if (themeName === 'tcg') {
+            logoImg.src = 'gordo.jpeg';
+        } else if (themeName === 'buda') {
+            logoImg.src = 'buda.jpeg';
+        } else {
+            logoImg.src = logoImg.dataset.defaultSrc;
+        }
     }
 
     const activeMode = getActiveMode();
@@ -1561,8 +1639,6 @@ setInterval(updateLiveClock, 1000);
 updateLiveClock();
 
 function toggleInputMode(mode, val) {
-    const groupRange = document.getElementById(mode + "GroupRange");
-    const groupList = document.getElementById(mode + "GroupList");
     const otherMode = mode === "first" ? "last" : "first";
     
     document.getElementById(otherMode + "InputMode").value = val;
