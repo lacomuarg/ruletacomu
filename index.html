@@ -986,6 +986,137 @@ footer.footer-credits {
     border-width: 6px;
   }
 }
+/* ============ MODO DIBU.CARDS (negro, azul eléctrico, celeste y dorado) ============ */
+[data-theme="dibu"] {
+  --theme-bg-gradient:
+    radial-gradient(ellipse at 50% -8%, rgba(36,150,255,.45) 0%, rgba(36,150,255,.12) 35%, transparent 60%),
+    radial-gradient(circle at 92% 95%, rgba(245,197,66,.14) 0%, transparent 35%),
+    radial-gradient(circle at 5% 70%, rgba(92,200,255,.10) 0%, transparent 35%),
+    linear-gradient(165deg, #02050d 0%, #061529 55%, #02060f 100%);
+  --theme-header-border: #f5c542;
+  --theme-title-color: #ffffff;
+  --theme-subtitle-color: #5cc8ff;
+  --theme-tab-active-bg: linear-gradient(135deg, #2aa8ff, #0a3d8f);
+  --theme-btn-primary-bg: linear-gradient(135deg, #2aa8ff, #0b4fb3);
+  --theme-wheel-stroke: #f5c542;
+  --theme-wheel-slice-even: #1f8fff;
+  --theme-wheel-slice-odd: #050b18;
+  --theme-wheel-text-even: #ffffff;
+  --theme-wheel-text-odd: #ffffff;
+  --azul: #bfe6ff;
+  --rojo: #ff6b7d;
+  --celeste-claro: rgba(31,143,255,.16);
+}
+
+html[data-theme="dibu"],
+[data-theme="dibu"] body { background-color: #02050d; background-attachment: fixed; }
+
+/* Header */
+[data-theme="dibu"] header {
+  background: linear-gradient(180deg, rgba(4,12,28,.97), rgba(3,8,20,.95));
+  border-bottom: 4px solid #f5c542;
+  box-shadow: 0 6px 30px rgba(31,143,255,.35), 0 2px 0 rgba(245,197,66,.4);
+}
+[data-theme="dibu"] .title { text-shadow: 0 0 14px rgba(42,168,255,.8); letter-spacing: .5px; }
+[data-theme="dibu"] .title::before { content: "👑 "; }
+[data-theme="dibu"] .subtitle { text-shadow: 0 0 8px rgba(92,200,255,.6); }
+[data-theme="dibu"] .logo-title img {
+  width: 50px; height: 50px; object-fit: cover; border-radius: 50%;
+  border: 2px solid #f5c542; box-shadow: 0 0 14px rgba(42,168,255,.85);
+}
+[data-theme="dibu"] .flag { background: #071a36; border: 2px solid #f5c542; }
+[data-theme="dibu"] .theme-selector select { background: #071a36; color: #fff; border-color: #f5c542; }
+
+/* Tabs */
+[data-theme="dibu"] .tab { background: #07142b; border-color: #1e4a85; color: #bfe6ff; }
+[data-theme="dibu"] .tab.active {
+  color: #fff; border-color: #f5c542;
+  box-shadow: 0 0 16px rgba(42,168,255,.65);
+}
+
+/* Tarjetas y paneles */
+[data-theme="dibu"] .card,
+[data-theme="dibu"] .history,
+[data-theme="dibu"] .live-clock-card,
+[data-theme="dibu"] .keyboard-shortcuts-card {
+  background: rgba(7,18,40,.88);
+  border: 1px solid rgba(63,182,255,.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,.55), 0 0 22px rgba(31,143,255,.16);
+}
+[data-theme="dibu"] .keyboard-shortcuts-card { border-left: 4px solid #f5c542; }
+[data-theme="dibu"] .live-clock-card { color: #bfe6ff; }
+[data-theme="dibu"] .card h2,
+[data-theme="dibu"] .history h2 { color: #ffffff; text-shadow: 0 0 10px rgba(42,168,255,.5); }
+[data-theme="dibu"] label { color: #8ccfff; }
+
+/* Inputs */
+[data-theme="dibu"] input,
+[data-theme="dibu"] select,
+[data-theme="dibu"] textarea { background: #0a1830; color: #ffffff; border-color: #1e4a85; }
+[data-theme="dibu"] input:focus,
+[data-theme="dibu"] select:focus,
+[data-theme="dibu"] textarea:focus { border-color: #f5c542; box-shadow: 0 0 10px rgba(245,197,66,.35); }
+[data-theme="dibu"] input::placeholder,
+[data-theme="dibu"] textarea::placeholder { color: #5f86b3; }
+[data-theme="dibu"] select option { background: #0a1830; color: #ffffff; }
+[data-theme="dibu"] .mode-switch-container,
+[data-theme="dibu"] .status,
+[data-theme="dibu"] .badge {
+  background: rgba(31,143,255,.14); border-color: rgba(63,182,255,.4); color: #e8f4ff;
+}
+[data-theme="dibu"] .tier-section { background: rgba(245,197,66,.08); border-color: #f5c542; }
+[data-theme="dibu"] .tier-toggle-label { color: #f5c542; }
+
+/* Botones */
+[data-theme="dibu"] .primary {
+  border: 1px solid #f5c542; text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  box-shadow: 0 0 14px rgba(42,168,255,.55);
+}
+[data-theme="dibu"] .spin-button { animation: dibuPulse 2.4s ease-in-out infinite; }
+[data-theme="dibu"] .spin-button:disabled { animation: none; }
+@keyframes dibuPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(42,168,255,.45), 0 0 0 0 rgba(245,197,66,0); }
+  50%      { box-shadow: 0 0 26px rgba(42,168,255,.9), 0 0 0 3px rgba(245,197,66,.35); }
+}
+[data-theme="dibu"] .soft { background: rgba(31,143,255,.14); color: #bfe6ff; border: 1px solid rgba(63,182,255,.4); }
+[data-theme="dibu"] .danger { background: rgba(255,107,125,.12); color: #ff9aa7; border: 1px solid rgba(255,107,125,.4); }
+
+/* Ruleta */
+[data-theme="dibu"] canvas {
+  box-shadow: 0 0 0 4px #f5c542, 0 0 35px rgba(30,144,255,.75), 0 0 70px rgba(30,144,255,.35);
+}
+[data-theme="dibu"] .pointer { border-top-color: #f5c542; }
+[data-theme="dibu"] .wheel-center { background: #05101f; border-color: #f5c542; box-shadow: 0 0 16px rgba(245,197,66,.6); }
+[data-theme="dibu"] .wheel-center::after { background: radial-gradient(circle, #ffffff, #f5c542); }
+
+/* Participantes e historial */
+[data-theme="dibu"] .number { background: linear-gradient(135deg, #0b3d91, #07142b); border-color: #1e4a85; color: #ffffff; }
+[data-theme="dibu"] .person.eliminated { background: rgba(255,107,125,.12); }
+[data-theme="dibu"] .person.eliminated input { background: rgba(255,107,125,.1); color: #ff8a97; }
+[data-theme="dibu"] .history-item { background: rgba(255,107,125,.12); color: #e8f4ff; }
+[data-theme="dibu"] .history-item.tier { background: rgba(245,197,66,.14); border-left-color: #f5c542; }
+[data-theme="dibu"] .history-item.match { background: rgba(31,143,255,.16); border-left-color: #5cc8ff; }
+[data-theme="dibu"] .shortcut-item kbd { background: #0a1830; border-color: #1e4a85; color: #f5c542; }
+
+/* Cartel de resultado */
+[data-theme="dibu"] .victory {
+  background: #07142b; border-color: #f5c542;
+  box-shadow: 0 0 40px rgba(31,143,255,.6), 0 20px 60px rgba(0,0,0,.6);
+}
+[data-theme="dibu"] .victory h2,
+[data-theme="dibu"] .victory.tier-modal h2 { color: #f5c542; text-shadow: 0 0 12px rgba(245,197,66,.5); }
+[data-theme="dibu"] .victory.eliminated-modal { border-color: #ff6b7d; }
+[data-theme="dibu"] .victory.eliminated-modal h2 { color: #ff6b7d; text-shadow: none; }
+[data-theme="dibu"] .winner-name { background: rgba(31,143,255,.14); border-color: #5cc8ff; color: #ffffff; }
+[data-theme="dibu"] .winner-name.tier-box { background: rgba(245,197,66,.1); border-color: #f5c542; color: #ffe08a; }
+[data-theme="dibu"] .winner-name.eliminated-box { background: rgba(255,107,125,.1); border-color: #ff6b7d; color: #ff9aa7; }
+[data-theme="dibu"] .winner-name small { color: #bfe6ff !important; }
+
+/* Footer */
+[data-theme="dibu"] footer.footer-credits { background: rgba(3,8,20,.96); border-top: 3px solid #f5c542; }
+[data-theme="dibu"] .footer-credits-container { color: #bfe6ff; }
+[data-theme="dibu"] .footer-credits a { color: #5cc8ff; }
+[data-theme="dibu"] .footer-copyright { color: #7fa3c9; }
 </style>
 </head>
 
@@ -1008,6 +1139,7 @@ footer.footer-credits {
                 <option value="san-lorenzo">🔴🔵⚪ Modo San Lorenzo</option>
                 <option value="tcg">⚫⚪ Modo TCG</option>
                 <option value="buda">🧘 Modo Buda</option>
+                <option value="dibu">🧤 Modo Dibu.Cards</option>
             </select>
         </div>
         <div class="flag">🇦🇷</div>
@@ -1597,19 +1729,15 @@ function applyTheme(themeName) {
 
     // Logo según el tema (TCG usa gordo.jpeg, Buda usa buda.png, el resto el logo original)
     const logoImg = document.querySelector('.logo-title img');
-    if (logoImg) {
-        if (!logoImg.dataset.defaultSrc) {
-            logoImg.dataset.defaultSrc = logoImg.getAttribute('src');
-        }
-        logoImg.style.display = '';
-        if (themeName === 'tcg') {
-            logoImg.src = 'gordo.jpeg';
-        } else if (themeName === 'buda') {
-            logoImg.src = 'buda.jpeg';
-        } else {
-            logoImg.src = logoImg.dataset.defaultSrc;
-        }
-    }
+   if (themeName === 'tcg') {
+    logoImg.src = 'gordo.jpeg';
+} else if (themeName === 'buda') {
+    logoImg.src = 'buda.jpeg';
+} else if (themeName === 'dibu') {
+    logoImg.src = 'dibuc.jpeg';
+} else {
+    logoImg.src = logoImg.dataset.defaultSrc;
+}
 
     const activeMode = getActiveMode();
     if (activeMode === 'break') {
