@@ -19,6 +19,7 @@
   --theme-wheel-slice-odd: #ffffff;
   --theme-wheel-text-even: #ffffff;
   --theme-wheel-text-odd: #07527f;
+  --theme-wheel-empty: #e8fbff;
   
   --celeste: #20c4df;
   --celeste-claro: #dffaff;
@@ -335,6 +336,7 @@ header {
   font-size: 16px;
   color: var(--theme-title-color);
 }
+
 
 .controls {
   display: grid;
@@ -986,6 +988,7 @@ footer.footer-credits {
     border-width: 6px;
   }
 }
+
 /* ============ MODO DIBU.CARDS (negro, azul eléctrico, celeste y dorado) ============ */
 [data-theme="dibu"] {
   --theme-bg-gradient:
@@ -1117,14 +1120,161 @@ html[data-theme="dibu"],
 [data-theme="dibu"] .footer-credits-container { color: #bfe6ff; }
 [data-theme="dibu"] .footer-credits a { color: #5cc8ff; }
 [data-theme="dibu"] .footer-copyright { color: #7fa3c9; }
+
+/* ============ MODO GUTI CARDS (negro, rojo y blanco) ============ */
+[data-theme="guti"] {
+  --theme-bg-gradient:
+    radial-gradient(ellipse at 50% -10%, rgba(238,58,44,.50) 0%, rgba(238,58,44,.14) 35%, transparent 62%),
+    radial-gradient(circle at 95% 92%, rgba(238,58,44,.18) 0%, transparent 38%),
+    radial-gradient(circle at 4% 65%, rgba(255,255,255,.06) 0%, transparent 32%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.025) 0 2px, transparent 2px 18px),
+    linear-gradient(165deg, #050505 0%, #140505 55%, #050505 100%);
+  --theme-header-border: #ee3a2c;
+  --theme-title-color: #ffffff;
+  --theme-subtitle-color: #ff6a5c;
+  --theme-tab-active-bg: linear-gradient(135deg, #ee3a2c, #9a1409);
+  --theme-btn-primary-bg: linear-gradient(135deg, #ee3a2c, #a3160b);
+  --theme-wheel-stroke: #ffffff;
+  --theme-wheel-slice-even: rgba(232,40,28,.68);
+  --theme-wheel-slice-odd: rgba(8,8,8,.60);
+  --theme-wheel-text-even: #ffffff;
+  --theme-wheel-text-odd: #ffffff;
+  --theme-wheel-text-stroke: rgba(0,0,0,.85);
+  --theme-wheel-empty: rgba(10,10,10,.85);
+  --azul: #ffd9d5;
+  --rojo: #ff6a5c;
+  --celeste-claro: rgba(238,58,44,.16);
+}
+html[data-theme="guti"],
+[data-theme="guti"] body { background-color: #050505; background-attachment: fixed; }
+
+/* Logo difuminado detrás de la ruleta (no gira, las porciones son semitransparentes) */
+[data-theme="guti"] .wheel-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: #0a0a0a url("gutic.png") 51.1% 50% / auto 112% no-repeat;
+  filter: blur(7px);
+  clip-path: circle(45.5% at 50% 50%);
+}
+
+/* Header */
+[data-theme="guti"] header {
+  background: linear-gradient(180deg, rgba(14,6,6,.97), rgba(5,5,5,.95));
+  border-bottom: 4px solid #ee3a2c;
+  box-shadow: 0 6px 30px rgba(238,58,44,.35), 0 2px 0 rgba(255,255,255,.25);
+}
+[data-theme="guti"] .title { text-shadow: 0 0 14px rgba(238,58,44,.85); letter-spacing: .5px; }
+[data-theme="guti"] .title::before { content: "🐓 "; }
+[data-theme="guti"] .subtitle { text-shadow: 0 0 8px rgba(238,58,44,.6); }
+[data-theme="guti"] .logo-title img {
+  width: 54px; height: 54px; object-fit: cover; object-position: 51% 50%;
+  border-radius: 50%; background: #0a0a0a;
+  border: 2px solid #ee3a2c; box-shadow: 0 0 14px rgba(238,58,44,.85);
+}
+[data-theme="guti"] .flag { background: #1a0606; border: 2px solid #ee3a2c; }
+[data-theme="guti"] .theme-selector select { background: #1a0909; color: #fff; border-color: #ee3a2c; }
+
+/* Tabs */
+[data-theme="guti"] .tab { background: #140707; border-color: #5a1a14; color: #ffd9d5; }
+[data-theme="guti"] .tab.active { color: #fff; border-color: #ffffff; box-shadow: 0 0 16px rgba(238,58,44,.7); }
+
+/* Tarjetas y paneles */
+[data-theme="guti"] .card,
+[data-theme="guti"] .history,
+[data-theme="guti"] .live-clock-card,
+[data-theme="guti"] .keyboard-shortcuts-card {
+  background: rgba(16,8,8,.88);
+  border: 1px solid rgba(238,58,44,.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,.55), 0 0 22px rgba(238,58,44,.16);
+}
+[data-theme="guti"] #breakPrizesConfigCard,
+[data-theme="guti"] #breakPeopleConfigCard { border-color: rgba(238,58,44,.38) !important; }
+[data-theme="guti"] .keyboard-shortcuts-card { border-left: 4px solid #ee3a2c; }
+[data-theme="guti"] .live-clock-card { color: #ffd9d5; }
+[data-theme="guti"] .card h2,
+[data-theme="guti"] .history h2 { color: #fff; text-shadow: 0 0 10px rgba(238,58,44,.5); }
+[data-theme="guti"] label { color: #ff9a90; }
+
+/* Inputs */
+[data-theme="guti"] input,
+[data-theme="guti"] select,
+[data-theme="guti"] textarea { background: #160a0a; color: #fff; border-color: #5a1a14; }
+[data-theme="guti"] input:focus,
+[data-theme="guti"] select:focus,
+[data-theme="guti"] textarea:focus { border-color: #ee3a2c; box-shadow: 0 0 10px rgba(238,58,44,.4); }
+[data-theme="guti"] input::placeholder,
+[data-theme="guti"] textarea::placeholder { color: #8a5a55; }
+[data-theme="guti"] select option { background: #160a0a; color: #fff; }
+[data-theme="guti"] .mode-switch-container,
+[data-theme="guti"] .status,
+[data-theme="guti"] .badge { background: rgba(238,58,44,.14); border-color: rgba(238,58,44,.4); color: #fff; }
+[data-theme="guti"] .tier-section { background: rgba(255,255,255,.05); border-color: #ee3a2c; }
+[data-theme="guti"] .tier-toggle-label { color: #ff8a7e; }
+
+/* Botones */
+[data-theme="guti"] .primary {
+  border: 1px solid rgba(255,255,255,.7); text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  box-shadow: 0 0 14px rgba(238,58,44,.55);
+}
+[data-theme="guti"] .spin-button { animation: gutiPulse 2.4s ease-in-out infinite; }
+[data-theme="guti"] .spin-button:disabled { animation: none; }
+@keyframes gutiPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(238,58,44,.45), 0 0 0 0 rgba(255,255,255,0); }
+  50%      { box-shadow: 0 0 26px rgba(238,58,44,.95), 0 0 0 3px rgba(255,255,255,.3); }
+}
+[data-theme="guti"] .soft { background: rgba(255,255,255,.07); color: #ffe3e0; border: 1px solid rgba(255,255,255,.25); }
+[data-theme="guti"] .danger { background: rgba(238,58,44,.15); color: #ff9d93; border: 1px solid rgba(238,58,44,.45); }
+
+/* Ruleta */
+[data-theme="guti"] canvas {
+  box-shadow: 0 0 0 4px #ee3a2c, 0 0 35px rgba(238,58,44,.7), 0 0 70px rgba(238,58,44,.3);
+}
+[data-theme="guti"] .pointer { border-top-color: #ffffff; filter: drop-shadow(0 0 6px rgba(238,58,44,.95)); }
+[data-theme="guti"] .wheel-center { background: #0a0a0a; border-color: #ffffff; box-shadow: 0 0 16px rgba(238,58,44,.8); }
+[data-theme="guti"] .wheel-center::after { background: radial-gradient(circle, #ffffff, #ee3a2c); }
+
+/* Participantes e historial */
+[data-theme="guti"] .number { background: linear-gradient(135deg, #7d120a, #140707); border-color: #5a1a14; color: #fff; }
+[data-theme="guti"] .person.eliminated { background: rgba(238,58,44,.12); }
+[data-theme="guti"] .person.eliminated input { background: rgba(238,58,44,.1); color: #ff8a7e; }
+[data-theme="guti"] .history-item { background: rgba(238,58,44,.12); color: #ffe3e0; border-left-color: #ee3a2c; }
+[data-theme="guti"] .history-item.tier { background: rgba(255,255,255,.10); border-left-color: #ffffff; }
+[data-theme="guti"] .history-item.match { background: rgba(255,255,255,.07); border-left-color: #ff6a5c; }
+[data-theme="guti"] .shortcut-item kbd { background: #160a0a; border-color: #5a1a14; color: #ff6a5c; }
+
+/* Cartel de resultado */
+[data-theme="guti"] .overlay { background: rgba(0,0,0,.8); }
+[data-theme="guti"] .victory {
+  background: #120707; border-color: #ee3a2c;
+  box-shadow: 0 0 40px rgba(238,58,44,.55), 0 20px 60px rgba(0,0,0,.6);
+}
+[data-theme="guti"] .victory h2,
+[data-theme="guti"] .victory.tier-modal h2 { color: #fff; text-shadow: 0 0 12px rgba(238,58,44,.7); }
+[data-theme="guti"] .victory.tier-modal { border-color: #ffffff; }
+[data-theme="guti"] .victory.eliminated-modal { border-color: #777; }
+[data-theme="guti"] .victory.eliminated-modal h2 { color: #cfcfcf; text-shadow: none; }
+[data-theme="guti"] .winner-name { background: rgba(238,58,44,.14); border-color: #ee3a2c; color: #fff; }
+[data-theme="guti"] .winner-name.tier-box { background: rgba(255,255,255,.08); border-color: #fff; color: #fff; }
+[data-theme="guti"] .winner-name.eliminated-box { background: rgba(255,255,255,.05); border-color: #777; color: #cfcfcf; }
+[data-theme="guti"] .winner-name small { color: #ffe3e0 !important; }
+
+/* Footer */
+[data-theme="guti"] footer.footer-credits { background: rgba(5,5,5,.96); border-top: 3px solid #ee3a2c; }
+[data-theme="guti"] .footer-credits-container { color: #ffe3e0; }
+[data-theme="guti"] .footer-credits a { color: #ff6a5c; }
+[data-theme="guti"] .footer-copyright { color: #b08a85; }
 </style>
 </head>
+
 
 <body>
 
 <header>
     <div class="logo-title">
-        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        <img src="logo.png" data-default-src="logo.png" alt="Logo" onerror="this.style.display='none'">
         <div>
             <div class="title" id="mainHeaderTitle">La ruleta de La Comu Argentina</div>
             <div class="subtitle">Sorteos · Eliminaciones</div>
@@ -1140,6 +1290,7 @@ html[data-theme="dibu"],
                 <option value="tcg">⚫⚪ Modo TCG</option>
                 <option value="buda">🧘 Modo Buda</option>
                 <option value="dibu">🧤 Modo Dibu.Cards</option>
+                <option value="guti">🐓 Modo Guti Cards</option>
             </select>
         </div>
         <div class="flag">🇦🇷</div>
@@ -1428,6 +1579,7 @@ html[data-theme="dibu"],
         </div>
     </section>
 
+    
     <section id="break" class="mode">
         <div class="break-layout">
             
@@ -1661,6 +1813,7 @@ html[data-theme="dibu"],
     </div>
 </footer>
 
+
 <script>
 const state = {
     participants: [],
@@ -1727,17 +1880,11 @@ function applyTheme(themeName) {
         document.documentElement.setAttribute('data-theme', themeName);
     }
 
-    // Logo según el tema (TCG usa gordo.jpeg, Buda usa buda.png, el resto el logo original)
+    // Logo según el tema (el resto usa el logo original)
     const logoImg = document.querySelector('.logo-title img');
-   if (themeName === 'tcg') {
-    logoImg.src = 'gordo.jpeg';
-} else if (themeName === 'buda') {
-    logoImg.src = 'buda.jpeg';
-} else if (themeName === 'dibu') {
-    logoImg.src = 'dibuc.jpeg';
-} else {
-    logoImg.src = logoImg.dataset.defaultSrc;
-}
+    logoImg.style.display = '';
+    const logos = { tcg: 'gordo.jpeg', buda: 'buda.jpeg', dibu: 'dibuc.jpeg', guti: 'gutic.png' };
+    logoImg.src = logos[themeName] || logoImg.dataset.defaultSrc;
 
     const activeMode = getActiveMode();
     if (activeMode === 'break') {
@@ -2122,6 +2269,7 @@ function syncParticipantTexts(id, text) {
     });
 }
 
+
 function setupCanvas(canvas) {
     const size = 900;
     canvas.width = size;
@@ -2146,11 +2294,13 @@ function drawWheel(mode){
     const colorTextEven = computed.getPropertyValue('--theme-wheel-text-even').trim();
     const colorTextOdd = computed.getPropertyValue('--theme-wheel-text-odd').trim();
     const colorStroke = computed.getPropertyValue('--theme-wheel-stroke').trim();
+    const colorTextStroke = computed.getPropertyValue('--theme-wheel-text-stroke').trim();
+    const colorEmpty = computed.getPropertyValue('--theme-wheel-empty').trim() || "#e8fbff";
 
     if(active.length === 0){
         ctx.beginPath();
         ctx.arc(center, center, radius, 0, Math.PI * 2);
-        ctx.fillStyle = "#e8fbff";
+        ctx.fillStyle = colorEmpty;
         ctx.fill();
         ctx.strokeStyle = colorStroke;
         ctx.lineWidth = 10;
@@ -2189,6 +2339,7 @@ function drawWheel(mode){
         ctx.font = `900 ${fontSize}px sans-serif`;
         
         const textDistance = active.length > 80 ? radius - 8 : radius - 14;
+        if (colorTextStroke) { ctx.lineJoin = "round"; ctx.lineWidth = Math.max(2, fontSize / 5); ctx.strokeStyle = colorTextStroke; ctx.strokeText(text, textDistance, fontSize / 3.2); }
         ctx.fillText(text, textDistance, fontSize / 3.2);
         ctx.restore();
     });
@@ -2512,11 +2663,13 @@ function drawBreakWheel(subMode) {
     const colorTextEven = computed.getPropertyValue('--theme-wheel-text-even').trim();
     const colorTextOdd = computed.getPropertyValue('--theme-wheel-text-odd').trim();
     const colorStroke = computed.getPropertyValue('--theme-wheel-stroke').trim();
+    const colorTextStroke = computed.getPropertyValue('--theme-wheel-text-stroke').trim();
+    const colorEmpty = computed.getPropertyValue('--theme-wheel-empty').trim() || "#e8fbff";
 
     if (active.length === 0) {
         ctx.beginPath();
         ctx.arc(center, center, radius, 0, Math.PI * 2);
-        ctx.fillStyle = "#e8fbff";
+        ctx.fillStyle = colorEmpty;
         ctx.fill();
         ctx.strokeStyle = colorStroke;
         ctx.lineWidth = 10;
@@ -2554,6 +2707,7 @@ function drawBreakWheel(subMode) {
         let fontSize = Math.max(8, Math.min(36, 750 / active.length));
         ctx.font = `900 ${fontSize}px sans-serif`;
         
+        if (colorTextStroke) { ctx.lineJoin = "round"; ctx.lineWidth = Math.max(2, fontSize / 5); ctx.strokeStyle = colorTextStroke; ctx.strokeText(text, radius - 14, fontSize / 3.2); }
         ctx.fillText(text, radius - 14, fontSize / 3.2);
         ctx.restore();
     });
